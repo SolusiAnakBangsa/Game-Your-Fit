@@ -47,7 +47,7 @@ function sendData(data){
 // Helper function
 function setConnectionListener(connection){
     connection.on('data',function(data){
-        console.log("Data : " + data)
+        console.log("Remote : " + data)
         box.innerHTML += "Remote : " + data
         Android.sendToAndroid(data)
     });

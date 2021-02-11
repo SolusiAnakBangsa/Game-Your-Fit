@@ -42,8 +42,8 @@ class WebRtc (webView : WebView, mContext: Context){
 
 //    Run any arbitrary js code
     fun runJs(code : String){
-//        Variable 'value' is return value from js
         wv.evaluateJavascript(code)
+//        Variable 'value' is return value from js
 //        Callback function
         { value ->
 
@@ -51,21 +51,21 @@ class WebRtc (webView : WebView, mContext: Context){
     }
 
     fun sendDataToPeer(data : String){
-        wv.evaluateJavascript("sendData(\"" + data  + "\")")
+        wv.evaluateJavascript("sendData(\"$data\")")
         { value ->
 
         }
     }
 
     fun createPeer(id : String){
-        wv.evaluateJavascript("createPeer(\"" + id + "\")")
+        wv.evaluateJavascript("createPeer(\"$id\")")
         { value ->
 
         }
     }
 
     fun connectTo(id : String){
-        wv.evaluateJavascript("connectToOther(\"" + id + "\")")
+        wv.evaluateJavascript("connectToOther(\"$id\")")
         { value ->
 
         }
