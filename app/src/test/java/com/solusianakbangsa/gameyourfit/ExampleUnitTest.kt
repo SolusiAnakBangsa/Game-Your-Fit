@@ -1,4 +1,4 @@
-package com.example.gameyourfit
+package com.solusianakbangsa.gameyourfit
 
 import org.junit.Test
 

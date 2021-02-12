@@ -1,4 +1,4 @@
-package com.example.gameyourfit
+package com.solusianakbangsa.gameyourfit
 
 import android.content.Context
 import android.util.Log
