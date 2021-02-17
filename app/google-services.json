@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "92336032037",
+    "project_id": "game-your-fit",
+    "storage_bucket": "game-your-fit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92336032037:android:32158b7e12afcf8c1f72cc",
+        "android_client_info": {
+          "package_name": "com.example.gameyourfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92336032037-mdesbu0ggc48uqc2j8rfiq9m39etgsum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvHIkQpTjPNzNSR9qwPN3PdWEEcJE-Nwg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92336032037-mdesbu0ggc48uqc2j8rfiq9m39etgsum.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
