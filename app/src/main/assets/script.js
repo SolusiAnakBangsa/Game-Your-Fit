@@ -1,8 +1,6 @@
 var debug = document.getElementById("debug")
-var box = document.getElementById("chatbox")
+var box = document.getElementById("dataBox")
 function createPeer(roomID){
-    // Constructor argument is the ID of the room
-
     /////////////////////////
     // Configure account here
     peer = new Peer(roomID,
@@ -49,6 +47,7 @@ function setConnectionListener(connection){
     connection.on('data',function(data){
         console.log("Remote : " + data)
         box.innerHTML += "Remote : " + data
+        // Upon receiving data, call function sendToAndroid, which will run in the WebAppInterface file
         Android.sendToAndroid(data)
     });
 }

@@ -2,26 +2,15 @@ package com.solusianakbangsa.gameyourfit
 
 import android.content.Context
 import android.util.Log
-import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.solusianakbangsa.gameyourfit.comm.WebAppInterface
 
 private var TAG = "WebRTC"
 
 // Before using this class, make sure to configure the androidSide.html TURN server credentials
 // You can create a free account at https://numb.viagenie.ca/ (Don't use your real password)
 
-class WebAppInterface(private val mContext: Context){
-    @JavascriptInterface
-//    Javascript will use this function to send data to Android side,
-//    Syntax is Android.<nameOfFunction>
-
-//    You guys can make functions other than this and javascript can then run that function too
-    fun sendToAndroid(data : String){
-//        Do whatever you want with data here
-        Log.i(TAG,data)
-    }
-}
 // Accepts a WebView object and uses that to run javascript code
 // When using this class from an activity class, provide "this", as argument for Context
 class WebRtc (webView : WebView, mContext: Context){
