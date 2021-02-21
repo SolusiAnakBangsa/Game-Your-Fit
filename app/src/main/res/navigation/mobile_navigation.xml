@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.solusianakbangsa.gameyourfit.ui.dashboard.DashboardFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_leaderboard"
+        android:name="com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardFragment"
+        android:label="@string/menu_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
+
+    <fragment
+        android:id="@+id/nav_friends"
+        android:name="com.solusianakbangsa.gameyourfit.ui.friends.FriendsFragment"
+        android:label="@string/menu_friends"
+        tools:layout="@layout/fragment_friends" />
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.solusianakbangsa.gameyourfit.ui.setting.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@xml/root_preferences" />
+</navigation>
