@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:theme="@style/Theme.GameYourFit.NavigationView"
         app:itemBackground="?attr/itemBackground"
         app:itemTextColor="?attr/itemTextColor"
         app:itemIconTint="?attr/itemIconTint"
