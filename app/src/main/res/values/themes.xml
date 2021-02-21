@@ -10,7 +10,9 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
+        <item name="drawerArrowStyle">@style/DrawerIcon</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
 
         <!-- Customize your theme here. -->
     </style>
@@ -20,15 +22,27 @@
         <item name="itemIconTint">@drawable/menu_text_color</item>
         <item name="itemTextColor">@drawable/menu_text_color</item>
         <!-- Secondary color, change if needed, since we only have two theme colors. -->
-
     </style>
+
     <style name="Theme.GameYourFit.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
 
-    <style name="Theme.GameYourFit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.GameYourFit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="height">70dp</item>
+    </style>
 
     <style name="Theme.GameYourFit.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">?attr/colorOnPrimary</item>
+
+    </style>
+
+    <style name="ActionBarText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

@@ -8,15 +8,22 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.GameYourFit.AppBarOverlay">
+        android:theme="@style/Theme.GameYourFit.AppBarOverlay"
+        android:layout_height="@dimen/action_bar_height"
+        android:background="@color/transparent"
+        app:elevation="0dp"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            android:backgroundTint="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.GameYourFit.PopupOverlay" />
+            android:layout_height="match_parent"
+            android:minHeight="@dimen/action_bar_height"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            app:popupTheme="@style/Theme.GameYourFit.PopupOverlay"
+            app:titleTextAppearance="@style/ActionBarText"
+            app:titleTextColor="?attr/colorOnPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
