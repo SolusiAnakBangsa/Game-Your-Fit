@@ -8,9 +8,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_dashboard">Dashboard</string>
     <string name="menu_leaderboard">Leaderboard</string>
     <string name="menu_friends">Friends</string>
+    <string name="menu_settings">Settings</string>
 
 
     <!-- Preference Titles -->
