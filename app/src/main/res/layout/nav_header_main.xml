@@ -19,6 +19,7 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/app_name"
         android:gravity="center_vertical"
+        android:textColor="?attr/colorOnPrimary"
         android:textAppearance="@style/ActionBarText" />
 
     <de.hdodenhof.circleimageview.CircleImageView

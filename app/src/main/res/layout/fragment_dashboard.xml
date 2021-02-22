@@ -4,19 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <TextView
-        android:id="@+id/text_home"
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="163dp"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="?attr/colorPrimary"
+        app:cardCornerRadius="32dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                app:cardBackgroundColor="?attr/colorPrimaryVariant"
+                app:cardCornerRadius="0dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="30dp"
+                    android:text="Welcome Back!"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2">
+                </TextView>
+            </com.google.android.material.card.MaterialCardView>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@mipmap/placeholder_profile">
+
+            </de.hdodenhof.circleimageview.CircleImageView>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/recommendationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Today's recommendation for you:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+
+    </TextView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/recommendationText"
+        tools:layout_editor_absoluteX="0dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/placeholder_profile">
+            </ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:background="@color/black"
+                android:textColor="@color/white"
+                android:text="NIGGAAAA"
+                >
+
+            </TextView>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
