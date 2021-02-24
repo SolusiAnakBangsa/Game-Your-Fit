@@ -16,11 +16,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:backgroundTint="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minHeight="@dimen/action_bar_height"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             app:popupTheme="@style/Theme.GameYourFit.PopupOverlay"
             app:titleTextAppearance="@style/ActionBarText"
             app:titleTextColor="?attr/colorOnPrimary" />
