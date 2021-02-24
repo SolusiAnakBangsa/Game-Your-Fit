@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
@@ -11,6 +12,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
+import android.util.Patterns
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.TextView
@@ -24,12 +26,15 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.google_button
 
 class LoginActivity : AppCompatActivity() {
-
+    private lateinit var context: Context
     private lateinit var mAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    lateinit var ref : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,12 +77,70 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+
         //Firebase Auth Instance
         mAuth = FirebaseAuth.getInstance()
+        val currentUser = mAuth.currentUser
+        if(currentUser!=null){
+            mAuth.signOut()
+        }
 
-        google_button.setOnClickListener(){
+        google_button.setOnClickListener{
             signIn()
         }
+
+        login_button.setOnClickListener {
+            val email = login_email_address.text.toString().trim()
+            val password = login_password.text.toString().trim()
+
+            if (email.isEmpty()) {
+                login_email_address.error = "Email Required"
+                login_email_address.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                login_email_address.error = "Valid Email Required"
+                login_email_address.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (password.isEmpty() || password.length < 6) {
+                login_password.error = "6 char password required"
+                login_password.requestFocus()
+                return@setOnClickListener
+            }
+            loginUser(email,password)
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        mAuth = FirebaseAuth.getInstance()
+        val currentUser = mAuth.currentUser
+        if (currentUser != null) {
+            mAuth.signOut()
+        }
+
+        google_button.setOnClickListener{
+            signIn()
+        }
+    }
+
+    private fun loginUser(email: String, password: String) {
+        progressBar.visibility = View.VISIBLE
+        mAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this){task ->
+                progressBar.visibility = View.INVISIBLE
+                if(task.isSuccessful){
+                    login()
+                }else{
+                    task.exception?.message?.let{
+                        toast(it)
+                    }
+                }
+            }
     }
 
 
@@ -110,20 +173,66 @@ class LoginActivity : AppCompatActivity() {
         }
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
+
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    val userId = FirebaseAuth.getInstance().uid.toString()
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("LoginActivity", "signInWithCredential:success")
-                    val intent = Intent(this, DashboardActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    FirebaseDatabase.getInstance().reference.child("users").child(userId).addListenerForSingleValueEvent(
+                        object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    FirebaseDatabase.getInstance().reference.child("users").child(userId).child("username").addListenerForSingleValueEvent(
+                                        object : ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                if (snapshot.exists()){
+                                                    login()
+                                                }else{
+                                                    val intent = Intent(this@LoginActivity, UsernameGoogleActivity::class.java)
+                                                    startActivity(intent)
+                                                }
+                                            }
+
+                                            override fun onCancelled(error: DatabaseError) {
+                                                TODO("Not yet implemented")
+                                            }
+                                        })
+                                } else{
+                                    saveData(userId)
+                                    val intent = Intent(this@LoginActivity, UsernameGoogleActivity::class.java)
+                                    startActivity(intent)
+                                }
+
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+
+                            }
+                        })
+
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.d("LoginActivity", "signInWithCredential:failure", task.exception)
                 }
 
             }
+    }
+
+    private fun saveData(userId: String) {
+
+        val username : String? = null
+        val fullName : String? = null
+        val age : Int? = null
+        val weight : Float? = null
+        val height : Float? = null
+        var user = User(userId, fullName , username, age, weight, height)
+        FirebaseDatabase.getInstance().getReference("users").child(userId).setValue(user).addOnCompleteListener{
+            toast("Data Successfully Saved.")
+        }
     }
 
     private fun signUpSpan() {
