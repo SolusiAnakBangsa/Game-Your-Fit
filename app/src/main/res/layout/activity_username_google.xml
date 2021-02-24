@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UsernameGoogleActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/rounded_background"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:cardBackgroundColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/explain_google_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/source_sans_pro"
+                android:paddingHorizontal="15dp"
+                android:textSize="8pt"
+                android:text="In order to make an account, you need to make a username first. This will be displayed in your profile and it needs to be different for each user."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/google_username_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_outline_person_outline_24"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:fontFamily="@font/source_sans_pro"
+                android:hint="@string/username"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/explain_google_text"
+                tools:ignore="RtlSymmetry" />
+
+            <Button
+                android:id="@+id/save_username_button"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/button_round"
+                android:fontFamily="@font/source_sans_pro"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/google_username_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
