@@ -11,7 +11,9 @@
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_leaderboard">Leaderboard</string>
     <string name="menu_friends">Friends</string>
+    <string name="menu_requests">Requests</string>
     <string name="menu_settings">Settings</string>
+
 
 
     <!-- Preference Titles -->
