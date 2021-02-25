@@ -1,13 +1,11 @@
 var debug = document.getElementById("debug")
 var box = document.getElementById("dataBox")
 function createPeer(roomID){
-    /////////////////////////
-    // Configure account here
     peer = new Peer(roomID,
         {config:
             {'iceServers': [
                 {url: 'stun:stun.l.google.com:19302'},
-                {url: 'turn:numb.viagenie.ca:3478', username: 'email', credential: 'password' }]
+                {url: 'turn:numb.viagenie.ca:3478', username: ACCOUNT_INFO.username, credential: ACCOUNT_INFO.password }]
             }
         })
     peer.on('open', function(id){
@@ -51,3 +49,5 @@ function setConnectionListener(connection){
         Android.sendToAndroid(data)
     });
 }
+console.log(ACCOUNT_INFO.username)
+console.log(ACCOUNT_INFO.password)
