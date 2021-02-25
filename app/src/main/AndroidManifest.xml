@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.solusianakbangsa.gameyourfit">
-	<uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,18 +9,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GameYourFit">
+
+        <activity android:name=".UsernameGoogleActivity"></activity>
+        <activity android:name=".UserInformationActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".LoginActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.GameYourFit.NoActionBar">
-			<intent-filter>
+        </activity>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-		</activity>
-		<activity android:name=".MainActivity">
-            
         </activity>
     </application>
 

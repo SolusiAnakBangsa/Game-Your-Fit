@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/rounded_background"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:cardBackgroundColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/full_name_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_baseline_perm_contact_calendar_24"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:fontFamily="@font/source_sans_pro"
+                android:hint="Full Name"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/username_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_outline_person_outline_24"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Username"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/full_name_text"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/age_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_baseline_access_time_24"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Age"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/username_text"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/weight_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_baseline_monitor_weight_24"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:hint="Weight (in kg)"
+                android:inputType="numberDecimal"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/age_text"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/height_text"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_round"
+                android:drawableStart="@drawable/ic_sharp_height_24"
+                android:drawablePadding="10dp"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:hint="Height (in cm)"
+                android:paddingStart="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/weight_text"
+                tools:ignore="RtlSymmetry" />
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/button_round"
+                android:fontFamily="@font/source_sans_pro"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/height_text" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
