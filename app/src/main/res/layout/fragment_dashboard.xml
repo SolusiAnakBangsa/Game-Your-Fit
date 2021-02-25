@@ -110,7 +110,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="2dp"
                     android:paddingStart="10dp"
-                    android:text="68 m"
+                    android:text="68 m ⏱"
                     android:textColor="@color/white"
 
                     android:textSize="14sp"
