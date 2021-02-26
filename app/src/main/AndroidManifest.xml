@@ -14,12 +14,7 @@
 			android:theme="@style/Theme.GameYourFit.NoActionBar"
 			android:label="@string/menu_profile"
             >
-		<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-			</activity>
+		</activity>
         <activity android:name=".UsernameGoogleActivity" />
         <activity android:name=".UserInformationActivity" />
         <activity android:name=".DashboardActivity" />
@@ -31,7 +26,13 @@
             android:theme="@style/Theme.GameYourFit.NoActionBar">
             
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity">
+		<intent-filter>
+			<action android:name="android.intent.action.MAIN" />
+
+			<category android:name="android.intent.category.LAUNCHER" />
+		</intent-filter>
+		</activity>
     </application>
 
 </manifest>
