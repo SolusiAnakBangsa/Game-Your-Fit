@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
+    android:layout_marginLeft="@dimen/left_right_margin"
+    android:layout_marginRight="@dimen/left_right_margin"
     tools:context=".ui.dashboard.DashboardFragment">
 
 
@@ -116,8 +116,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                    app:layout_constraintTop_toBottomOf="@+id/cardLevel"
-                    tools:ignore="RtlSymmetry" />
+                    app:layout_constraintTop_toBottomOf="@+id/cardLevel"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
