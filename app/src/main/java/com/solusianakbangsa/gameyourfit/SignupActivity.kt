@@ -259,7 +259,7 @@ class SignupActivity : AppCompatActivity() {
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         toast("Data Successfully Saved.")
                     }
-                    val intent = Intent(this, DashboardActivity::class.java)
+                    val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 }else{
                     task.exception?.message?.let {

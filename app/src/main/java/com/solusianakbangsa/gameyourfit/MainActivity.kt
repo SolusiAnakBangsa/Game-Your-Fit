@@ -23,12 +23,10 @@ class MainActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth.currentUser
 
-
-
         /**If user is authenticated, send them to dashboard, if not, send to login activity*/
         Handler().postDelayed({
             if(user!=null){
-                val dashboardIntent = Intent(this, DashboardActivity::class.java)
+                val dashboardIntent = Intent(this, HomeActivity::class.java)
                 startActivity(dashboardIntent)
                 finish()
             }else{

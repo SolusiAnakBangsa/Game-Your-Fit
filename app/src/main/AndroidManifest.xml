@@ -7,10 +7,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/Theme.GameYourFit">
+        <activity 
+			android:name=".ProfileActivity" 
+			android:theme="@style/Theme.GameYourFit.NoActionBar"
+			android:label="@string/menu_profile"
+            >
+		<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".UsernameGoogleActivity"></activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+			</activity>
+        <activity android:name=".UsernameGoogleActivity" />
         <activity android:name=".UserInformationActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".SignupActivity" />
@@ -19,15 +29,9 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.GameYourFit.NoActionBar">
+            
         </activity>
-
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>

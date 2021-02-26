@@ -23,10 +23,7 @@ class LeaderboardFragment : Fragment() {
         leaderboardViewModel =
                 ViewModelProvider(this).get(LeaderboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_leaderboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_gallery)
-        leaderboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+
         return root
     }
 }
