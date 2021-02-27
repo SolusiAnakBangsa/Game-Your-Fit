@@ -37,7 +37,10 @@
         app:layout_constraintTop_toBottomOf="@id/friendsTab"
         >
         <LinearLayout
+            android:id="@+id/friendList"
             android:orientation="vertical"
+            android:showDividers="middle"
+            android:divider="@drawable/layout_divider"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
