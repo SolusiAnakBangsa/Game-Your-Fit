@@ -46,7 +46,7 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/friendProfilePicture"
+                android:id="@+id/userProfilePicture"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:layout_marginStart="20dp"
@@ -54,7 +54,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.516" />
+                android:clickable="true"
+                app:layout_constraintVertical_bias="0.516"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/profileUsername"
@@ -74,7 +76,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
-                app:layout_constraintStart_toEndOf="@+id/friendProfilePicture"
+                app:layout_constraintStart_toEndOf="@+id/userProfilePicture"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -88,7 +90,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/friendProfilePicture"
+                app:layout_constraintStart_toEndOf="@+id/userProfilePicture"
                 app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
 
             <ProgressBar
@@ -114,7 +116,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@id/friendProfilePicture"
+                app:layout_constraintLeft_toRightOf="@id/userProfilePicture"
                 app:layout_constraintTop_toBottomOf="@id/profileLevel" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -154,30 +156,33 @@
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/divider">
     </TextView>
-    <EditText
+    <TextView
+        android:id="@+id/profileEmail_text"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:textSize="16sp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/bottom_border"
         app:layout_constraintTop_toBottomOf="@id/profileEmail">
-    </EditText>
+    </TextView>
 
     <TextView
         android:id="@+id/profileName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="52dp"
+        android:paddingLeft="10dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
-        android:paddingLeft="10dp"
-        android:text="@string/username"
+        android:text="Full Name"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/profileEmail">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@id/profileEmail"
+        tools:layout_editor_absoluteX="20dp" />
+
     <EditText
+        android:id="@+id/profileName_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="16sp"
@@ -201,6 +206,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileName">
     </TextView>
     <EditText
+        android:id="@+id/profileAge_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="16sp"
@@ -224,6 +230,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileAge">
     </TextView>
     <EditText
+        android:id="@+id/profileWeight_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="16sp"
@@ -247,6 +254,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileWeight">
     </TextView>
     <EditText
+        android:id="@+id/profileHeight_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="16sp"

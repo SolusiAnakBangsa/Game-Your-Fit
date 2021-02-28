@@ -254,7 +254,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
                     val userId = FirebaseAuth.getInstance().uid.toString()
-                    val user = User(userId, fullName, username, age, weight, height)
+                    val user = User(userId, email, fullName, username, age, weight, height)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         toast("Data Successfully Saved.")
@@ -306,6 +306,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val userId = FirebaseAuth.getInstance().uid.toString()
+                    val email = FirebaseAuth.getInstance().currentUser?.email.toString()
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("LoginActivity", "signInWithCredential:success")
                     FirebaseDatabase.getInstance().reference.child("users").child(userId).addListenerForSingleValueEvent(
@@ -328,7 +329,7 @@ class SignupActivity : AppCompatActivity() {
                                             }
                                         })
                                 } else{
-                                    saveData(userId)
+                                    saveData(userId, email)
                                     val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
                                     startActivity(intent)
                                 }
@@ -350,14 +351,14 @@ class SignupActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveData(userId: String) {
+    private fun saveData(userId: String, email : String) {
 
         val username : String? = null
         val fullName : String? = null
         val age : Int? = null
         val weight : Float? = null
         val height : Float? = null
-        var user = User(userId, fullName , username, age, weight, height)
+        var user = User(userId, email, fullName , username, age, weight, height)
         ref.child(userId).setValue(user).addOnCompleteListener{
             toast("Data Successfully Saved.")
         }

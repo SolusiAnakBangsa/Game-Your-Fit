@@ -1,3 +1,3 @@
 package com.solusianakbangsa.gameyourfit
 
-class User (val userId: String, val fullName:String?, val username: String?, val userAge : Int?, val userHeight : Float?, val userWeight : Float?)
+class User (val userId: String? = null, val email: String? = null, val fullName:String? = null, val username: String? = null, val userAge : Int? = null, val userWeight : Float? = null, val userHeight : Float? = null)
