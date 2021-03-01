@@ -9,8 +9,8 @@ class AlphaOneActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
 
-//        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
-//        setSupportActionBar(toolbar)
+        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
+        setSupportActionBar(toolbar)
         // for some reason this keeps crashing the app idk why
 
     }
