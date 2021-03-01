@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
+    private lateinit var rtc: WebRtc
     private var mAccelerometerLinear: Sensor? = null
     private var resume = false
     private var counter = 0
@@ -24,6 +25,13 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
+
+//        Call webrtc function from here
+        rtc = WebRtc(findViewById(R.id.webAlpha),this)
+//        Generates a random peer,
+//        TODO : Show this in the activity
+        var peerId : String = (0..1000).random().toString()
+        rtc.createPeer(peerId)
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)

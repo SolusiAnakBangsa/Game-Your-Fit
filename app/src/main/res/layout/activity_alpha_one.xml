@@ -26,7 +26,12 @@
             app:titleTextColor="?attr/colorOnPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
+    <WebView
+        android:id="@+id/webAlpha"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        tools:ignore="MissingConstraints" />
     <Button
         android:id="@+id/buttonStartAlpha"
         android:layout_width="0dp"
