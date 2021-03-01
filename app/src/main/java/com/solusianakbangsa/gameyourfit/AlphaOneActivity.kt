@@ -28,10 +28,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
-//        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
-//        setSupportActionBar(toolbar)
-        // for some reason this keeps crashing the app idk why
-
+        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
+        setSupportActionBar(toolbar)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
