@@ -19,8 +19,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var counter = 0
     private var step = false  // determines if threshold is high or low (false = high)
     private var stepBefore = false
-    private val THRESHOLD_HIGH = 2
-    private val THRESHOLD_LOW = -2
+    private val THRESHOLD_HIGH = 6
+    private val THRESHOLD_LOW = -6
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +54,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 step = true
             }
 
-            if (step && !stepBefore) {
+            if (step != stepBefore) {
                 counter++
                 findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
             }
