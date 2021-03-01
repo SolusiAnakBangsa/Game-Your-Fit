@@ -35,6 +35,7 @@ class FriendsFragment : Fragment() {
         var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
         vp.adapter = adapter
 
+
         var tabs : TabLayout = root.findViewById(R.id.friendsTab)
         tabs.setupWithViewPager(vp)
         return root

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import com.solusianakbangsa.gameyourfit.R
 
 class FriendsListFragment : Fragment() {
@@ -39,6 +40,12 @@ class FriendsListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
         viewModel.addToList("Nibba",1, 123)
+        viewModel.addToList("A",1,123)
+        viewModel.getFriendList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
+            users -> users.forEach{
+            createFriend(it.level,it.username,it.time.toString())
+        }
+        })
     }
 
     fun createFriend(level : Int, username: String, recentTime : String){
