@@ -17,12 +17,10 @@ class FriendsListFragment : Fragment() {
         fun newInstance() : FriendsListFragment{
             val fragment = FriendsListFragment()
             val args : Bundle = Bundle()
-//            args.putString("userList", userJson)
             fragment.arguments = args
             return fragment
         }
     }
-
 
     private lateinit var viewModel: FriendsListViewModel
 
@@ -40,7 +38,7 @@ class FriendsListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel.addToList("Nibba",1, 123)
     }
 
     fun createFriend(level : Int, username: String, recentTime : String){

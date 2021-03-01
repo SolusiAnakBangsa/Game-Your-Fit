@@ -11,7 +11,7 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
     private val PAGE_COUNT : Int = 2;
     override fun getItem(position: Int): Fragment {
         when(position){
-            0 -> {return DashboardFragment()}
+            0 -> {return FriendsListFragment()}
             1 -> {return DashboardFragment()}
 //            TODO : Create 'something went wrong' fragment
             else -> {return SettingsFragment()}
