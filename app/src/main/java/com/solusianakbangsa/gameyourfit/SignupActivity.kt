@@ -17,6 +17,7 @@ import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -250,6 +251,8 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun registerUser(email: String, password: String, fullName: String?, username: String, age : Int?, weight : Float?, height : Float?) {
+        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
@@ -257,12 +260,15 @@ class SignupActivity : AppCompatActivity() {
                     val user = User(userId, email, fullName, username, age, weight, height)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
+                        progressBar.visibility = View.GONE
                         toast("Data Successfully Saved.")
                     }
+                    progressBar.visibility = View.GONE
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 }else{
                     task.exception?.message?.let {
+                        progressBar.visibility = View.GONE
                         toast(it)
                     }
                 }
@@ -301,7 +307,8 @@ class SignupActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-
+        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -317,8 +324,10 @@ class SignupActivity : AppCompatActivity() {
                                         object : ValueEventListener {
                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                 if (snapshot.exists()){
+                                                    progressBar.visibility = View.GONE
                                                     login()
                                                 }else{
+                                                    progressBar.visibility = View.GONE
                                                     val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
                                                     startActivity(intent)
                                                 }
@@ -330,6 +339,7 @@ class SignupActivity : AppCompatActivity() {
                                         })
                                 } else{
                                     saveData(userId, email)
+                                    progressBar.visibility = View.GONE
                                     val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
                                     startActivity(intent)
                                 }
@@ -344,6 +354,7 @@ class SignupActivity : AppCompatActivity() {
 
 
                 } else {
+                    progressBar.visibility = View.GONE
                     // If sign in fails, display a message to the user.
                     Log.d("LoginActivity", "signInWithCredential:failure", task.exception)
                 }

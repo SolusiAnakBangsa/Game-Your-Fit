@@ -9,7 +9,9 @@ import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.tasks.Continuation
@@ -56,6 +58,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val toolbar: Toolbar = findViewById(R.id.profileToolbar)
         setSupportActionBar(toolbar)
 
+
+        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
         val userId = FirebaseAuth.getInstance().uid.toString()
         val email = FirebaseAuth.getInstance().currentUser?.email.toString()
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
@@ -88,6 +93,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                             Picasso.get().load(image).into(userProfilePicture)
                         }
 
+                        progressBar.visibility = View.GONE
+
                     }}
 
                 override fun onCancelled(error: DatabaseError) {
@@ -97,6 +104,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             })
 
         button.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
             val mFullName = profileName_text.text.toString().trim()
             val mAge = profileAge_text.text.toString().trim()
             val mWeight = profileWeight_text.text.toString().trim()
@@ -127,8 +135,10 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             ref.updateChildren(updateHash)
                 .addOnCompleteListener { updateTask ->
                     if (updateTask.isSuccessful) {
+                        progressBar.visibility = View.GONE
                         toast("Profile is Uploaded.")
                     } else {
+                        progressBar.visibility = View.GONE
                         toast("Error in Updating Profile")
                     }
 
@@ -173,6 +183,10 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             val result = CropImage.getActivityResult(data)
 
             if (resultCode == Activity.RESULT_OK){
+
+                val progressBar: ProgressBar = findViewById(R.id.progressBar)
+                progressBar.visibility = View.VISIBLE
+
                 val resultUri = result.uri
                 val thumbFilePath = File(resultUri.path!!)
 
@@ -212,6 +226,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                     if (snapshot.exists()) {
                                         FirebaseDatabase.getInstance().getReference("users")
                                             .child(uid.toString()).child("image").setValue(url)
+                                        progressBar.visibility = View.GONE
                                         toast("Profile is Updated.")
                                         Picasso.get().load(url).into(userProfilePicture)
                                     } else {
@@ -220,6 +235,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                         ref.updateChildren(updateHash)
                                             .addOnCompleteListener { updateTask ->
                                                 if (updateTask.isSuccessful) {
+                                                    progressBar.visibility = View.GONE
                                                     toast("Profile is Uploaded.")
                                                     Picasso.get().load(url).into(userProfilePicture)
                                                 } else {
