@@ -67,13 +67,22 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
+
                         username = snapshot.child("username").value!!.toString()
                         profileUsername.text = username
                         profileEmail_text.text = snapshot.child("email").value!!.toString()
-                        profileName_text.setText(snapshot.child("fullName").value!!.toString())
-                        profileAge_text.setText(snapshot.child("userAge").value!!.toString())
-                        profileWeight_text.setText(snapshot.child("userWeight").value!!.toString())
-                        profileHeight_text.setText(snapshot.child("userHeight").value!!.toString())
+                        if (snapshot.child("fullName").exists()){
+                            profileName_text.setText(snapshot.child("fullName").value!!.toString())
+                        }
+                        if (snapshot.child("userAge").exists()){
+                            profileAge_text.setText(snapshot.child("userAge").value!!.toString())
+                        }
+                        if (snapshot.child("userWeight").exists()){
+                            profileWeight_text.setText(snapshot.child("userWeight").value!!.toString())
+                        }
+                        if (snapshot.child("userHeight").exists()){
+                            profileHeight_text.setText(snapshot.child("userHeight").value!!.toString())
+                        }
                         if (snapshot.child("image").exists()){
                             val image = snapshot.child("image").value!!.toString()
                             Picasso.get().load(image).into(userProfilePicture)
