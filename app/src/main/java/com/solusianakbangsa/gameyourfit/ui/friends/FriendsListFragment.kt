@@ -14,11 +14,10 @@ class FriendsListFragment : Fragment() {
     private lateinit var rootLayout : LinearLayout
 
     companion object {
-//      This fragment will accept a stringified JSON list of friend information (Name, level, and time)
-        fun newInstance(userJson : String) : FriendsListFragment{
+        fun newInstance() : FriendsListFragment{
             val fragment = FriendsListFragment()
             val args : Bundle = Bundle()
-            args.putString("userList", userJson)
+//            args.putString("userList", userJson)
             fragment.arguments = args
             return fragment
         }
