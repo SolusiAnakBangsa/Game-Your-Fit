@@ -19,8 +19,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var counter = 0
     private var step = false  // determines if threshold is high or low (false = high)
     private var stepBefore = false
-    private val THRESHOLD_HIGH = 6
-    private val THRESHOLD_LOW = -6
+    private val THRESHOLD_HIGH = 6.5
+    private val THRESHOLD_LOW = -6.5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +32,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        TODO : Show this in the activity
         var peerId : String = (0..1000).random().toString()
         rtc.createPeer(peerId)
+
+        Toast.makeText(this, "Connected to peer: $peerId", Toast.LENGTH_SHORT).show()
+        findViewById<TextView>(R.id.textAlphaPeer).text = peerId
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
