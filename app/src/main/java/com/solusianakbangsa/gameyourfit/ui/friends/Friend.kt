@@ -1,3 +1,3 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
-class Friend(val username: String, val level : Int, val time : Int)
+open class Friend(open var username: String, var level : Int, var time : Int)

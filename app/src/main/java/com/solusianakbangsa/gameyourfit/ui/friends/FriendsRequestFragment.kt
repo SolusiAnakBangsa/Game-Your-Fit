@@ -1,36 +1,32 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.solusianakbangsa.gameyourfit.R
 
-class FriendsListFragment : Fragment() {
+class FriendsRequestFragment : Fragment() {
     private lateinit var rootLayout : LinearLayout
 
     companion object {
-        fun newInstance() : FriendsListFragment{
-            val fragment = FriendsListFragment()
-            val args : Bundle = Bundle()
-            fragment.arguments = args
-            return fragment
-        }
+        fun newInstance() = FriendsRequestFragment()
     }
 
-    private lateinit var viewModel: FriendsListViewModel
+    private lateinit var viewModel: FriendsRequestViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_friends_list, container, false)
-        rootLayout = root.findViewById(R.id.friendsList)
+        val root = inflater.inflate(R.layout.fragment_friends_request, container, false)
+        rootLayout = root.findViewById(R.id.friendsRequest)
 
 //        For i in userlist, create a new view
         return rootLayout
@@ -38,17 +34,17 @@ class FriendsListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FriendsRequestViewModel::class.java)
         viewModel.addToList("Nibba",1, 123)
         viewModel.addToList("A",1,123)
-        viewModel.getFriendList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
-            users -> users.forEach{
-            createFriendCard(it.level,it.username,it.time.toString())
-        }
+        viewModel.getRequestList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
+                users -> users.forEach{
+                    createRequestCard(it.level,it.username,it.time.toString())
+                }
         })
     }
 
-    private fun createFriendCard(level : Int, username: String, recentTime : String){
+    private fun createRequestCard(level : Int, username: String, recentTime : String){
         var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
 
         var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)

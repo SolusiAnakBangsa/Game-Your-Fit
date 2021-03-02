@@ -21,20 +21,15 @@ import kotlinx.android.synthetic.main.fragment_friends.view.*
 import org.w3c.dom.Text
 
 class FriendsFragment : Fragment() {
-    private lateinit var friendsViewModel: FriendsViewModel
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_friends, container, false)
-        friendsViewModel =
-                ViewModelProvider(this).get(FriendsViewModel::class.java)
-
         var vp : ViewPager = root.findViewById(R.id.friendsViewPager)
         var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
         vp.adapter = adapter
-
 
         var tabs : TabLayout = root.findViewById(R.id.friendsTab)
         tabs.setupWithViewPager(vp)

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-        android:id="@+id/friendsList"
+        android:id="@+id/friendsRequest"
         android:orientation="vertical"
         android:showDividers="middle"
         android:divider="@drawable/layout_divider"
