@@ -46,8 +46,11 @@ class FriendsListFragment : Fragment() {
         viewModel.addToList(Friend("A",1,123))
         viewModel.addToList(Friend("Nibba",1, 123))
         viewModel.addToList(Friend("A",1,123))
-        viewModel.getNewFriend().observe(viewLifecycleOwner, Observer<Friend>{
-            createFriendCard(it)
+        viewModel.getFriendList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
+            users -> users.forEach{
+                createFriendCard(it)
+            }
+            users.clear()
         })
     }
 

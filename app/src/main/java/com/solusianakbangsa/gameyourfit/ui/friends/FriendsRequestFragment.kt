@@ -36,8 +36,11 @@ class FriendsRequestFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsRequestViewModel::class.java)
         viewModel.addToList(Friend("Nibba",1, 123))
-        viewModel.getNewRequest().observe(viewLifecycleOwner, Observer<Friend>{
-                createRequestCard(it)
+        viewModel.getRequestList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
+                users -> users.forEach{
+                    createRequestCard(it)
+                }
+                users.clear()
         })
     }
 
