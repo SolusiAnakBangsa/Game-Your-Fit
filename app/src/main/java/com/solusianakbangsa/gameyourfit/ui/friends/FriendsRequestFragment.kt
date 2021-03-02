@@ -35,26 +35,20 @@ class FriendsRequestFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsRequestViewModel::class.java)
-        viewModel.addToList("Nibba",1, 123)
-        viewModel.addToList("A",1,123)
-        viewModel.getRequestList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
-                users -> users.forEach{
-                    createRequestCard(it.level,it.username,it.time.toString())
-                }
+        viewModel.addToList(Friend("Nibba",1, 123))
+        viewModel.getNewRequest().observe(viewLifecycleOwner, Observer<Friend>{
+                createRequestCard(it)
         })
     }
 
-    private fun createRequestCard(level : Int, username: String, recentTime : String){
-        var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
+    private fun createRequestCard(f: Friend){
+        var friendEntry : View = layoutInflater.inflate(R.layout.friend_request_card,null,false)
 
-        var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)
-        levelView.text = "Level $level"
+        var levelView : TextView = friendEntry.findViewById(R.id.requestLevel)
+        levelView.text = "Level ${f.level.toString()}"
 
-        var usernameView : TextView = friendEntry.findViewById(R.id.friendUsername)
-        usernameView.text = username
-
-        var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
-        timeView.text = recentTime
+        var usernameView : TextView = friendEntry.findViewById(R.id.requestUsername)
+        usernameView.text = f.username
 
 //        var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
 //        I'm not sure how the replacement of the image is gonna work, so I keep it like this for now

@@ -16,5 +16,4 @@
 
         </com.google.android.material.card.MaterialCardView>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

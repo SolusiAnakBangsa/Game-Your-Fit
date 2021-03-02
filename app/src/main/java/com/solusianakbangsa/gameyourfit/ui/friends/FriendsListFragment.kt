@@ -1,7 +1,10 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.solusianakbangsa.gameyourfit.R
 
 class FriendsListFragment : Fragment() {
@@ -31,7 +35,6 @@ class FriendsListFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_friends_list, container, false)
         rootLayout = root.findViewById(R.id.friendsList)
-
 //        For i in userlist, create a new view
         return rootLayout
     }
@@ -39,26 +42,26 @@ class FriendsListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
-        viewModel.addToList("Nibba",1, 123)
-        viewModel.addToList("A",1,123)
-        viewModel.getFriendList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
-            users -> users.forEach{
-            createFriendCard(it.level,it.username,it.time.toString())
-        }
+        viewModel.addToList(Friend("Nibba",1, 123))
+        viewModel.addToList(Friend("A",1,123))
+        viewModel.addToList(Friend("Nibba",1, 123))
+        viewModel.addToList(Friend("A",1,123))
+        viewModel.getNewFriend().observe(viewLifecycleOwner, Observer<Friend>{
+            createFriendCard(it)
         })
     }
 
-    private fun createFriendCard(level : Int, username: String, recentTime : String){
+    private fun createFriendCard(f : Friend){
         var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
 
         var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)
-        levelView.text = "Level $level"
+        levelView.text = "Level ${f.level.toString()}"
 
         var usernameView : TextView = friendEntry.findViewById(R.id.friendUsername)
-        usernameView.text = username
+        usernameView.text = f.username
 
         var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
-        timeView.text = recentTime
+        timeView.text = f.time.toString()
 
 //        var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
 //        I'm not sure how the replacement of the image is gonna work, so I keep it like this for now

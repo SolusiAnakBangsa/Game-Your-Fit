@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.Layout
 import android.view.LayoutInflater
@@ -26,11 +27,14 @@ class FriendsFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+//        TODO : RECYCLERVIEW AHHHHHH
         val root = inflater.inflate(R.layout.fragment_friends, container, false)
         var vp : ViewPager = root.findViewById(R.id.friendsViewPager)
         var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
         vp.adapter = adapter
+        vp.pageMargin = 50
 
+//        vp.layoutParams = ViewGroup.LayoutParams(vp.width , Resources.getSystem().displayMetrics.heightPixels)
         var tabs : TabLayout = root.findViewById(R.id.friendsTab)
         tabs.setupWithViewPager(vp)
         return root

@@ -12,7 +12,7 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
     override fun getItem(position: Int): Fragment {
         when(position){
             0 -> {return FriendsListFragment()}
-            1 -> {return DashboardFragment()}
+            1 -> {return FriendsRequestFragment()}
 //            TODO : Create 'something went wrong' fragment
             else -> {return SettingsFragment()}
         }
