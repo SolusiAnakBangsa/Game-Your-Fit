@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.solusianakbangsa.gameyourfit.R
@@ -35,11 +34,11 @@ class FriendsRequestFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsRequestViewModel::class.java)
         viewModel.addToList(Friend("Ninja",1, 123))
-        viewModel.addToList(Friend("Ninja",1, 123))
-        viewModel.addToList(Friend("Ninja",1, 123))
-        viewModel.addToList(Friend("Ninja",1, 123))
-        viewModel.addToList(Friend("Ninja",1, 123))
-        viewModel.addToList(Friend("Ninja",1, 123))
+//        viewModel.addToList(Friend("Ninja",1, 123))
+//        viewModel.addToList(Friend("Ninja",1, 123))
+//        viewModel.addToList(Friend("Ninja",1, 123))
+//        viewModel.addToList(Friend("Ninja",1, 123))
+//        viewModel.addToList(Friend("Ninja",1, 123))
 
         viewModel.getRequestList().forEach{
             createRequestCard(it)

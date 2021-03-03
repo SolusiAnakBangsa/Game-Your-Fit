@@ -2,7 +2,6 @@ package com.solusianakbangsa.gameyourfit.ui.friends
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardEntry
 
 class FriendsRequestViewModel : ViewModel() {
     private val newRequest = MutableLiveData<Friend>()

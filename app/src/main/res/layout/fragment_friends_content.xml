@@ -6,11 +6,17 @@
     android:fillViewport="true"
     android:layout_width="match_parent">
     <LinearLayout
-        android:id="@+id/friendsRequest"
+        android:id="@+id/friendsContent"
         android:orientation="vertical"
         android:showDividers="middle"
         android:divider="@drawable/layout_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/testButton"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Button">
+        </Button>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

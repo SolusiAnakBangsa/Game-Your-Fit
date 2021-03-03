@@ -1,10 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
-import android.content.res.Resources
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
-import androidx.viewpager.widget.ViewPager
 import com.solusianakbangsa.gameyourfit.R
 
 class FriendsListFragment : Fragment() {
