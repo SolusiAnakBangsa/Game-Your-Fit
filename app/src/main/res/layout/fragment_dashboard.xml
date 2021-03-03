@@ -51,16 +51,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/cardProfilePicture"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginStart="16dp"
-                        android:src="@mipmap/placeholder_profile"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.529"/>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/cardProfilePicture"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="16dp"
+                    android:clickable="true"
+                    android:src="@mipmap/placeholder_profile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.529"
+                    android:focusable="true" />
 
                     <TextView
                         android:id="@+id/cardUsername"
@@ -151,20 +153,25 @@
 
             app:layout_constraintTop_toBottomOf="@+id/recommendationText">
 
-            <FrameLayout
+        <FrameLayout
+
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/recommendationFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="bottom">
+                android:scaleType="centerCrop"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/placeholder_profile_background"
+                android:focusable="true">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/placeholder_profile_background">
-
-                </ImageView>
+            </ImageView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"

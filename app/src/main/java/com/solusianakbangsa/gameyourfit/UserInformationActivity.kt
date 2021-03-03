@@ -161,8 +161,8 @@ class UserInformationActivity : AppCompatActivity() {
         }
        
 
-
-        val user = User(userId, fullName, username, age.toInt(), weight.toFloat(), height.toFloat())
+        val email : String = "null"
+        val user = User(userId, email, fullName, username, age.toInt(), weight.toFloat(), height.toFloat())
 
         ref.child(userId).setValue(user).addOnCompleteListener{
             toast("Data Successfully Saved.")

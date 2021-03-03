@@ -25,9 +25,10 @@
         android:id="@+id/imageView"
         android:layout_width="96dp"
         android:layout_height="96dp"
-
+        android:clickable="true"
         android:contentDescription="@string/nav_header_desc"
-        android:src="@mipmap/placeholder_profile" />
+        android:src="@mipmap/placeholder_profile"
+        android:focusable="true" />
 
     <TextView
         android:layout_width="match_parent"
