@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 class FriendsListViewModel : ViewModel() {
 
     private val newFriend = MutableLiveData<Friend>()
-    private val friendsList = MutableLiveData<MutableList<Friend>>()
+    private var friendsList = mutableListOf<Friend>()
     private fun loadFriendsList(){
 //      Query from database, and then for each entry, call the add function
     }
@@ -16,16 +16,13 @@ class FriendsListViewModel : ViewModel() {
     fun getNewFriend() : MutableLiveData<Friend>{
         return newFriend
     }
-    fun getFriendList(): MutableLiveData<MutableList<Friend>> {
+    fun getFriendList(): MutableList<Friend> {
         return friendsList
     }
 //    Accepts argument to create a friend object
 //    Time is measured in minutes
     fun addToList(f : Friend){
-        if(friendsList.value == null){
-            friendsList.value = mutableListOf()
-        }
-        friendsList.value?.add(f)
+        friendsList.add(f)
         newFriend.value = f
     }
 }

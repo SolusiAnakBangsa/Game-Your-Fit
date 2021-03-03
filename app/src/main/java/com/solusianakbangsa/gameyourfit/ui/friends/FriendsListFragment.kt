@@ -12,11 +12,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.viewpager.widget.ViewPager
 import com.solusianakbangsa.gameyourfit.R
 
 class FriendsListFragment : Fragment() {
-    private lateinit var rootLayout : LinearLayout
+    private lateinit var contentLayout : LinearLayout
 
     companion object {
         fun newInstance() : FriendsListFragment{
@@ -34,23 +35,30 @@ class FriendsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_friends_list, container, false)
-        rootLayout = root.findViewById(R.id.friendsList)
-//        For i in userlist, create a new view
-        return rootLayout
+        contentLayout = root.findViewById(R.id.friendsList)
+        return root
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
-        viewModel.addToList(Friend("Nibba",1, 123))
-        viewModel.addToList(Friend("A",1,123))
-        viewModel.addToList(Friend("Nibba",1, 123))
-        viewModel.addToList(Friend("A",1,123))
-        viewModel.getFriendList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
-            users -> users.forEach{
-                createFriendCard(it)
-            }
-            users.clear()
+
+//        Random Values
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+//        First time initialization of the view
+        viewModel.getFriendList().forEach{
+            createFriendCard(it)
+        }
+        viewModel.getNewFriend().observe(viewLifecycleOwner, Observer<Friend>{
+            createFriendCard(it)
         })
     }
 
@@ -70,6 +78,6 @@ class FriendsListFragment : Fragment() {
 //        I'm not sure how the replacement of the image is gonna work, so I keep it like this for now
 //        profileView.setImageResource(R.drawable.something)
 
-        rootLayout.addView(friendEntry)
+        contentLayout.addView(friendEntry)
     }
 }

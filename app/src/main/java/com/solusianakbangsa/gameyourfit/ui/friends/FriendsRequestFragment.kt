@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.solusianakbangsa.gameyourfit.R
 
 class FriendsRequestFragment : Fragment() {
-    private lateinit var rootLayout : LinearLayout
+    private lateinit var contentLayout : LinearLayout
 
     companion object {
         fun newInstance() = FriendsRequestFragment()
@@ -26,21 +26,26 @@ class FriendsRequestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_friends_request, container, false)
-        rootLayout = root.findViewById(R.id.friendsRequest)
+        contentLayout = root.findViewById(R.id.friendsRequest)
 
-//        For i in userlist, create a new view
-        return rootLayout
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendsRequestViewModel::class.java)
-        viewModel.addToList(Friend("Nibba",1, 123))
-        viewModel.getRequestList().observe(viewLifecycleOwner, Observer<MutableList<Friend>>{
-                users -> users.forEach{
-                    createRequestCard(it)
-                }
-                users.clear()
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+        viewModel.addToList(Friend("Ninja",1, 123))
+
+        viewModel.getRequestList().forEach{
+            createRequestCard(it)
+        }
+        viewModel.getNewRequest().observe(viewLifecycleOwner, Observer<Friend>{
+            createRequestCard(it)
         })
     }
 
@@ -57,6 +62,6 @@ class FriendsRequestFragment : Fragment() {
 //        I'm not sure how the replacement of the image is gonna work, so I keep it like this for now
 //        profileView.setImageResource(R.drawable.something)
 
-        rootLayout.addView(friendEntry)
+        contentLayout.addView(friendEntry)
     }
 }

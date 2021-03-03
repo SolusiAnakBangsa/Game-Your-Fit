@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
+
+    tools:context=".ui.friends.FriendsFragment">
+
+    <!--    TODO : Implement badges on the request tab -->
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/friendsTab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 
-        tools:context=".ui.friends.FriendsFragment">
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </com.google.android.material.tabs.TabLayout>
 
-        <!--    TODO : Implement badges on the request tab -->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/friendsViewPager"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingLeft="@dimen/left_right_margin"
+        android:paddingRight="@dimen/left_right_margin"
+        app:layout_constraintTop_toBottomOf="@id/friendsTab"
+        app:layout_constraintVertical_bias="0.0">
+    </androidx.viewpager.widget.ViewPager>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/friendsTab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="?attr/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </com.google.android.material.tabs.TabLayout>
-
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/friendsViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="1000dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:nestedScrollingEnabled="true"
-            android:paddingLeft="@dimen/left_right_margin"
-            android:paddingRight="@dimen/left_right_margin"
-            app:layout_constraintTop_toBottomOf="@id/friendsTab"
-            app:layout_constraintVertical_bias="0.0">
-        </androidx.viewpager.widget.ViewPager>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
