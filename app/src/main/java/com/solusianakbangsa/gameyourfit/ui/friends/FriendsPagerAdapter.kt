@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.dashboard.DashboardFragment
 import com.solusianakbangsa.gameyourfit.ui.setting.SettingsFragment
+import kotlinx.android.synthetic.main.fragment_friends_content.view.*
 
 class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) {
 
@@ -13,7 +15,7 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
     override fun getItem(position: Int): Fragment {
         when(position){
             0 -> {
-                return TestFragment.newInstance()}
+                return TestFragment()}
             1 -> {return FriendsRequestFragment()}
 //            TODO : Create 'something went wrong' fragment
             else -> {return SettingsFragment()}

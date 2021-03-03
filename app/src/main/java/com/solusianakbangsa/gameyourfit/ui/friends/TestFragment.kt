@@ -9,28 +9,20 @@ import androidx.fragment.app.ListFragment
 import androidx.lifecycle.ViewModel
 import com.solusianakbangsa.gameyourfit.R
 
-class TestFragment(override val layout: Int) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>() {
+class TestFragment(override val layout: Int = R.layout.fragment_friends_content) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>() {
     companion object {
-        fun newInstance() : TestFragment{
-            val fragment = TestFragment(R.layout.fragment_friends_content)
-            val args : Bundle = Bundle()
-            fragment.arguments = args
-            return fragment
-        }
+        fun newInstance() = TestFragment()
     }
 
 //    Do async database query here
     override fun loadEntries() {
-        viewModel.addToList(Friend("asdf",123,123))
-        viewModel.addToList(Friend("asdf",123,123))
-        viewModel.addToList(Friend("asdf",123,123))
-        viewModel.addToList(Friend("asdf",123,123))
-        viewModel.addToList(Friend("asdf",123,123))
-        viewModel.addToList(Friend("asdf",123,123))
+        viewModel.addToList(Friend("A",123,123))
+        viewModel.addToList(Friend("B",123,123))
+        viewModel.addToList(Friend("C",123,123))
     }
 
     override fun createView(args: Friend) {
-        var friendEntry : View = inflater.inflate(R.layout.friend_card,null,false)
+        var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
 
         var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)
         levelView.text = "Level ${args.level.toString()}"

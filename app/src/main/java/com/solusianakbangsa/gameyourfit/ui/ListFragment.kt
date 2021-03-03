@@ -28,23 +28,27 @@ abstract class ListFragment<T>() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        this.inflater = inflater
         val root = inflater.inflate(layout, container, false)
         contentLayout = root.findViewById(R.id.friendsContent)
+
         var test : Button = contentLayout.findViewById(R.id.testButton)
         test.setOnClickListener{
             loadEntries()
         }
+
         return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ListViewModel::class.java) as ListViewModel<T>
-        viewModel.getNewEntry().observe(viewLifecycleOwner, Observer<T>{
+        viewModel = ViewModelProvider(requireActivity()).get(ListViewModel::class.java) as ListViewModel<T>
+
+        viewModel.getList().forEach{
+            createView(it)
+        }
+        viewModel.getNewEntry().observe(viewLifecycleOwner, Observer {
             createView(it)
         })
-
     }
 
 
