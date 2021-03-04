@@ -50,6 +50,4 @@ abstract class ListFragment<T>() : Fragment() {
             createView(it)
         })
     }
-
-
 }
