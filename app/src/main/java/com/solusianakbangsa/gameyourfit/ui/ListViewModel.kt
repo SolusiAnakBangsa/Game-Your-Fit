@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-abstract class ListViewModel<T> : ViewModel(){
+class ListViewModel<T> : ViewModel(){
     private var newEntry = MutableLiveData<T>()
     private var entryList = mutableListOf<T>()
     private fun loadList(){

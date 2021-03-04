@@ -5,11 +5,12 @@ function createPeer(roomID){
         {config:
             {'iceServers': [
                 {url: 'stun:stun.l.google.com:19302'},
-                {url: 'turn:numb.viagenie.ca:3478', username: ACCOUNT_INFO.username, credential: ACCOUNT_INFO.password }]
+                {url: 'turn:numb.viagenie.ca', username: ACCOUNT_INFO.username, credential: ACCOUNT_INFO.password }]
             }
         })
     peer.on('open', function(id){
         console.log("Peer ID : " + id)
+        Android.sendToAndroid("Peer opened")
         debug.innerHTML += "Peer opened, ID = " + id
     })
     peer.on('connection',function(conn){
@@ -44,10 +45,7 @@ function sendData(data){
 function setConnectionListener(connection){
     connection.on('data',function(data){
         console.log("Remote : " + data)
-        box.innerHTML += "Remote : " + data
         // Upon receiving data, call function sendToAndroid, which will run in the WebAppInterface file
         Android.sendToAndroid(data)
     });
 }
-console.log(ACCOUNT_INFO.username)
-console.log(ACCOUNT_INFO.password)

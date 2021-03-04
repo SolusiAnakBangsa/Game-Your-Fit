@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.friends.FriendsPagerAdapter
 import com.solusianakbangsa.gameyourfit.ui.friends.LeaderboardPagerAdapter
@@ -26,6 +27,9 @@ class LeaderboardFragment : Fragment() {
         var adapter : FragmentStatePagerAdapter = LeaderboardPagerAdapter(childFragmentManager)
         vp.adapter = adapter
         vp.pageMargin = 50
+
+        var tabs : TabLayout = root.findViewById(R.id.leaderboardTab)
+        tabs.setupWithViewPager(vp)
         return root
     }
 }

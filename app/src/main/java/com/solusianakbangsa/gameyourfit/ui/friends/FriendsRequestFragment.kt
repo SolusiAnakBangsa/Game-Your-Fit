@@ -4,7 +4,9 @@ import android.view.View
 import android.widget.TextView
 import com.solusianakbangsa.gameyourfit.R
 
-class FriendsRequestFragment(override val layout: Int = R.layout.fragment_friends_content) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>()  {
+class FriendsRequestFragment(override val layout: Int = R.layout.fragment_friends_content,
+                             override val layoutContentId: Int = R.id.friendsContent
+) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>()  {
     companion object{
         fun newInstance() = FriendsRequestFragment()
     }

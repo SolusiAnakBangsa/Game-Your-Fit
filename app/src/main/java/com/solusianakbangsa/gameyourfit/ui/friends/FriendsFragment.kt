@@ -32,7 +32,7 @@ class FriendsFragment : Fragment() {
         var vp : ViewPager = root.findViewById(R.id.friendsViewPager)
         var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
         vp.adapter = adapter
-        vp.pageMargin = 50
+        vp.pageMargin = 60
 
 //        vp.layoutParams = ViewGroup.LayoutParams(vp.width , Resources.getSystem().displayMetrics.heightPixels)
         var tabs : TabLayout = root.findViewById(R.id.friendsTab)

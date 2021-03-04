@@ -31,7 +31,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Generates a random peer,
 //        TODO : Show this in the activity
         var peerId : String = (0..1000).random().toString()
-        rtc.createPeer(peerId)
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -88,11 +87,14 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     fun pauseReading(view: View) {
         this.resume = false
+//        TODO : Remove this ugliness in the future
+        rtc.createPeer("BBB")
         Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
     }
 
     fun clearReading(view: View) {
         counter = 0
+        rtc.sendDataToPeer("Message from phone")
         findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
     }

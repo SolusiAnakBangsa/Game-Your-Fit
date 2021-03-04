@@ -30,7 +30,7 @@
 
     <WebView
         android:id="@+id/webAlpha"
-        android:layout_width="300dp"
+        android:layout_width="400dp"
         android:layout_height="500dp"
         app:layout_constraintStart_toStartOf="@+id/appBarLayout"
         app:layout_constraintTop_toTopOf="@+id/appBarLayout"

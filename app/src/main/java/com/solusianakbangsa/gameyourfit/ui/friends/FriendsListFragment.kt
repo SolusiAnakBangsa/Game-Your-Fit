@@ -5,7 +5,9 @@ import android.widget.TextView
 import androidx.lifecycle.SavedStateViewModelFactory
 import com.solusianakbangsa.gameyourfit.R
 
-class FriendsListFragment(override val layout: Int = R.layout.fragment_friends_content) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>() {
+class FriendsListFragment(override val layout: Int = R.layout.fragment_friends_content,
+                          override val layoutContentId: Int = R.id.friendsContent
+) : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>() {
 
     companion object {
         fun newInstance() = FriendsListFragment()

@@ -16,6 +16,7 @@ import kotlin.jvm.java
 
 abstract class ListFragment<T>() : Fragment() {
     abstract val layout : Int
+    abstract val layoutContentId : Int
 
     lateinit var contentLayout : LinearLayout
     lateinit var viewModel: ListViewModel<T>
@@ -29,7 +30,7 @@ abstract class ListFragment<T>() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(layout, container, false)
-        contentLayout = root.findViewById(R.id.friendsContent)
+        contentLayout = root.findViewById(layoutContentId)
 
         var test : Button = contentLayout.findViewById(R.id.testButton)
         test.setOnClickListener{
