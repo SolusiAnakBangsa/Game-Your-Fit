@@ -41,7 +41,7 @@ abstract class ListFragment<T>() : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ListViewModel::class.java) as ListViewModel<T>
+        viewModel = ViewModelProvider(this).get(ListViewModel::class.java) as ListViewModel<T>
 
         viewModel.getList().forEach{
             createView(it)
