@@ -17,10 +17,13 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var mAccelerometerLinear: Sensor? = null
     private var resume = false
     private var counter = 0
-    private var step = false  // determines if threshold is high or low (false = high)
-    private var stepBefore = false
-    private val THRESHOLD_HIGH = 6.5
-    private val THRESHOLD_LOW = -6.5
+    private var counterMax = 0
+    private var rep = false  // Determines if threshold is high or low (false = high)
+    private var repBefore = false
+    private var exercise = "jog"  // Temp variable for exercises
+    private var thresholdHigh = 0.0
+    private var thresholdLow = 0.0
+    private var axisUsed = 'Z'  // Default axis used is Z
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,27 +44,36 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         setSupportActionBar(toolbar)
+
+        when (exercise) {
+            "jog" -> {
+                thresholdHigh = 6.5
+                thresholdLow = -6.5
+                axisUsed = 'X'
+            }
+//            "pushup" -> {} TODO : Determine pushup thresholds
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Do something here if sensor accuracy changes.
+        // Not needed but necessary for using SensorEventListener
         return
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null && resume) {
-            if (event.values[0] >= (THRESHOLD_HIGH.toFloat())) {
-                step = false
+            var axisX: Float = event.values[0]
+            var axisY: Float = event.values[1]
+            var axisZ: Float = event.values[2]
 
-            } else if (event.values[0] <= (THRESHOLD_LOW.toFloat())) {
-                step = true
-            }
+            /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
+            Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
 
-            if (step != stepBefore) {
-                counter++
-                findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
+            when (axisUsed) {
+                'X' -> repCount(axisX, thresholdHigh, thresholdLow)
+                'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
+                'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
             }
-            stepBefore = step
         }
     }
 
@@ -98,5 +110,20 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         counter = 0
         findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun repCount(axis: Float, high: Double, low: Double) {
+        if (axis >= (high.toFloat())) {
+            rep = false
+
+        } else if (axis <= (low.toFloat())) {
+            rep = true
+        }
+
+        if (rep != repBefore) {
+            counter++
+            findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
+        }
+        repBefore = rep
     }
 }
