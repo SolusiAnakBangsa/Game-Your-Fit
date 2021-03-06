@@ -5,7 +5,7 @@ function createPeer(roomID){
     peer = new Peer(roomID,
         {config: {'iceServers': [
             {url: 'stun:stun.l.google.com:19302'},
-            {url: 'turn:34.122.100.191:3478', username: "test", credential: "test123" }
+            {url: 'turn:rtc.gameyourfit.com:3478', username: "test", credential: "test123" }
         ]}})
     peer.on('open', function(id){
         console.log("Peer opened, ID : " + id)
