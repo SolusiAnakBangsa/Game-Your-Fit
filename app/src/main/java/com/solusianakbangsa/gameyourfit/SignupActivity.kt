@@ -132,21 +132,34 @@ class SignupActivity : AppCompatActivity() {
             }
 
 
-
-            query.addListenerForSingleValueEvent(object : ValueEventListener{
+            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                        if(snapshot.exists()){ //checks if there is already a node with the same data
-                            sign_up_username.error = "Username is not valid"
-                            sign_up_username.requestFocus()
-                        }else{
-                            registerUser(email, password, fullName, username, age, weight, height)
-                        }
+                    if(snapshot.exists()){ //checks if there is already a node with the same data
+                        sign_up_email_address.error = "Email is already registered"
+                        sign_up_email_address.requestFocus()
+                    }else{
+                        query.addListenerForSingleValueEvent(object : ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists()){ //checks if there is already a node with the same data
+                                    sign_up_username.error = "Username is not valid"
+                                    sign_up_username.requestFocus()
+                                }else{
+                                    registerUser(email, password, fullName, username, age, weight, height)
+                                }
+
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+                    }
 
                 }
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
+
 
         }
 
@@ -233,13 +246,26 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            query.addListenerForSingleValueEvent(object : ValueEventListener{
+            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists()){ //checks if there is already a node with the same data
-                        sign_up_username.error = "Username is not valid"
-                        sign_up_username.requestFocus()
+                        sign_up_email_address.error = "Email is already registered"
+                        sign_up_email_address.requestFocus()
                     }else{
-                        registerUser(email, password, fullName, username, age, weight, height)
+                        query.addListenerForSingleValueEvent(object : ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists()){ //checks if there is already a node with the same data
+                                    sign_up_username.error = "Username is not valid"
+                                    sign_up_username.requestFocus()
+                                }else{
+                                    registerUser(email, password, fullName, username, age, weight, height)
+                                }
+
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                     }
 
                 }
@@ -251,7 +277,8 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun registerUser(email: String, password: String, fullName: String?, username: String, age : Int?, weight : Float?, height : Float?) {
-        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+        progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
@@ -264,8 +291,9 @@ class SignupActivity : AppCompatActivity() {
                         toast("Data Successfully Saved.")
                     }
                     progressBar.visibility = View.GONE
-                    val intent = Intent(this, HomeActivity::class.java)
+                    val intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }else{
                     task.exception?.message?.let {
                         progressBar.visibility = View.GONE
@@ -286,6 +314,7 @@ class SignupActivity : AppCompatActivity() {
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == 1) {
+
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val exception = task.exception
             if(task.isSuccessful){
@@ -307,7 +336,8 @@ class SignupActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+        progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
