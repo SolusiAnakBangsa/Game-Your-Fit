@@ -1,29 +1,18 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.ui.auth
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Outline
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.core.text.toSpannable
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -31,12 +20,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.*
+import com.solusianakbangsa.gameyourfit.*
+import com.solusianakbangsa.gameyourfit.R
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.google_button
 import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_user_information.*
 import kotlinx.android.synthetic.main.activity_username_google.*
-import kotlin.math.sign
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var context: Context

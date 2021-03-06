@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.ui.auth
 
 import android.content.Intent
 import android.graphics.Outline
@@ -7,11 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.solusianakbangsa.gameyourfit.ProfileActivity
+import com.solusianakbangsa.gameyourfit.R
 import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_username_google.*
 
