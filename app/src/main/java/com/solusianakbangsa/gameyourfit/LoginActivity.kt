@@ -31,6 +31,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.google_button
 import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.android.synthetic.main.include_progress_overlay.view.*
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var context: Context
@@ -131,7 +132,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        val progressBarLogin: ProgressBar = findViewById(R.id.progressBar_Login)
+        val progressBarLogin: View = findViewById(R.id.progress_bar_overlay)
+        progressBarLogin.bringToFront()
         progressBarLogin.visibility = View.VISIBLE
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -179,7 +181,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        val progressBarLogin: ProgressBar = findViewById(R.id.progressBar_Login)
+        val progressBarLogin: View = findViewById(R.id.progress_bar_overlay)
+        progressBarLogin.bringToFront()
         progressBarLogin.visibility = View.VISIBLE
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
