@@ -59,7 +59,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         setSupportActionBar(toolbar)
 
 
-        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+        progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
         val userId = FirebaseAuth.getInstance().uid.toString()
         val email = FirebaseAuth.getInstance().currentUser?.email.toString()
@@ -184,7 +185,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
             if (resultCode == Activity.RESULT_OK){
 
-                val progressBar: ProgressBar = findViewById(R.id.progressBar)
+                val progressBar: View = findViewById(R.id.progress_bar_overlay)
+                progressBar.bringToFront()
                 progressBar.visibility = View.VISIBLE
 
                 val resultUri = result.uri
@@ -226,19 +228,20 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                     if (snapshot.exists()) {
                                         FirebaseDatabase.getInstance().getReference("users")
                                             .child(uid.toString()).child("image").setValue(url)
-                                        progressBar.visibility = View.GONE
                                         toast("Profile is Updated.")
                                         Picasso.get().load(url).into(userProfilePicture)
+                                        progressBar.visibility = View.GONE
                                     } else {
                                         val updateHash = HashMap<String, Any>()
                                         updateHash["image"] = url
                                         ref.updateChildren(updateHash)
                                             .addOnCompleteListener { updateTask ->
                                                 if (updateTask.isSuccessful) {
-                                                    progressBar.visibility = View.GONE
                                                     toast("Profile is Uploaded.")
                                                     Picasso.get().load(url).into(userProfilePicture)
+                                                    progressBar.visibility = View.GONE
                                                 } else {
+                                                    progressBar.visibility = View.GONE
                                                     toast("Error in Uploading image")
                                                 }
                                             }
