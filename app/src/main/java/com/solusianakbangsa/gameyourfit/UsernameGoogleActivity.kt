@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.content.Intent
 import android.graphics.Outline
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -53,7 +54,8 @@ class UsernameGoogleActivity : AppCompatActivity() {
             query.addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val progressBar: ProgressBar = findViewById(R.id.progressBar)
+                    val progressBar: View = findViewById(R.id.progress_bar_overlay)
+                    progressBar.bringToFront()
                     progressBar.visibility = View.VISIBLE
                     if(snapshot.exists()){ //checks if there is already a node with the same data
                         google_username_text.error = "Username is not valid"
@@ -63,7 +65,9 @@ class UsernameGoogleActivity : AppCompatActivity() {
                         val userId = FirebaseAuth.getInstance().uid.toString()
                         ref.child("users").child(userId).child("username").setValue(username)
                         progressBar.visibility = View.GONE
-                        login()
+                        val intent = Intent(this@UsernameGoogleActivity, ProfileActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
 
                 }
