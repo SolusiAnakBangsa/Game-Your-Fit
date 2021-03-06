@@ -1,51 +1,45 @@
 var debug = document.getElementById("debug")
 var box = document.getElementById("dataBox")
 function createPeer(roomID){
+    // Constructor argument is the ID of the room
     peer = new Peer(roomID,
-        {config:
-            {'iceServers': [
-                {url: 'stun:stun.l.google.com:19302'},
-                {url: 'turn:numb.viagenie.ca', username: ACCOUNT_INFO.username, credential: ACCOUNT_INFO.password }]
-            }
-        })
+        {config: {'iceServers': [
+            {url: 'stun:stun.l.google.com:19302'},
+            {url: 'turn:34.122.100.191:3478', username: "test", credential: "test123" }
+        ]}})
     peer.on('open', function(id){
-        console.log("Peer ID : " + id)
-        Android.sendToAndroid("Peer opened")
-        debug.innerHTML += "Peer opened, ID = " + id
+        console.log("Peer opened, ID : " + id)
+        debug.innerHTML += "Peer opened, ID : " + id
     })
     peer.on('connection',function(conn){
-        console.log("Connected")
+        console.log("Attempting connection")
         debug.innerHTML += "Connected"
-        setConnectionListener(conn)
+        connection = conn
+        onReceiveData(connection)
     })
     peer.on('error', function(err){
         console.log(err)
     })
+    return roomID
 }
 function connectToOther(destinationID){
-    connection = peer.connect(destinationID,
-        {config:
-            {'reliable' : 'true'}
-        }
-        );
-    setListener(connection)
+    connection = peer.connect(destinationID);
+    connection.on('open', function(){
+        debug.innerHTML += "Connection established : " + connection.peer
+        console.log("Connection established : " + connection.peer)
+    })
+    onReceiveData(connection)
 }
-
-// Sends data to the established connection, does nothing if not connected
 function sendData(data){
-    try{
-        connection.send(data)
-        box.innerHTML += "Local : " + data
-    }
-    catch(err){
-    }
+    box.innerHTML += "Local : " + data
+    connection.send(data)
 }
 
-// Helper function
-function setConnectionListener(connection){
-    connection.on('data',function(data){
+function onReceiveData(conn){
+    conn.on('data', function(data){
         console.log("Remote : " + data)
-        // Upon receiving data, call function sendToAndroid, which will run in the WebAppInterface file
-        Android.sendToAndroid(data)
-    });
+        box.innerHTML += "Remote : " + data
+    })
 }
+var roomNumber = Math.floor(Math.random() * 10000)
+createPeer(roomNumber.toString())

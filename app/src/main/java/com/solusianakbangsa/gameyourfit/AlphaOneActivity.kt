@@ -29,8 +29,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Call webrtc function from here
         rtc = WebRtc(findViewById(R.id.webAlpha),this)
 //        Generates a random peer,
-//        TODO : Show this in the activity
-        var peerId : String = (0..1000).random().toString()
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
