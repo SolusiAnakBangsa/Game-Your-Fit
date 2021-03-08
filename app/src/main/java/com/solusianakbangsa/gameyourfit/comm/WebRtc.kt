@@ -41,21 +41,21 @@ class WebRtc (webView : WebView, mContext: Context){
     }
 
     fun sendDataToPeer(data : String){
-        wv.evaluateJavascript("sendData(\"$data\")")
+        wv.evaluateJavascript("sendData($data)")
         { value ->
 
         }
     }
 
     fun createPeer(id : String){
-        wv.evaluateJavascript("createPeer(\"$id\")")
+        wv.evaluateJavascript("createPeer($id)")
         { value ->
 
         }
     }
 
     fun connectTo(id : String){
-        wv.evaluateJavascript("connectToOther(\"$id\")")
+        wv.evaluateJavascript("connectToOther($id)")
         { value ->
 
         }
