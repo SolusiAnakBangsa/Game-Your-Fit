@@ -6,24 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.ui.friends.FriendsPagerAdapter
+import com.solusianakbangsa.gameyourfit.ui.friends.LeaderboardPagerAdapter
 
 
 class LeaderboardFragment : Fragment() {
-
-    private lateinit var leaderboardViewModel: LeaderboardViewModel
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        leaderboardViewModel =
-                ViewModelProvider(this).get(LeaderboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_leaderboard, container, false)
+        var vp : ViewPager = root.findViewById(R.id.leaderboardViewPager)
+        var adapter : FragmentStatePagerAdapter = LeaderboardPagerAdapter(childFragmentManager)
+        vp.adapter = adapter
+        vp.pageMargin = 50
 
+        var tabs : TabLayout = root.findViewById(R.id.leaderboardTab)
+        tabs.setupWithViewPager(vp)
         return root
     }
 }

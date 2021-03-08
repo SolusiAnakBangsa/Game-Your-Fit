@@ -27,6 +27,7 @@ class WebRtc (webView : WebView, mContext: Context){
         }
         wv.loadUrl("file:///android_asset/androidSide.html")
         wv.addJavascriptInterface(WebAppInterface(mContext),"Android")
+
     }
 
 //    Run any arbitrary js code

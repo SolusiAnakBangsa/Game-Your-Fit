@@ -1,16 +1,11 @@
 package com.solusianakbangsa.gameyourfit
 
 import android.content.Intent
-import android.graphics.Outline
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
-import android.view.ViewOutlineProvider
-import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
+import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 

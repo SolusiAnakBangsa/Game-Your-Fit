@@ -25,16 +25,16 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/menu_profile"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
-        <activity android:name=".UsernameGoogleActivity" />
-        <activity android:name=".UserInformationActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".LoginActivity" />
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
+        <activity android:name=".ui.auth.UsernameGoogleActivity" android:theme="@style/Theme.GameYourFit.NoActionBar"/>
+        <activity android:name=".ui.auth.SignupActivity" android:theme="@style/Theme.GameYourFit.NoActionBar"/>
+        <activity android:name=".ui.auth.LoginActivity" android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
-        <activity android:name=".MainActivity">
+            android:theme="@style/Theme.GameYourFit.NoActionBar"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".MainActivity" android:theme="@style/Theme.GameYourFit.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

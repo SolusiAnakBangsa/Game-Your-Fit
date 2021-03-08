@@ -1,28 +1,18 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.ui.auth
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Outline
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.core.text.toSpannable
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,12 +20,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.*
+import com.solusianakbangsa.gameyourfit.*
+import com.solusianakbangsa.gameyourfit.R
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.google_button
 import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_user_information.*
 import kotlinx.android.synthetic.main.activity_username_google.*
-import kotlin.math.sign
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var context: Context
@@ -131,21 +122,34 @@ class SignupActivity : AppCompatActivity() {
             }
 
 
-
-            query.addListenerForSingleValueEvent(object : ValueEventListener{
+            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                        if(snapshot.exists()){ //checks if there is already a node with the same data
-                            sign_up_username.error = "Username is not valid"
-                            sign_up_username.requestFocus()
-                        }else{
-                            registerUser(email, password, fullName, username, age, weight, height)
-                        }
+                    if(snapshot.exists()){ //checks if there is already a node with the same data
+                        sign_up_email_address.error = "Email is already registered"
+                        sign_up_email_address.requestFocus()
+                    }else{
+                        query.addListenerForSingleValueEvent(object : ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists()){ //checks if there is already a node with the same data
+                                    sign_up_username.error = "Username is not valid"
+                                    sign_up_username.requestFocus()
+                                }else{
+                                    registerUser(email, password, fullName, username, age, weight, height)
+                                }
+
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+                    }
 
                 }
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
+
 
         }
 
@@ -232,13 +236,26 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            query.addListenerForSingleValueEvent(object : ValueEventListener{
+            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(snapshot.exists()){ //checks if there is already a node with the same data
-                        sign_up_username.error = "Username is not valid"
-                        sign_up_username.requestFocus()
+                        sign_up_email_address.error = "Email is already registered"
+                        sign_up_email_address.requestFocus()
                     }else{
-                        registerUser(email, password, fullName, username, age, weight, height)
+                        query.addListenerForSingleValueEvent(object : ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if(snapshot.exists()){ //checks if there is already a node with the same data
+                                    sign_up_username.error = "Username is not valid"
+                                    sign_up_username.requestFocus()
+                                }else{
+                                    registerUser(email, password, fullName, username, age, weight, height)
+                                }
+
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                     }
 
                 }
@@ -250,6 +267,9 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun registerUser(email: String, password: String, fullName: String?, username: String, age : Int?, weight : Float?, height : Float?) {
+        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+        progressBar.bringToFront()
+        progressBar.visibility = View.VISIBLE
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
@@ -257,12 +277,16 @@ class SignupActivity : AppCompatActivity() {
                     val user = User(userId, email, fullName, username, age, weight, height)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
+                        progressBar.visibility = View.GONE
                         toast("Data Successfully Saved.")
                     }
-                    val intent = Intent(this, HomeActivity::class.java)
+                    progressBar.visibility = View.GONE
+                    val intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }else{
                     task.exception?.message?.let {
+                        progressBar.visibility = View.GONE
                         toast(it)
                     }
                 }
@@ -280,6 +304,7 @@ class SignupActivity : AppCompatActivity() {
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == 1) {
+
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val exception = task.exception
             if(task.isSuccessful){
@@ -301,7 +326,9 @@ class SignupActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-
+        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+        progressBar.bringToFront()
+        progressBar.visibility = View.VISIBLE
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -317,8 +344,10 @@ class SignupActivity : AppCompatActivity() {
                                         object : ValueEventListener {
                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                 if (snapshot.exists()){
+                                                    progressBar.visibility = View.GONE
                                                     login()
                                                 }else{
+                                                    progressBar.visibility = View.GONE
                                                     val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
                                                     startActivity(intent)
                                                 }
@@ -330,6 +359,7 @@ class SignupActivity : AppCompatActivity() {
                                         })
                                 } else{
                                     saveData(userId, email)
+                                    progressBar.visibility = View.GONE
                                     val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
                                     startActivity(intent)
                                 }
@@ -344,6 +374,7 @@ class SignupActivity : AppCompatActivity() {
 
 
                 } else {
+                    progressBar.visibility = View.GONE
                     // If sign in fails, display a message to the user.
                     Log.d("LoginActivity", "signInWithCredential:failure", task.exception)
                 }

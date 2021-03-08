@@ -1,50 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    tools:context=".ui.dashboard.DashboardFragment"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/left_right_margin"
-    android:layout_marginRight="@dimen/left_right_margin"
-    tools:context=".ui.dashboard.DashboardFragment">
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+    android:layout_width="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:layout_marginTop="24dp"
-        app:cardBackgroundColor="?attr/colorPrimary"
-        app:cardCornerRadius="32dp"
-        app:cardElevation="5dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/left_right_margin"
+        android:layout_marginRight="@dimen/left_right_margin"
+        >
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="140dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="?attr/colorPrimary"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="5dp"
 
-            <com.google.android.material.card.MaterialCardView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                app:cardBackgroundColor="?attr/colorPrimaryVariant"
-                app:cardCornerRadius="0dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="30dp"
-                    android:text="Welcome Back!"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2">
-                </TextView>
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="36dp"
+                    app:cardBackgroundColor="?attr/colorPrimaryVariant"
+                    app:cardCornerRadius="0dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingStart="30dp"
+                        android:text="Welcome Back!"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2">
+                    </TextView>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/cardProfilePicture"
@@ -59,94 +64,94 @@
                     app:layout_constraintVertical_bias="0.529"
                     android:focusable="true" />
 
-                <TextView
-                    android:id="@+id/cardUsername"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_rounded"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="Username"
-                    android:gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    <TextView
+                        android:id="@+id/cardUsername"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/bg_rounded"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="Username"
+                        android:gravity="center_vertical"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                <TextView
-                    android:id="@+id/cardLevel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:paddingStart="10dp"
-                    android:text="Level 1"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                    app:layout_constraintTop_toBottomOf="@id/cardUsername" />
+                    <TextView
+                        android:id="@+id/cardLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:paddingStart="10dp"
+                        android:text="Level 1"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
+                        app:layout_constraintTop_toBottomOf="@id/cardUsername" />
 
-                <ProgressBar
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="10dp"
-                    android:max="100"
-                    android:progress="50"
-                    android:progressDrawable="@drawable/progress_bar_rounded"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cardLevel"
-                    app:layout_constraintTop_toBottomOf="@id/cardUsername" />
+                    <ProgressBar
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="10dp"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressDrawable="@drawable/progress_bar_rounded"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/cardLevel"
+                        app:layout_constraintTop_toBottomOf="@id/cardUsername" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:paddingStart="10dp"
-                    android:text="68 m ⏱"
-                    android:textColor="@color/white"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="2dp"
+                        android:paddingStart="10dp"
+                        android:text="68 m ⏱"
+                        android:textColor="@color/white"
 
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                    app:layout_constraintTop_toBottomOf="@+id/cardLevel"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
+                        app:layout_constraintTop_toBottomOf="@+id/cardLevel"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/recommendationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Today's recommendation for you:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+        <TextView
+            android:id="@+id/recommendationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Today's recommendation for you:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView">
 
-    </TextView>
+        </TextView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/recommendationCard"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@color/black"
-        app:cardElevation="5dp"
-        app:cardCornerRadius="10dp"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/recommendationCard"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/black"
+            app:cardElevation="5dp"
+            app:cardCornerRadius="10dp"
 
-        app:layout_constraintTop_toBottomOf="@+id/recommendationText">
+            app:layout_constraintTop_toBottomOf="@+id/recommendationText">
 
         <FrameLayout
 
@@ -168,79 +173,78 @@
 
             </ImageView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_gravity="bottom"
-                app:cardBackgroundColor="?attr/colorPrimaryVariant"
-                app:cardCornerRadius="10dp">
-
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:text="Level 1 : What the fuck"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2">
-
-                </TextView>
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Gamemode"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recommendationCard" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:scrollbarStyle="outsideInset"
-        android:paddingBottom="10dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="10dp">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:src="@mipmap/placeholder_profile_foreground" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="10dp"
-                    android:paddingVertical="10dp"
+                    android:layout_height="36dp"
                     android:layout_gravity="bottom"
-                    android:gravity="left"
-                    android:text="Quickplay"
-                    android:background="@drawable/bg_top_rounded"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </HorizontalScrollView>
+                    app:cardBackgroundColor="?attr/colorPrimaryVariant"
+                    app:cardCornerRadius="10dp">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="Level 1 : What the fuck"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    </TextView>
+                </com.google.android.material.card.MaterialCardView>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Gamemode"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recommendationCard" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:scrollbarStyle="outsideInset"
+            android:paddingBottom="10dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="10dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:src="@mipmap/placeholder_profile_foreground" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingVertical="10dp"
+                        android:layout_gravity="bottom"
+                        android:gravity="left"
+                        android:text="Quickplay"
+                        android:background="@drawable/bg_top_rounded"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

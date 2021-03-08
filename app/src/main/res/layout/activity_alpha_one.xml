@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AlphaOneActivity">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -26,12 +27,15 @@
             app:titleTextColor="?attr/colorOnPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <WebView
         android:id="@+id/webAlpha"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
+        app:layout_constraintStart_toStartOf="@+id/appBarLayout"
+        app:layout_constraintTop_toTopOf="@+id/appBarLayout"
         tools:ignore="MissingConstraints" />
+
     <Button
         android:id="@+id/buttonStartAlpha"
         android:layout_width="0dp"

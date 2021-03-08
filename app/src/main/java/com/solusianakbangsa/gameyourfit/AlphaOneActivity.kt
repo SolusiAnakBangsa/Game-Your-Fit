@@ -32,9 +32,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Call webrtc function from here
         rtc = WebRtc(findViewById(R.id.webAlpha),this)
 //        Generates a random peer,
-//        TODO : Show this in the activity
-        var peerId : String = (0..1000).random().toString()
-        rtc.createPeer(peerId)
 
         Toast.makeText(this, "Connected to peer: $peerId", Toast.LENGTH_SHORT).show()
         findViewById<TextView>(R.id.textAlphaPeer).text = peerId
@@ -103,11 +100,14 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     fun pauseReading(view: View) {
         this.resume = false
+//        TODO : Remove this ugliness in the future
+        rtc.createPeer("BBB")
         Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
     }
 
     fun clearReading(view: View) {
         counter = 0
+        rtc.sendDataToPeer("Message from phone")
         findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
     }

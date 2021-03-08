@@ -15,7 +15,3 @@ fun Context.login(){
     startActivity(intent)
 }
 
-fun Context.newUser(){
-    val intent = Intent(this, UserInformationActivity::class.java)
-    startActivity(intent)
-}
