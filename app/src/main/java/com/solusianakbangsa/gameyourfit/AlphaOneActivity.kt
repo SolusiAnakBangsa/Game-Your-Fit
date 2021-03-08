@@ -6,10 +6,13 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
@@ -21,9 +24,11 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
     private var exercise = "jog"  // Temp variable for exercises
+    private var axisUsed = 'X'  // Default axis used is X
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
-    private var axisUsed = 'Z'  // Default axis used is Z
+    private var time = 0L
+    private var countTime = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +38,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         rtc = WebRtc(findViewById(R.id.webAlpha),this)
 //        Generates a random peer,
 
-        Toast.makeText(this, "Connected to peer: $peerId", Toast.LENGTH_SHORT).show()
-        findViewById<TextView>(R.id.textAlphaPeer).text = peerId
-
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
@@ -44,11 +46,16 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         when (exercise) {
             "jog" -> {
-                thresholdHigh = 6.5
-                thresholdLow = -6.5
-                axisUsed = 'X'
+                axisUsed = SensorConstants.JogAxis
+                thresholdHigh = SensorConstants.JogHigh
+                thresholdLow = SensorConstants.JogLow
             }
-//            "pushup" -> {} TODO : Determine pushup thresholds
+            "pushup" -> {   // TODO : Determine pushup thresholds
+                axisUsed = SensorConstants.PushAxis
+                thresholdHigh = SensorConstants.PushHigh
+                thresholdLow = SensorConstants.PushLow
+            }
+            "situp" -> {}   // TODO : Determine situp thresholds
         }
     }
 
@@ -96,18 +103,40 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     fun resumeReading(view: View) {
         this.resume = true
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
+
+        time = SystemClock.elapsedRealtime()
+        rtc.sendDataToPeer("""
+            {"activityType" : "$exercise", "status" : "start", "time" : "$time"}
+        """)
+
+        fixedRateTimer("timer", false, 0L, 5000) {
+            this@AlphaOneActivity.runOnUiThread {
+                if (countTime >= 3) {
+                    this.cancel()
+                } else {
+                    rtc.sendDataToPeer(
+                        """
+                    {"activityType" : "$exercise", "status" : "mid", "rep" : "$counter", "time" : "$time"}
+                    """
+                    )
+                    countTime++
+                }
+            }
+        }
     }
 
     fun pauseReading(view: View) {
         this.resume = false
-//        TODO : Remove this ugliness in the future
-        rtc.createPeer("BBB")
         Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
     }
 
     fun clearReading(view: View) {
+        rtc.sendDataToPeer("""
+            {"activityType" : "$exercise", "status" : "end", "time" : "$time"}
+        """)
+
         counter = 0
-        rtc.sendDataToPeer("Message from phone")
+        countTime = 0
         findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
     }
