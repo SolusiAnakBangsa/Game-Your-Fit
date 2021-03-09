@@ -7,6 +7,7 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -22,7 +23,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
     private var mAccelerometerLinear: Sensor? = null
-    private var resume = false
     private var counter = 0
     private var counterMax = 100  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
@@ -39,7 +39,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
 
 //        Call webrtc function from here
-        signal = Signal()
+        signal = Signal("jog","pause",0,0L)
         rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
 //        Generates a random peer,
 
@@ -70,20 +70,24 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && resume) {
-            var axisX: Float = event.values[0]
-            var axisY: Float = event.values[1]
-            var axisZ: Float = event.values[2]
+        if (event != null) {
+            if(signal.get("status") == "mid"){
+                var axisX: Float = event.values[0]
+                var axisY: Float = event.values[1]
+                var axisZ: Float = event.values[2]
 
-            /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
-            Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
+                /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
+                Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
 
-            when (axisUsed) {
-                'X' -> repCount(axisX, thresholdHigh, thresholdLow)
-                'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
-                'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
+                when (axisUsed) {
+                    'X' -> repCount(axisX, thresholdHigh, thresholdLow)
+                    'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
+                    'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
+                }
+                findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()  // TODO : Temporary indicator
+            } else{
+
             }
-            findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()  // TODO : Temporary indicator
         }
     }
 
@@ -107,14 +111,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun resumeReading(view: View) {
-        this.resume = true
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
 
         time = SystemClock.elapsedRealtime()    // Get current time since epoch
+        signal.replace("time",time)
         // Send first JSON data to web, indicates *start status*
-        rtc.sendDataToPeer("""
-            {"activityType" : "$exercise", "status" : "start", "time" : "$time"}
-        """)
+        signal.replace("status",  "mid")
 
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
         fixedRateTimer("timer", false, 0L, 1000) {
@@ -131,7 +133,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun pauseReading(view: View) {
-        this.resume = false
         Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
     }
 
@@ -155,7 +156,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep != repBefore) {
-            counter++
+            signal.replace("repAmount", signal.get("repAmount") as Int + 1)
             findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         }
 
