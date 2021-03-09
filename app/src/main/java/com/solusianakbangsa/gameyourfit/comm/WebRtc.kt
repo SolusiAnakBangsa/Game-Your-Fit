@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.comm.WebAppInterface
 
 private var TAG = "WebRTC"
@@ -13,7 +14,7 @@ private var TAG = "WebRTC"
 
 // Accepts a WebView object and uses that to run javascript code
 // When using this class from an activity class, provide "this", as argument for Context
-class WebRtc (webView : WebView, mContext: Context){
+class WebRtc (webView : WebView, mContext: Context, signal : Signal){
     private var wv : WebView
     init{
         wv = webView
@@ -26,7 +27,7 @@ class WebRtc (webView : WebView, mContext: Context){
             }
         }
         wv.loadUrl("file:///android_asset/androidSide.html")
-        wv.addJavascriptInterface(WebAppInterface(mContext),"Android")
+        wv.addJavascriptInterface(WebAppInterface(mContext,signal),"Android")
 
     }
 

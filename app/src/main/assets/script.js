@@ -39,6 +39,7 @@ function onReceiveData(conn){
     conn.on('data', function(data){
         console.log("Remote : " + data)
         box.innerHTML += "Remote : " + data
+        Android.parseData(data)
     })
 }
 var roomNumber = Math.floor(Math.random() * 10000)

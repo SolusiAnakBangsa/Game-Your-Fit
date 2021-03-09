@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.solusianakbangsa.gameyourfit.comm.Signal
 import kotlinx.coroutines.delay
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -19,6 +20,7 @@ import kotlin.concurrent.fixedRateTimer
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
     private lateinit var rtc: WebRtc
+    private lateinit var signal : Signal
     private var mAccelerometerLinear: Sensor? = null
     private var resume = false
     private var counter = 0
@@ -35,8 +37,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
 
+
 //        Call webrtc function from here
-        rtc = WebRtc(findViewById(R.id.webAlpha),this)
+        signal = Signal()
+        rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
 //        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
