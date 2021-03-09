@@ -23,7 +23,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
     private var mAccelerometerLinear: Sensor? = null
-    private var counter = 0
     private var counterMax = 100  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
@@ -84,8 +83,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
                     'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
                 }
-                findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()  // TODO : Temporary indicator
-            } else{
+            } else {
 
             }
         }
@@ -121,7 +119,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
-                if (counter >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                    rtc.sendDataToPeer("""
+                        {"activityType" : "$exercise", "status" : "end", "time" : "$time"}
+                    """)
+                    signal.replace("repAmount", 0)
+                    findViewById<TextView>(R.id.textAlphaCounter).text = 0.toString()  // TODO : delete this later
                     this.cancel()               // Stops timer
                 } else {
                     rtc.sendDataToPeer("""
@@ -130,21 +133,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 }
             }
         }
-    }
-
-    fun pauseReading(view: View) {
-        Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
-    }
-
-    fun clearReading(view: View) {
-        // Sends last JSON data to web, indicates *end status*
-        rtc.sendDataToPeer("""
-            {"activityType" : "$exercise", "status" : "end", "time" : "$time"}
-        """)
-
-        counter = 0
-        findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
-        Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
     }
 
     private fun repCount(axis: Float, high: Double, low: Double) {
@@ -157,7 +145,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         if (rep != repBefore) {
             signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-            findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
+            findViewById<TextView>(R.id.textAlphaCounter).text = signal.get("repAmount").toString()  // TODO : Temporary indicator
         }
 
         repBefore = rep
