@@ -26,44 +26,26 @@
             app:titleTextColor="?attr/colorOnPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <WebView
         android:id="@+id/webAlpha"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="410dp"
+        android:layout_height="410dp"
         android:visibility="visible"
         tools:ignore="MissingConstraints" />
+
     <Button
         android:id="@+id/buttonStartAlpha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="360dp"
         android:layout_marginEnd="80dp"
         android:onClick="resumeReading"
         android:text="START"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    <TextView
-        android:id="@+id/textAlphaStep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Steps:"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="366dp" />
-
-    <TextView
-        android:id="@+id/textAlphaCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="0"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textAlphaStep" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,10 +37,10 @@ function sendData(data){
 
 function onReceiveData(conn){
     conn.on('data', function(data){
-        console.log("Remote : " + data)
-        box.innerHTML += "Remote : " + data
+        console.log("Remote : " + JSON.stringify(data))
+        box.innerHTML += "Remote : " + JSON.stringify(data)
         Android.parseData(data)
     })
 }
-var roomNumber = Math.floor(Math.random() * 10000)
-createPeer(roomNumber.toString())
+var roomNumber = Math.random().toString(36).slice(2).substr(0, 5)
+createPeer(roomNumber)

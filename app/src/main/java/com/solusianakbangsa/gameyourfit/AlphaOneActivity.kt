@@ -7,15 +7,11 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.solusianakbangsa.gameyourfit.comm.Signal
-import kotlinx.coroutines.delay
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
@@ -23,7 +19,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
     private var mAccelerometerLinear: Sensor? = null
-    private var counterMax = 100  // Temporary
+    private var counterMax = 300  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
     private var exercise = "jog"  // Temp variable for exercises
@@ -111,8 +107,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     fun resumeReading(view: View) {
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
 
-        time = SystemClock.elapsedRealtime()    // Get current time since epoch
-        signal.replace("time",time)
         // Send first JSON data to web, indicates *start status*
         signal.replace("status",  "mid")
 
@@ -120,16 +114,16 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
-                    rtc.sendDataToPeer("""
-                        {"activityType" : "$exercise", "status" : "end", "time" : "$time"}
-                    """)
+                    signal.replace("status", "end")
+
+                    rtc.sendDataToPeer(signal.toString())
+
                     signal.replace("repAmount", 0)
-                    findViewById<TextView>(R.id.textAlphaCounter).text = 0.toString()  // TODO : delete this later
-                    this.cancel()               // Stops timer
+                    this.cancel()                           // Stops timer
                 } else {
-                    rtc.sendDataToPeer("""
-                        {"activityType" : "$exercise", "status" : "mid", "rep" : "$counter", "time" : "$time"}
-                    """)
+                    time = SystemClock.elapsedRealtime()    // Get current time since epoch
+                    signal.replace("time",time)
+                    rtc.sendDataToPeer(signal.toString())
                 }
             }
         }
@@ -145,7 +139,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         if (rep != repBefore) {
             signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-            findViewById<TextView>(R.id.textAlphaCounter).text = signal.get("repAmount").toString()  // TODO : Temporary indicator
         }
 
         repBefore = rep
