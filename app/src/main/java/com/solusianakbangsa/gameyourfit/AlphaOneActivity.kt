@@ -11,7 +11,9 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import kotlinx.coroutines.delay
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
@@ -20,7 +22,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var mAccelerometerLinear: Sensor? = null
     private var resume = false
     private var counter = 0
-    private var counterMax = 0
+    private var counterMax = 100  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
     private var exercise = "jog"  // Temp variable for exercises
@@ -28,7 +30,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
     private var time = 0L
-    private var countTime = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
                 'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
             }
+            findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()  // TODO : Temporary indicator
         }
     }
 
@@ -104,22 +106,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         this.resume = true
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
 
-        time = SystemClock.elapsedRealtime()
+        time = SystemClock.elapsedRealtime()    // Get current time since epoch
+        // Send first JSON data to web, indicates *start status*
         rtc.sendDataToPeer("""
             {"activityType" : "$exercise", "status" : "start", "time" : "$time"}
         """)
 
-        fixedRateTimer("timer", false, 0L, 5000) {
+        // Sends JSON data continuously every 1 second to the web, indicates *mid status*
+        fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
-                if (countTime >= 3) {
-                    this.cancel()
+                if (counter >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                    this.cancel()               // Stops timer
                 } else {
-                    rtc.sendDataToPeer(
-                        """
-                    {"activityType" : "$exercise", "status" : "mid", "rep" : "$counter", "time" : "$time"}
-                    """
-                    )
-                    countTime++
+                    rtc.sendDataToPeer("""
+                        {"activityType" : "$exercise", "status" : "mid", "rep" : "$counter", "time" : "$time"}
+                    """)
                 }
             }
         }
@@ -131,12 +132,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun clearReading(view: View) {
+        // Sends last JSON data to web, indicates *end status*
         rtc.sendDataToPeer("""
             {"activityType" : "$exercise", "status" : "end", "time" : "$time"}
         """)
 
         counter = 0
-        countTime = 0
         findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
     }
@@ -153,6 +154,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             counter++
             findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
         }
+
         repBefore = rep
     }
 }
