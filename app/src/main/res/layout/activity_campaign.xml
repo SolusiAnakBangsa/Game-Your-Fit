@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.campaign.CampaignActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/campaignAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_height"
+        android:background="@color/transparent"
+        android:theme="@style/Theme.GameYourFit.AppBarOverlay"
+        app:elevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/campaignToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="@dimen/action_bar_height"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:popupTheme="@style/Theme.GameYourFit.PopupOverlay"
+            app:titleTextAppearance="@style/ActionBarText"
+            app:titleTextColor="?attr/colorOnPrimary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:text="Button"
+        app:layout_constraintTop_toTopOf="@id/campaignAppBarLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:text="Button"
+        app:layout_constraintTop_toTopOf="@id/campaignAppBarLayout"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
