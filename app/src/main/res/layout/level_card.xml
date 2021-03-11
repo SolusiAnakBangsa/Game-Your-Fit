@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/campaignLevelCard"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="20dp"
+    app:cardBackgroundColor="@color/black"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView
+            android:id="@+id/levelButton"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_profile_background">
+        </ImageView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_gravity="bottom"
+            app:cardBackgroundColor="?attr/colorPrimaryVariant"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/levelName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Level : "
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2">
+
+            </TextView>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>
