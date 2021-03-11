@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.solusianakbangsa.gameyourfit.json.JsonUpdater
 import java.net.URL
 import java.util.concurrent.Executors
 
@@ -37,7 +38,8 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
+//        One time initialization for the levels.json, campaignActivity will later read from this
+        JsonUpdater(JsonConstants.LEVELS_FILENAME, JsonConstants.LEVELS_URL, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -19,4 +19,8 @@ class CampaignActivity : AppCompatActivity() {
 //        var a = LevelList()
 //        Log.i("json",a.toString())
     }
+
+    fun readFromJson(){
+        
+    }
 }
