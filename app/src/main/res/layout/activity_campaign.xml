@@ -38,6 +38,8 @@
         <LinearLayout
             android:id="@+id/levelLayout"
             android:layout_width="match_parent"
+            android:showDividers="middle"
+            android:divider="@drawable/layout_divider"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
