@@ -4,13 +4,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class LevelList(jsonString : String){
-    lateinit var jsonArr : JSONArray
-    init {
-//        Jank but it'll do for now
-        jsonArr = JSONArray(
-            (JSONObject(jsonString).get("levels")).toString()
-        )
-    }
+    var jsonArr : JSONArray = JSONArray(
+        (JSONObject(jsonString).get("levels")).toString()
+    )
 
     fun getLevel(index : Int) : JSONObject {
         return jsonArr.getJSONObject(index)

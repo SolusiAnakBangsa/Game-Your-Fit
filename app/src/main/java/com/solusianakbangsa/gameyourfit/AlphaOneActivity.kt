@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.solusianakbangsa.gameyourfit.comm.Signal
+import com.solusianakbangsa.gameyourfit.json.TaskList
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
@@ -18,6 +19,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
+    private lateinit var taskList : TaskList
+
     private var mAccelerometerLinear: Sensor? = null
     private var counterMax = 300  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
@@ -32,6 +35,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
 
+        if(intent.getStringExtra("taskList") != null){
+            taskList = TaskList(intent.getStringExtra("taskList")!!)
+        }
 
 //        Call webrtc function from here
         signal = Signal("jog","pause",0,0L)

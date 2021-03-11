@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer.replaceImage
+import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import java.net.URL
 
 class DashboardFragment : Fragment() {
@@ -36,23 +37,25 @@ class DashboardFragment : Fragment() {
         handler = Handler(Looper.getMainLooper())
         dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
 
+//        TODO : Get user profile picture, insert it into replaceImage argument as url
         replaceImage(
             handler,
             binding.cardProfilePicture,
-            "https://i.kym-cdn.com/entries/icons/original/000/036/482/cover5.jpg"
+            "https://i.ytimg.com/vi/SPX1ps4P-_s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDXfvFRBrXm2ypsQnJUjtdq1314-w"
         )
-//        var url = URL("https://i.kym-cdn.com/entries/icons/original/000/036/482/cover5.jpg").openConnection().getInputStream()
-//        var bmp = BitmapFactory.decodeStream(url)
-//
-//        binding.cardProfilePicture.setImageBitmap(bmp)
+
+        binding.dashboardCampaign.setOnClickListener{
+            val intent = Intent(activity, CampaignActivity::class.java)
+            activity?.startActivity(intent)
+        }
 
         binding.cardProfilePicture.setOnClickListener {
-            val intent = Intent (activity, ProfileActivity::class.java)
+            val intent = Intent(activity, ProfileActivity::class.java)
             activity?.startActivity(intent)
         }
 
         binding.recommendationFrame.setOnClickListener {
-            val intent = Intent (activity, AlphaOneActivity::class.java)
+            val intent = Intent(activity, AlphaOneActivity::class.java)
             activity?.startActivity(intent)
         }
 

@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val user = mAuth.currentUser
 
 //        Creates an async request to levels, and create a local json file to later be accessed.
-//        createJson()
+        createJson()
         /**If user is authenticated, send them to dashboard, if not, send to login activity*/
         Handler().postDelayed({
             if(user!=null){
@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             val outputStream = FileOutputStream(file, false)
             Log.i("test","test")
             outputStream.write(dbJsonString.encodeToByteArray())
+            executor.shutdown()
         }
     }
     private fun getStringFromUrl(url : String): String{
