@@ -22,7 +22,7 @@
         android:textAppearance="@style/ActionBarText" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView"
+        android:id="@+id/drawerProfilePicture"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:clickable="true"

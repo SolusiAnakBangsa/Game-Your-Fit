@@ -27,7 +27,6 @@ class FriendsFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-//        TODO : RECYCLERVIEW AHHHHHH
         val root = inflater.inflate(R.layout.fragment_friends, container, false)
         var vp : ViewPager = root.findViewById(R.id.friendsViewPager)
         var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
