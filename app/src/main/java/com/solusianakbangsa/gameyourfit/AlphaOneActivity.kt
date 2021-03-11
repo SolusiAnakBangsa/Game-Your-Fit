@@ -6,28 +6,36 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.solusianakbangsa.gameyourfit.comm.Signal
+import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
     private lateinit var rtc: WebRtc
+    private lateinit var signal : Signal
     private var mAccelerometerLinear: Sensor? = null
-    private var resume = false
-    private var counter = 0
-    private var step = false  // determines if threshold is high or low (false = high)
-    private var stepBefore = false
-    private val THRESHOLD_HIGH = 6
-    private val THRESHOLD_LOW = -6
+    private var counterMax = 300  // Temporary
+    private var rep = false  // Determines if threshold is high or low (false = high)
+    private var repBefore = false
+    private var exercise = "jog"  // Temp variable for exercises
+    private var axisUsed = 'X'  // Default axis used is X
+    private var thresholdHigh = 0.0
+    private var thresholdLow = 0.0
+    private var time = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
 
+
 //        Call webrtc function from here
-        rtc = WebRtc(findViewById(R.id.webAlpha),this)
+        signal = Signal("jog","pause",0,0L)
+        rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
 //        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -35,27 +43,45 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         setSupportActionBar(toolbar)
+
+        when (exercise) {
+            "jog" -> {
+                axisUsed = SensorConstants.JogAxis
+                thresholdHigh = SensorConstants.JogHigh
+                thresholdLow = SensorConstants.JogLow
+            }
+            "pushup" -> {   // TODO : Determine pushup thresholds
+                axisUsed = SensorConstants.PushAxis
+                thresholdHigh = SensorConstants.PushHigh
+                thresholdLow = SensorConstants.PushLow
+            }
+            "situp" -> {}   // TODO : Determine situp thresholds
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Do something here if sensor accuracy changes.
+        // Not needed but necessary for using SensorEventListener
         return
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && resume) {
-            if (event.values[0] >= (THRESHOLD_HIGH.toFloat())) {
-                step = false
+        if (event != null) {
+            if(signal.get("status") == "mid"){
+                var axisX: Float = event.values[0]
+                var axisY: Float = event.values[1]
+                var axisZ: Float = event.values[2]
 
-            } else if (event.values[0] <= (THRESHOLD_LOW.toFloat())) {
-                step = true
-            }
+                /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
+                Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
 
-            if (step != stepBefore) {
-                counter++
-                findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
+                when (axisUsed) {
+                    'X' -> repCount(axisX, thresholdHigh, thresholdLow)
+                    'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
+                    'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
+                }
+            } else {
+
             }
-            stepBefore = step
         }
     }
 
@@ -79,21 +105,42 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun resumeReading(view: View) {
-        this.resume = true
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
+
+        // Send first JSON data to web, indicates *start status*
+        signal.replace("status",  "mid")
+
+        // Sends JSON data continuously every 1 second to the web, indicates *mid status*
+        fixedRateTimer("timer", false, 0L, 1000) {
+            this@AlphaOneActivity.runOnUiThread {
+                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                    signal.replace("status", "end")
+
+                    rtc.sendDataToPeer(signal.toString())
+
+                    signal.replace("repAmount", 0)
+                    this.cancel()                           // Stops timer
+                } else {
+                    time = SystemClock.elapsedRealtime()    // Get current time since epoch
+                    signal.replace("time",time)
+                    rtc.sendDataToPeer(signal.toString())
+                }
+            }
+        }
     }
 
-    fun pauseReading(view: View) {
-        this.resume = false
-//        TODO : Remove this ugliness in the future
-        rtc.createPeer("BBB")
-        Toast.makeText(this, "Activity paused", Toast.LENGTH_SHORT).show()
-    }
+    private fun repCount(axis: Float, high: Double, low: Double) {
+        if (axis >= (high.toFloat())) {
+            rep = false
 
-    fun clearReading(view: View) {
-        counter = 0
-        rtc.sendDataToPeer("Message from phone")
-        findViewById<TextView>(R.id.textAlphaCounter).text = counter.toString()
-        Toast.makeText(this, "Activity cleared", Toast.LENGTH_SHORT).show()
+        } else if (axis <= (low.toFloat())) {
+            rep = true
+        }
+
+        if (rep != repBefore) {
+            signal.replace("repAmount", signal.get("repAmount") as Int + 1)
+        }
+
+        repBefore = rep
     }
 }
