@@ -1,8 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -13,9 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.solusianakbangsa.gameyourfit.json.JsonUpdater
 import java.net.URL
-import java.util.concurrent.Executors
 
 class HomeActivity : AppCompatActivity() {
 
@@ -38,8 +34,12 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+
 //        One time initialization for the levels.json, campaignActivity will later read from this
-        JsonUpdater(JsonConstants.LEVELS_FILENAME, JsonConstants.LEVELS_URL, this)
+//        JsonUpdater(JsonConstants.LEVELS_FILENAME, JsonConstants.LEVELS_URL, this)
+
+//        val textStream = File(this.filesDir ,JsonConstants.LEVELS_FILENAME)
+//        Log.i("test", textStream.exists().toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,5 +51,8 @@ class HomeActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
+    private fun getStringFromUrl(url : String): String{
+        val textStream = URL(url).openConnection().getInputStream()
+        return textStream.bufferedReader().use { it.readText() }
+    }
 }
