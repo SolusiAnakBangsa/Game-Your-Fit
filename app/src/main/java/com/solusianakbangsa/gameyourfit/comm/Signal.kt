@@ -4,16 +4,20 @@ import org.json.JSONObject
 
 // Wrapper class for JSONObject, intended to be used for two way communication between browser and
 // Phone
-class Signal(exerciseType : String, status : String, repAmount : Int, time : Long) {
+class Signal(exerciseType : String, status : String, repAmount : Int, flavorText : String, time : Long) {
 //    Initializes empty JsonObject, not recommended
+
     constructor() : this(
-        "","", 0,0L
+        "","",0,"",0L
     )
     var json : JSONObject = JSONObject()
+    var meta : JSONObject = JSONObject()
     init {
         json.put("exerciseType", exerciseType)
         json.put("status", status)
-        json.put("repAmount", repAmount)
+        meta.put("targetRep", repAmount)
+        meta.put("flavorText", flavorText)
+        json.put("meta", meta)
         json.put("time", time)
     }
 
