@@ -3,7 +3,10 @@ var box = document.getElementById("dataBox")
 function createPeer(roomID){
     // Constructor argument is the ID of the room
     peer = new Peer(roomID,
-        {config: {'iceServers': [
+        {host: 'rtc.gameyourfit.com',
+        secure:false,
+        port:6311,
+        config: {'iceServers': [
             {url: 'stun:stun.l.google.com:19302'},
             {url: 'turn:rtc.gameyourfit.com:3478', username: "test", credential: "test123" }
         ]}})
