@@ -17,6 +17,7 @@ import com.solusianakbangsa.gameyourfit.JsonConstants
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer.replaceImage
+import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import kotlinx.android.synthetic.main.activity_campaign.*
 import org.json.JSONArray
 import java.io.File
@@ -47,17 +48,18 @@ class CampaignActivity : AppCompatActivity() {
 
     fun initializeLevels(){
         for (i in 0 until levelList.jsonArr.length()){
-            var levelView : View = layoutInflater.inflate(R.layout.level_card, null, false)
-            var levelButton :ImageView = levelView.findViewById(R.id.levelButton)
-            var levelTitle : TextView = levelView.findViewById(R.id.levelName)
+            val levelView : View = layoutInflater.inflate(R.layout.level_card, null, false)
+            val levelButton :ImageView = levelView.findViewById(R.id.levelButton)
+            val levelTitle : TextView = levelView.findViewById(R.id.levelName)
             levelTitle.text = levelList.getTitleAtLevel(i)
             replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i))
 
 
             levelButton.setOnClickListener{
-                val intent = Intent(this, AlphaOneActivity::class.java)
-                intent.putExtra("TaskList", levelList.getTasksAtLevel(i).toString())
-                this?.startActivity(intent)
+                val intent = Intent(this, LevelInfoActivity::class.java)
+                intent.putExtra("taskList", levelList.getTasksAtLevel(i).toString())
+                intent.putExtra("title", levelList.getTitleAtLevel(i))
+                this.startActivity(intent)
             }
             levelContainer.addView(levelView)
         }

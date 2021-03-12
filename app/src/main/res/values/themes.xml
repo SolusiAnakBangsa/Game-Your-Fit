@@ -51,12 +51,18 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
     <style name="ActionBarText">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CollapsedActionBarText">
+<!--        <item name="android:textColor">@color/white</item>-->
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="ExpandedActionBarText">
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

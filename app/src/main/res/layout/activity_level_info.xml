@@ -26,6 +26,7 @@
             app:toolbarId="@+id/toolbar">
 
             <ImageView
+                android:id="@+id/levelInfoImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"

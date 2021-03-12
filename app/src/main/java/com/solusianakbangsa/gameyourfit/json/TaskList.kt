@@ -6,7 +6,7 @@ import org.json.JSONObject
 class TaskList(jsonString: String) {
     var jsonArr : JSONArray = JSONArray(jsonString)
     fun getTaskAt(index : Int) : JSONObject{
-        return jsonArr.getJSONObject(0)
+        return jsonArr.getJSONObject(index)
     }
     fun getTaskFreqAt(index: Int) : Int{
         return getTaskAt(index).getInt("freq")
