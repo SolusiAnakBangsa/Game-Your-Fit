@@ -40,7 +40,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
 //        Call webrtc function from here
-        signal = Signal("jog","pause",0,0L)
+        signal = Signal("jog","pause",0,"",0L)
         rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
 //        Generates a random peer,
 

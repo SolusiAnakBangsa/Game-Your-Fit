@@ -22,10 +22,19 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.GameYourFit">
         <activity
+            android:name=".ui.level_info.LevelInfoActivity"
+            android:label="@string/title_activity_level_info"
+            android:theme="@style/Theme.GameYourFit.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
-            android:theme="@style/Theme.GameYourFit.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".AlphaOneActivity"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
@@ -49,17 +58,10 @@
             android:name=".HomeActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
-            android:theme="@style/Theme.GameYourFit.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.GameYourFit.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:theme="@style/Theme.GameYourFit.NoActionBar">
         </activity>
     </application>
 

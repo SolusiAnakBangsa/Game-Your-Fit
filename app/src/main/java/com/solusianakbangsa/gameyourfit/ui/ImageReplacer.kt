@@ -10,6 +10,7 @@ import java.net.URL
 object ImageReplacer{
 //    Runs an async network request to url, replaces content inside of an ImageView
     val replaceImage : (Handler,ImageView,String) -> Unit = {
+//    TODO : Catch network error and cancel operation
         handler, imageView, url ->
         val executor = Executors.newSingleThreadExecutor()
         executor.execute {

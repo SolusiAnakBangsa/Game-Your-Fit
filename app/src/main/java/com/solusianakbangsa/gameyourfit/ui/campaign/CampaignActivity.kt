@@ -43,25 +43,10 @@ class CampaignActivity : AppCompatActivity() {
 
         initializeLevels()
 
-//        var levelButton0 :ImageView= findViewById(R.id.levelButton0)
-//        levelButton0.setOnClickListener{
-//            val intent = Intent(this, AlphaOneActivity::class.java)
-//            intent.putExtra("taskList", levelList.getTasksAtLevel(0).toString())
-//            this.startActivity(intent)
-//        }
-//        var levelButton1 :ImageView= findViewById(R.id.levelButton1)
-//        levelButton1.setOnClickListener{
-//            val intent = Intent(this, AlphaOneActivity::class.java)
-//            intent.putExtra("taskList", levelList.getTasksAtLevel(1).toString())
-//            this.startActivity(intent)
-//        }
     }
 
     fun initializeLevels(){
-//        TODO : generate all level views here, and put in intent for the buttons.
-
         for (i in 0 until levelList.jsonArr.length()){
-//            TODO : putString of taskList during intent
             var levelView : View = layoutInflater.inflate(R.layout.level_card, null, false)
             var levelButton :ImageView = levelView.findViewById(R.id.levelButton)
             var levelTitle : TextView = levelView.findViewById(R.id.levelName)
