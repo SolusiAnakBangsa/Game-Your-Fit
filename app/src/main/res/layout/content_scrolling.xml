@@ -8,6 +8,7 @@
     tools:context=".ui.level_info.LevelInfoActivity"
     tools:showIn="@layout/activity_level_info">
 
+
     <LinearLayout
         android:id="@+id/levelInfoContent"
         android:layout_width="match_parent"
