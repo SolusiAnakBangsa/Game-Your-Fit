@@ -9,13 +9,14 @@
     tools:showIn="@layout/activity_level_info">
 
     <LinearLayout
+        android:id="@+id/levelInfoContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:gravity="center_vertical"
             android:outlineProvider="background"
             android:textColor="@color/black"

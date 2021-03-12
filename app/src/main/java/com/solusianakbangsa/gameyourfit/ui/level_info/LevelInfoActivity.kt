@@ -13,20 +13,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.json.TaskList
 import kotlinx.android.synthetic.main.activity_level_info.*
 
 class LevelInfoActivity : AppCompatActivity() {
 
+    private lateinit var taskList : TaskList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level_info)
         setSupportActionBar(findViewById(R.id.levelInfoToolbar))
+
         val toolbarLayout : CollapsingToolbarLayout= findViewById(R.id.levelInfoToolbarLayout)
         val appBarLayout : AppBarLayout = findViewById(R.id.levelInfoAppBar)
         val toolbar : Toolbar = findViewById(R.id.levelInfoToolbar)
         toolbarLayout.setCollapsedTitleTextAppearance(R.style.ActionBarText)
         toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedActionBarText)
-//
+
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout: AppBarLayout, offset: Int ->
             val colorComponent =
                 0.3f.coerceAtLeast(offset.toFloat() / -appBarLayout.totalScrollRange)
@@ -36,6 +39,16 @@ class LevelInfoActivity : AppCompatActivity() {
                 levelInfoToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_white)
             }
         })
+
+        if(intent.getStringExtra("taskList") != null){
+            taskList = TaskList(intent.getStringExtra("taskList")!!)
+        }
+
+        for(i in 0 until taskList.jsonArr.length()){
+            createTaskInfo(taskList.getTaskTypeAt(i), taskList.getTaskFreqAt(i))
+        }
+    }
+    fun createTaskInfo(name : String, freq: Int){
 
     }
 }
