@@ -57,7 +57,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         val toolbar: Toolbar = findViewById(R.id.profileToolbar)
         setSupportActionBar(toolbar)
-
+        findViewById<Toolbar>(R.id.profileToolbar).setNavigationOnClickListener{
+            this.onBackPressed()
+        }
 
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()

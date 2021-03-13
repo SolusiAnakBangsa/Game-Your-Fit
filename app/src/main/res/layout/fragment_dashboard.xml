@@ -245,6 +245,34 @@
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
                 </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="10dp">
+                    <ImageView
+                        android:id="@+id/dashboardRandom"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:src="@mipmap/placeholder_profile_foreground" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingVertical="10dp"
+                        android:layout_gravity="bottom"
+                        android:gravity="left"
+                        android:text="Random"
+                        android:background="@drawable/bg_top_rounded"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

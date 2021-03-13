@@ -28,6 +28,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="@color/gray_300"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerCrop">
             </ImageView>
         </com.facebook.shimmer.ShimmerFrameLayout>

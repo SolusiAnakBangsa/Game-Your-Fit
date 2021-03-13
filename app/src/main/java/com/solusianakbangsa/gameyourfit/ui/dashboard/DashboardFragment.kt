@@ -44,6 +44,12 @@ class DashboardFragment : Fragment() {
             "https://i.ytimg.com/vi/SPX1ps4P-_s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDXfvFRBrXm2ypsQnJUjtdq1314-w",
             null
         )
+        replaceImage(
+            handler,
+            binding.recommendationFrame,
+            "https://i.ytimg.com/vi/SPX1ps4P-_s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDXfvFRBrXm2ypsQnJUjtdq1314-w",
+            null
+        )
 
         binding.dashboardCampaign.setOnClickListener{
             val intent = Intent(activity, CampaignActivity::class.java)

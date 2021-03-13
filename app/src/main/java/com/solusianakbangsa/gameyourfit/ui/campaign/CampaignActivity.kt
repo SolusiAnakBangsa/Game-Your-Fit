@@ -36,6 +36,9 @@ class CampaignActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.campaignToolbar)
         setSupportActionBar(toolbar)
+        findViewById<Toolbar>(R.id.campaignToolbar).setNavigationOnClickListener{
+            this.onBackPressed()
+        }
 
         levelContainer = findViewById(R.id.levelLayout)
 

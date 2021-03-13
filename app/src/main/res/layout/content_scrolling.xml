@@ -23,6 +23,7 @@
             android:gravity="center_vertical"
             android:outlineProvider="background"
             android:textSize="16sp"
+            android:background="@color/gray_100"
             android:paddingLeft="20dp"
             android:elevation="5dp"
             android:text="Level Info :">
@@ -35,6 +36,7 @@
             android:backgroundTint="?attr/colorPrimary"
             app:cardCornerRadius="30dp">
             <TextView
+                android:id="@+id/levelInfoStart"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
