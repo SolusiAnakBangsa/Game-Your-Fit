@@ -17,16 +17,20 @@
         android:layout_gravity="bottom"
         android:clickable="true"
         android:focusable="true">
-        <ImageView
-            android:id="@+id/levelButton"
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/levelShimmer"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_profile_background">
-        </ImageView>
+            android:layout_height="180dp">
+            <ImageView
+                android:id="@+id/levelButton"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@color/gray_300"
+                android:scaleType="centerCrop">
+            </ImageView>
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"

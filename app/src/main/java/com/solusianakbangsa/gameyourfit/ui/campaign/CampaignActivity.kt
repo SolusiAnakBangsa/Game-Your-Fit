@@ -1,6 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.campaign
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -12,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.solusianakbangsa.gameyourfit.AlphaOneActivity
 import com.solusianakbangsa.gameyourfit.JsonConstants
 import com.solusianakbangsa.gameyourfit.R
@@ -22,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_campaign.*
 import org.json.JSONArray
 import java.io.File
 import java.net.URL
+import java.util.concurrent.Executors
 
 class CampaignActivity : AppCompatActivity() {
     private lateinit var levelList : LevelList
@@ -51,14 +54,19 @@ class CampaignActivity : AppCompatActivity() {
             val levelView : View = layoutInflater.inflate(R.layout.level_card, null, false)
             val levelButton :ImageView = levelView.findViewById(R.id.levelButton)
             val levelTitle : TextView = levelView.findViewById(R.id.levelName)
+            val levelLoading : ShimmerFrameLayout = levelView.findViewById(R.id.levelShimmer)
+            var bmp : Bitmap? = null
             levelTitle.text = levelList.getTitleAtLevel(i)
-            replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i))
-
+            levelLoading.baseAlpha = 0.7f
+            levelLoading.duration = 1000
+            levelLoading.startShimmerAnimation()
+            replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i), levelLoading)
 
             levelButton.setOnClickListener{
                 val intent = Intent(this, LevelInfoActivity::class.java)
                 intent.putExtra("taskList", levelList.getTasksAtLevel(i).toString())
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
+                intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))
                 this.startActivity(intent)
             }
             levelContainer.addView(levelView)

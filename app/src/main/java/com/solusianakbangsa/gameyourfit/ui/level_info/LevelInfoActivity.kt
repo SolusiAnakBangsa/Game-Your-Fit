@@ -1,10 +1,9 @@
 package com.solusianakbangsa.gameyourfit.ui.level_info
 
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.graphics.*
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -20,11 +19,15 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.ImageReplacer.replaceImage
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_level_info.*
+import kotlinx.android.synthetic.main.level_card.*
+import java.util.concurrent.Executors
 
 class LevelInfoActivity : AppCompatActivity() {
-
+    private val handler : Handler = Handler(Looper.getMainLooper())
     private lateinit var taskList : TaskList
     private lateinit var levelInfoContent : LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,9 +41,17 @@ class LevelInfoActivity : AppCompatActivity() {
         levelInfoContent = findViewById(R.id.levelInfoContent)
         val toolbarLayout : CollapsingToolbarLayout= findViewById(R.id.levelInfoToolbarLayout)
         val appBarLayout : AppBarLayout = findViewById(R.id.levelInfoAppBar)
+        val toolbarImage : ImageView = findViewById(R.id.levelInfoImage)
 
         toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedActionBarText)
         toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedActionBarText)
+
+        replaceImage(handler,toolbarImage, intent.getStringExtra("thumbnail")!!, null)
+//        val executor = Executors.newSingleThreadExecutor()
+//        executor.execute{
+//            ImageReplacer.replaceImage(handler, levelButton, intent.getStringExtra("thumbnail")!!)
+//            executor.shutdown()
+//        }
 
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout: AppBarLayout, offset: Int ->
             val colorComponent =

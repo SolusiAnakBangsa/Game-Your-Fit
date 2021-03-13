@@ -8,6 +8,7 @@
     <color name="black_overlay">#6F000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="gray">#37474f</color>
+    <color name="gray">#FF37474f</color>
+    <color name="gray_300">#FFe0e0e0</color>
 
 </resources>
