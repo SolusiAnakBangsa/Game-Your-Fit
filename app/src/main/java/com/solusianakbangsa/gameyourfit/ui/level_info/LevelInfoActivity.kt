@@ -37,7 +37,7 @@ class LevelInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level_info)
         setSupportActionBar(findViewById(R.id.levelInfoToolbar))
-        findViewById<Toolbar>(R.id.campaignToolbar).setNavigationOnClickListener{
+        findViewById<Toolbar>(R.id.levelInfoToolbar).setNavigationOnClickListener{
             this.onBackPressed()
         }
 
