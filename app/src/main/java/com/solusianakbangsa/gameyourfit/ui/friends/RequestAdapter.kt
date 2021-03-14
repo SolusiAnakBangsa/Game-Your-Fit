@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.solusianakbangsa.gameyourfit.R
@@ -11,17 +12,25 @@ import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class RequestAdapter (
+class RequestAdapter(
     mContext: Context,
-    mUsers: List<User>) : RecyclerView.Adapter<RequestAdapter.ViewHolder?>(){
+    mUsers: List<User>, var clickListener: OnImageClickListener
+) : RecyclerView.Adapter<RequestAdapter.ViewHolder?>(){
 
 
     private val mContext: Context = mContext
     private val mUsers: List<User> = mUsers
 
+    private var listener: ((item: User) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (item: User) -> Unit) {
+        this.listener = listener
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(mContext).inflate(R.layout.friend_request_card, parent, false)
-        return RequestAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
 
@@ -33,15 +42,41 @@ class RequestAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user: User = mUsers[position]
-        holder.userTxt.text = user.username
-        holder.levelTxt.text = user.level.toString()
-        Picasso.get().load(user.image).into(holder.requestImageView)
+
+        holder.initialize(user, clickListener)
+
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         var requestImageView : CircleImageView = itemView.findViewById(R.id.requestProfilePicture)
         var userTxt: TextView = itemView.findViewById(R.id.requestUsername)
         var levelTxt: TextView = itemView.findViewById(R.id.requestLevel)
+        var btnAccept : Button = itemView.findViewById(R.id.requestAccept)
+        var btnDecline : Button = itemView.findViewById(R.id.requestDecline)
+
+        fun initialize(user: User, action: OnImageClickListener){
+            userTxt.text = user.username.toString()
+            levelTxt.text = user.level.toString()
+            Picasso.get().load(user.image).into(requestImageView)
+
+            btnAccept.setOnClickListener{
+                action.OnAcceptClick(user, adapterPosition)
+            }
+            btnDecline.setOnClickListener{
+                action.OnDeclineClick(user, adapterPosition)
+            }
+        }
+
+    }
+
+}
+
+interface OnImageClickListener{
+    fun OnAcceptClick(user: User, position: Int){
+
+    }
+    fun OnDeclineClick(user: User, position: Int){
+
     }
 }
 

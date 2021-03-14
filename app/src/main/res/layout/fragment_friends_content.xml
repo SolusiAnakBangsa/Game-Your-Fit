@@ -21,7 +21,7 @@
 <!--        </Button>-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/requestList"
-            android:layout_marginHorizontal="20dp"
+
             android:paddingBottom="10dp"
             android:showDividers="middle"
             android:divider="@drawable/layout_divider"
