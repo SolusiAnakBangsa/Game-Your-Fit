@@ -5,15 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NotificationCompat
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import id.zelory.compressor.Compressor
@@ -31,9 +27,7 @@ import kotlinx.android.synthetic.main.activity_user_information.*
 import kotlinx.coroutines.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.ByteArrayOutputStream
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallbacks {
         lateinit var ref : DatabaseReference

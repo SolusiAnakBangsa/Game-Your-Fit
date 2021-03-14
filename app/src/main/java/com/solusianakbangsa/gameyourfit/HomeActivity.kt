@@ -2,7 +2,9 @@ package com.solusianakbangsa.gameyourfit
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.widget.ImageView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -32,6 +34,11 @@ class HomeActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
 
+        val navProfilePicture : ImageView = navView.getHeaderView(0).findViewById(R.id.imageView)
+        navProfilePicture.setOnClickListener{
+            val intent = Intent (this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
