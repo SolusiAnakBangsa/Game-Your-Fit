@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
     private fun createJson(){
         val executor = Executors.newSingleThreadExecutor()
         executor.execute{
-            val file = File(this.filesDir, JsonConstants.LEVELS_FILENAME)
-            val dbJsonString = getStringFromUrl(JsonConstants.LEVELS_URL)
+            val file = File(this.filesDir, FileConstants.LEVELS_FILENAME)
+            val dbJsonString = getStringFromUrl(FileConstants.LEVELS_URL)
             val outputStream = FileOutputStream(file, false)
             Log.i("test","test")
             outputStream.write(dbJsonString.encodeToByteArray())

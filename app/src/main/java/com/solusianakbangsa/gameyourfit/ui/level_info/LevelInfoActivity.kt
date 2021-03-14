@@ -1,35 +1,27 @@
 package com.solusianakbangsa.gameyourfit.ui.level_info
 
 import android.content.Intent
-import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.solusianakbangsa.gameyourfit.AlphaOneActivity
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.TaskList
-import com.solusianakbangsa.gameyourfit.taskDictionary
+import com.solusianakbangsa.gameyourfit.TaskDictionary
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
-import com.solusianakbangsa.gameyourfit.ui.ImageReplacer.replaceImage
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_level_info.*
-import kotlinx.android.synthetic.main.level_card.*
-import java.util.concurrent.Executors
 
 class LevelInfoActivity : AppCompatActivity() {
+    private val imageReplacer : ImageReplacer = ImageReplacer()
     private val handler : Handler = Handler(Looper.getMainLooper())
     private lateinit var taskList : TaskList
     private lateinit var levelInfoContent : LinearLayout
@@ -39,6 +31,7 @@ class LevelInfoActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.levelInfoToolbar))
         findViewById<Toolbar>(R.id.levelInfoToolbar).setNavigationOnClickListener{
             this.onBackPressed()
+            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }
 
         if(intent.getStringExtra("taskList") != null){
@@ -53,7 +46,7 @@ class LevelInfoActivity : AppCompatActivity() {
         toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedActionBarText)
         toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedActionBarText)
 
-        replaceImage(handler,toolbarImage, intent.getStringExtra("thumbnail")!!, null)
+        imageReplacer.replaceImage(handler,toolbarImage, intent.getStringExtra("thumbnail")!!)
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout: AppBarLayout, offset: Int ->
             val colorComponent =
                 0.3f.coerceAtLeast(offset.toFloat() / -appBarLayout.totalScrollRange)
@@ -83,7 +76,7 @@ class LevelInfoActivity : AppCompatActivity() {
     private fun createTaskInfo(name : String, freq: Int, index : Int){
         val taskInfo : View = layoutInflater.inflate(R.layout.task_info_card, null, false)
 
-        taskInfo.findViewById<TextView>(R.id.taskName).text = taskDictionary.taskDictionary[name]
+        taskInfo.findViewById<TextView>(R.id.taskName).text = TaskDictionary.taskDictionary[name]
         taskInfo.findViewById<TextView>(R.id.taskFreq).text = "x$freq"
         levelInfoContent.addView(taskInfo, (index + 1))
     }

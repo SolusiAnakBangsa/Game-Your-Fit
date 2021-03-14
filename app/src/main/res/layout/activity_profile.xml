@@ -64,7 +64,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:clickable="true"
                 app:layout_constraintVertical_bias="0.516"
-                android:focusable="true" />
+                android:focusable="true"
+                android:transitionName="keepProfilePicture"/>
 
             <TextView
                 android:id="@+id/profileUsername"

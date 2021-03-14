@@ -8,27 +8,22 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.solusianakbangsa.gameyourfit.AlphaOneActivity
-import com.solusianakbangsa.gameyourfit.JsonConstants
+import com.solusianakbangsa.gameyourfit.FileConstants
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.LevelList
-import com.solusianakbangsa.gameyourfit.ui.ImageReplacer.replaceImage
+import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
-import kotlinx.android.synthetic.main.activity_campaign.*
-import org.json.JSONArray
 import java.io.File
-import java.net.URL
-import java.util.concurrent.Executors
 
 class CampaignActivity : AppCompatActivity() {
     private lateinit var levelList : LevelList
     private lateinit var  levelContainer : LinearLayout
+    private val imageReplacer = ImageReplacer()
     private val handler : Handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +33,12 @@ class CampaignActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         findViewById<Toolbar>(R.id.campaignToolbar).setNavigationOnClickListener{
             this.onBackPressed()
+            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }
 
         levelContainer = findViewById(R.id.levelLayout)
 
-        if(File(this.filesDir ,JsonConstants.LEVELS_FILENAME).exists()){
+        if(File(this.filesDir ,FileConstants.LEVELS_FILENAME).exists()){
             readLevelsFromFile()
         } else{
             Log.i("json","LEVEL DOENS't EXIST")
@@ -63,7 +59,7 @@ class CampaignActivity : AppCompatActivity() {
             levelLoading.baseAlpha = 0.7f
             levelLoading.duration = 1000
             levelLoading.startShimmerAnimation()
-            replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i), levelLoading)
+            imageReplacer.replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i), levelLoading, this, "level$i")
 
             levelButton.setOnClickListener{
                 val intent = Intent(this, LevelInfoActivity::class.java)
@@ -71,13 +67,14 @@ class CampaignActivity : AppCompatActivity() {
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
                 intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))
                 this.startActivity(intent)
+                this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
             }
             levelContainer.addView(levelView)
         }
     }
 
     private fun readLevelsFromFile(){
-        val file = File(this.filesDir, JsonConstants.LEVELS_FILENAME)
+        val file = File(this.filesDir, FileConstants.LEVELS_FILENAME)
         val taskJsonString = file.inputStream().bufferedReader().use { it.readText() }
         levelList = LevelList(taskJsonString)
     }

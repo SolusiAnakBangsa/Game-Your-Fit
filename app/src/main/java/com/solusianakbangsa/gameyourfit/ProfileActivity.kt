@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.Image
 import android.net.Uri
 import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
@@ -22,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import id.zelory.compressor.Compressor
@@ -42,6 +45,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         lateinit var mAuth: FirebaseAuth
         private val GALLERY_PICK = 1
         lateinit var mImageStorage : StorageReference
+        private val imageReplacer = ImageReplacer()
 
         private val LOCATION_AND_CONTACTS = arrayOf<String>(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
         private val RC_CAMERA_PERM = 123
@@ -49,14 +53,14 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         private val scope = MainScope()
 
-
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_profile)
 
-
         val toolbar: Toolbar = findViewById(R.id.profileToolbar)
         setSupportActionBar(toolbar)
+
+        imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
         findViewById<Toolbar>(R.id.profileToolbar).setNavigationOnClickListener{
             this.onBackPressed()
         }

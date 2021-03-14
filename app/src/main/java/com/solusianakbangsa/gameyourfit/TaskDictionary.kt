@@ -1,6 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
-object taskDictionary {
+object TaskDictionary {
     val taskDictionary : HashMap<String,String> = HashMap()
     init {
         taskDictionary["pushup"] = "Push up"
