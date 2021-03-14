@@ -49,7 +49,6 @@ class ImageReplacer{
             } catch (e : Exception){
                 Log.i("yabe", "File not found, using placeholder")
             }
-
         }
     }
 }

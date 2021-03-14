@@ -83,7 +83,8 @@
                 android:paddingRight="10dp"
 
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:transitionName="keepNameText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
                 app:layout_constraintStart_toEndOf="@+id/userProfilePicture"

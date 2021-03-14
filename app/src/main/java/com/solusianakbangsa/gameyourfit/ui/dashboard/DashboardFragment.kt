@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.dashboard
 
+import android.util.Pair as UtilPair
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
@@ -32,6 +34,7 @@ class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     private val imageReplacer : ImageReplacer = ImageReplacer()
+    private lateinit var ref : DatabaseReference
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -45,7 +48,7 @@ class DashboardFragment : Fragment() {
         binding.cardUsernameShimmer.baseAlpha = 0.9f
         binding.cardUsernameShimmer.startShimmerAnimation()
         val userId = FirebaseAuth.getInstance().uid.toString()
-        val ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val name = ref.child("username").get().addOnSuccessListener {
             sharedPref.edit().putString("username", it.value.toString())
@@ -90,7 +93,10 @@ class DashboardFragment : Fragment() {
 
         binding.cardProfilePicture.setOnClickListener {
             val intent = Intent(activity, ProfileActivity::class.java)
-            val options = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture), "keepProfilePicture")
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                requireActivity(),
+                UtilPair.create(requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture), "keepProfilePicture"),
+                UtilPair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
             activity?.startActivity(intent, options.toBundle())
         }
 
@@ -101,6 +107,25 @@ class DashboardFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+        if(!(profilePicture.exists())){
+            ref.child("images").get().addOnSuccessListener{
+                imageReplacer.replaceImage(
+                    handler,
+                    binding.cardProfilePicture,
+                    it.value.toString(),
+                    null,
+                    requireActivity(),
+                    FileConstants.PROFILE_PICTURE_FILENAME
+                )
+            }
+        } else{
+            imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+        }
     }
 
     override fun onDestroyView() {

@@ -19,20 +19,20 @@ import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 import java.net.URL
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    private val imageReplacer = ImageReplacer()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val imageReplacer = ImageReplacer()
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -67,6 +67,10 @@ class HomeActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onResume() {
+        super.onResume()
+        imageReplacer.replaceImage(findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById(R.id.drawerProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
+    }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
@@ -75,4 +79,5 @@ class HomeActivity : AppCompatActivity() {
         val textStream = URL(url).openConnection().getInputStream()
         return textStream.bufferedReader().use { it.readText() }
     }
+
 }

@@ -87,9 +87,11 @@
                             android:gravity="center_vertical"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 
+                            android:transitionName="keepNameText"
                             android:textSize="14sp"
                             android:paddingLeft="10dp"
-                            android:paddingRight="10dp"/>
+                            android:paddingRight="10dp"
+                            />
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
 

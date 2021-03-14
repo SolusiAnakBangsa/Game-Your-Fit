@@ -77,9 +77,13 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         val uid = mAuth.currentUser?.uid
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
 
         val handler = Handler(Looper.getMainLooper())
         val profilePicture = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+        if(sharedPref.contains("username")){
+            findViewById<TextView>(R.id.profileUsername).text = sharedPref.getString("username", "")
+        }
         if(!(profilePicture.exists())){
             ref.child("images").get().addOnSuccessListener{
                 imageReplacer.replaceImage(
@@ -95,10 +99,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
         }
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        if(sharedPref.contains("username")){
-            findViewById<TextView>(R.id.profileUsername).text = sharedPref.getString("username", "")
-        }
+
 
         ref.addListenerForSingleValueEvent(
             object : ValueEventListener {
@@ -240,8 +241,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         task.exception?.let{
                             throw it
                         }
-
-
                     }
                     return@Continuation filePath.downloadUrl
                 }).addOnCompleteListener{task ->
@@ -261,7 +260,10 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                         FirebaseDatabase.getInstance().getReference("users")
                                             .child(uid.toString()).child("image").setValue(url)
                                         toast("Profile is Updated.")
-                                        Picasso.get().load(url).into(userProfilePicture)
+//                                        Picasso.get().load(url).into(userProfilePicture)
+                                        val file = File(this@ProfileActivity.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+                                        val handler = Handler(Looper.getMainLooper())
+                                        imageReplacer.replaceImage(handler, userProfilePicture, url, null, this@ProfileActivity, FileConstants.PROFILE_PICTURE_FILENAME)
                                         progressBar.visibility = View.GONE
                                     } else {
                                         val updateHash = HashMap<String, Any>()
