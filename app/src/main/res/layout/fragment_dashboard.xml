@@ -57,7 +57,11 @@
                     android:layout_height="80dp"
                     android:layout_marginStart="16dp"
                     android:clickable="true"
-                    android:src="@mipmap/placeholder_profile"
+                    android:src="@color/transparent"
+                    android:background="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                    android:backgroundTint="@color/white"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -65,24 +69,29 @@
                     android:transitionName="keepProfilePicture"
                     android:focusable="true" />
 
-                    <TextView
-                        android:id="@+id/cardUsername"
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/cardUsernameShimmer"
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:background="@drawable/bg_rounded"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:text="Username"
-                        android:gravity="center_vertical"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-
-                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent">
+                        <TextView
+                            android:id="@+id/cardUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_rounded"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+                            android:textSize="14sp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"/>
+
+                    </com.facebook.shimmer.ShimmerFrameLayout>
 
                     <TextView
                         android:id="@+id/cardLevel"
@@ -96,7 +105,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                        app:layout_constraintTop_toBottomOf="@id/cardUsername" />
+                        app:layout_constraintTop_toBottomOf="@id/cardUsernameShimmer" />
 
                     <ProgressBar
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -110,7 +119,7 @@
                         android:progressDrawable="@drawable/progress_bar_rounded"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/cardLevel"
-                        app:layout_constraintTop_toBottomOf="@id/cardUsername" />
+                        app:layout_constraintTop_toBottomOf="@id/cardUsernameShimmer" />
 
                     <TextView
                         android:layout_width="wrap_content"

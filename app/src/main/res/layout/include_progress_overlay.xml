@@ -12,8 +12,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="@android:color/black"/>
+        android:alpha="0.8"/>
 
     <ProgressBar
         android:minHeight="60dip"

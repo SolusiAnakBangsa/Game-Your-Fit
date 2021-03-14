@@ -9,13 +9,17 @@ import android.net.Uri
 import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -60,7 +64,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val toolbar: Toolbar = findViewById(R.id.profileToolbar)
         setSupportActionBar(toolbar)
 
-        imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
         findViewById<Toolbar>(R.id.profileToolbar).setNavigationOnClickListener{
             this.onBackPressed()
         }
@@ -74,6 +77,28 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         val uid = mAuth.currentUser?.uid
+
+        val handler = Handler(Looper.getMainLooper())
+        val profilePicture = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+        if(!(profilePicture.exists())){
+            ref.child("images").get().addOnSuccessListener{
+                imageReplacer.replaceImage(
+                    handler,
+                    findViewById<ImageView>(R.id.userProfilePicture),
+                    it.value.toString(),
+                    null,
+                    this,
+                    FileConstants.PROFILE_PICTURE_FILENAME
+                )
+            }
+        } else{
+            imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
+        }
+
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        if(sharedPref.contains("username")){
+            findViewById<TextView>(R.id.profileUsername).text = sharedPref.getString("username", "")
+        }
 
         ref.addListenerForSingleValueEvent(
             object : ValueEventListener {
@@ -97,7 +122,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         }
                         if (snapshot.child("image").exists()){
                             val image = snapshot.child("image").value!!.toString()
-                            Picasso.get().load(image).into(userProfilePicture)
+//                            Picasso.get().load(image).into(userProfilePicture)
+
                         }
 
                         progressBar.visibility = View.GONE

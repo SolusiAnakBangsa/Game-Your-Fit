@@ -10,10 +10,7 @@ import android.util.Log
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.solusianakbangsa.gameyourfit.FileConstants
 import com.solusianakbangsa.gameyourfit.R
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
+import java.io.*
 import java.net.URL
 import java.util.concurrent.Callable
 
@@ -21,6 +18,8 @@ class ImageReplacer{
 
     fun replaceImage(imageView: ImageView, context: Activity, fileName: String){
         try {
+            val file = File(context.filesDir, fileName)
+            val fileInputStream = FileInputStream(file)
             val bmp : Bitmap = BitmapFactory.decodeStream(context.openFileInput(fileName))
             imageView.setImageBitmap(bmp)
         } catch (e : FileNotFoundException){
@@ -48,9 +47,7 @@ class ImageReplacer{
                     shimmer?.stopShimmerAnimation()
                 }
             } catch (e : Exception){
-                handler.post{
-                    imageView.setImageResource(R.drawable.placeholder_profile_background)
-                }
+                Log.i("yabe", "File not found, using placeholder")
             }
 
         }

@@ -1,8 +1,12 @@
 package com.solusianakbangsa.gameyourfit
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,6 +16,9 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import java.io.File
 import java.net.URL
 
@@ -25,9 +32,12 @@ class HomeActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        val imageReplacer = ImageReplacer()
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
+        val handler = Handler(Looper.getMainLooper())
+        val drawerProfilePicture = navView.getHeaderView(0).findViewById<ImageView>(R.id.drawerProfilePicture)
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -36,7 +46,17 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-//        One time initialization for the levels.json, campaignActivity will later read from this
+        val userId = FirebaseAuth.getInstance().uid.toString()
+        val ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        val name = ref.child("username").get().addOnSuccessListener {
+            navView.getHeaderView(0).findViewById<TextView>(R.id.drawerName).text = it.value.toString()
+        }
+        val image = ref.child("image").get().addOnSuccessListener {
+            imageReplacer.replaceImage(handler, drawerProfilePicture , it.value.toString(), null, this, FileConstants.PROFILE_PICTURE_FILENAME)
+        }
+
+        navView.getHeaderView(0).findViewById<TextView>(R.id.drawerEmail).text = FirebaseAuth.getInstance().currentUser?.email.toString()
+//          One time initialization for the levels.json, campaignActivity will later read from this
 //        JsonUpdater(JsonConstants.LEVELS_FILENAME, JsonConstants.LEVELS_URL, this)
         val textStream = File(this.filesDir ,FileConstants.LEVELS_FILENAME)
         Log.i("test", textStream.exists().toString())
