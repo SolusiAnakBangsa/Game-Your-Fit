@@ -50,15 +50,18 @@ class DashboardFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().uid.toString()
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        val name = ref.child("username").get().addOnSuccessListener {
-            sharedPref.edit().putString("username", it.value.toString())
-            sharedPref.edit().apply()
-            binding.cardUsernameShimmer.stopShimmerAnimation()
-            binding.cardUsername.text = it.value.toString()
-        }
+
         if(sharedPref.contains("username")){
+            Log.i("yabe","test")
             binding.cardUsernameShimmer.stopShimmerAnimation()
             binding.cardUsername.text = sharedPref.getString("username", "")
+        } else {
+            Log.i("yabe","what")
+            ref.child("username").get().addOnSuccessListener {
+                sharedPref.edit().putString("username", it.value.toString()).apply()
+                binding.cardUsernameShimmer.stopShimmerAnimation()
+                binding.cardUsername.text = it.value.toString()
+            }
         }
 
 
@@ -125,6 +128,17 @@ class DashboardFragment : Fragment() {
             }
         } else{
             imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+        }
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        if(sharedPref.contains("username")){
+            binding.cardUsernameShimmer.stopShimmerAnimation()
+            binding.cardUsername.text = sharedPref.getString("username", "")
+        } else {
+            ref.child("username").get().addOnSuccessListener {
+                sharedPref.edit().putString("username", it.value.toString()).apply()
+                binding.cardUsernameShimmer.stopShimmerAnimation()
+                binding.cardUsername.text = it.value.toString()
+            }
         }
     }
 
