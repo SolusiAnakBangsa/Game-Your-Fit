@@ -7,6 +7,7 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -22,6 +23,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var taskList : TaskList
 
     private var mAccelerometerLinear: Sensor? = null
+    private var exerciseList: MutableList<Signal> = mutableListOf()
     private var counterMax = 300  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
@@ -42,7 +44,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Call webrtc function from here
         signal = Signal("jog","pause",0,"",0L)
         rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
-//        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -50,19 +51,11 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         setSupportActionBar(toolbar)
 
-        when (exercise) {
-            "jog" -> {
-                axisUsed = SensorConstants.JogAxis
-                thresholdHigh = SensorConstants.JogHigh
-                thresholdLow = SensorConstants.JogLow
-            }
-            "pushup" -> {   // TODO : Determine pushup thresholds
-                axisUsed = SensorConstants.PushAxis
-                thresholdHigh = SensorConstants.PushHigh
-                thresholdLow = SensorConstants.PushLow
-            }
-            "situp" -> {}   // TODO : Determine situp thresholds
+        for (i in 0 until taskList.jsonArr.length()) {
+            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
+            exerciseList.add(signal)
         }
+        Log.i("exerciseList", exerciseList.toString())
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -73,9 +66,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             if(signal.get("status") == "mid"){
-                var axisX: Float = event.values[0]
-                var axisY: Float = event.values[1]
-                var axisZ: Float = event.values[2]
+                val axisX: Float = event.values[0]
+                val axisY: Float = event.values[1]
+                val axisZ: Float = event.values[2]
 
                 /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
                 Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
@@ -102,6 +95,25 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
+
+        when (exercise) {
+            "jog" -> {
+                axisUsed = SensorConstants.JogAxis
+                thresholdHigh = SensorConstants.JogHigh
+                thresholdLow = SensorConstants.JogLow
+            }
+            "pushup" -> {
+                axisUsed = SensorConstants.PushAxis
+                thresholdHigh = SensorConstants.PushHigh
+                thresholdLow = SensorConstants.PushLow
+            }
+            "situp" -> {
+                axisUsed = SensorConstants.SitupAxis
+                thresholdHigh = SensorConstants.SitupHigh
+                thresholdLow = SensorConstants.SitupLow
+            }
+        }
+
         mSensorManager.registerListener(this, mAccelerometerLinear, SensorManager.SENSOR_DELAY_GAME)
     }
 
@@ -114,6 +126,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
 
         // Send first JSON data to web, indicates *start status*
+        signal.replace("status", "start")
+        signal.replace("time", SystemClock.elapsedRealtime())
+        rtc.sendDataToPeer(signal.toString())
+
         signal.replace("status",  "mid")
 
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
@@ -126,9 +142,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
                     signal.replace("repAmount", 0)
                     this.cancel()                           // Stops timer
+                    onPause()
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
-                    signal.replace("time",time)
+                    signal.replace("time", time)
                     rtc.sendDataToPeer(signal.toString())
                 }
             }
