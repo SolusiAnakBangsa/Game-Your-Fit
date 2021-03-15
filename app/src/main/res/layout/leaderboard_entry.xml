@@ -19,6 +19,7 @@
             android:text="1"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
 
             android:gravity="center_vertical"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -31,10 +32,10 @@
             android:text="@string/username"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
 
             android:gravity="center_vertical"
             android:layout_marginLeft="20dp"
-
             android:ellipsize="end"
             android:scrollHorizontally="true"
             android:maxLines="1"
@@ -51,6 +52,7 @@
             android:text="123019283091238pts"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
 
             android:ellipsize="end"
             android:scrollHorizontally="true"

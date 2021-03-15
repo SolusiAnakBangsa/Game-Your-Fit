@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
@@ -48,18 +49,42 @@ class HomeActivity : AppCompatActivity() {
 
         val userId = FirebaseAuth.getInstance().uid.toString()
         val ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
-        val name = ref.child("username").get().addOnSuccessListener {
-            navView.getHeaderView(0).findViewById<TextView>(R.id.drawerName).text = it.value.toString()
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        var name : String = "Username"
+
+        if(sharedPref.contains("username")){
+            name =  sharedPref.getString("username","")!!
+        } else{
+            ref.child("username").get().addOnSuccessListener {
+                name = it.value.toString()
+            }
         }
-        val image = ref.child("image").get().addOnSuccessListener {
-            imageReplacer.replaceImage(handler, drawerProfilePicture , it.value.toString(), null, this, FileConstants.PROFILE_PICTURE_FILENAME)
+        navView.getHeaderView(0).findViewById<TextView>(R.id.drawerName).text = name
+
+        val profilePicture = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+        if(!(profilePicture.exists())){
+            ref.child("images").get().addOnSuccessListener{
+                imageReplacer.replaceImage(
+                    handler,
+                    drawerProfilePicture,
+                    it.value.toString(),
+                    null,
+                    this,
+                    FileConstants.PROFILE_PICTURE_FILENAME
+                )
+            }
+        } else{
+            imageReplacer.replaceImage(drawerProfilePicture, this, FileConstants.PROFILE_PICTURE_FILENAME)
         }
 
         navView.getHeaderView(0).findViewById<TextView>(R.id.drawerEmail).text = FirebaseAuth.getInstance().currentUser?.email.toString()
 //          One time initialization for the levels.json, campaignActivity will later read from this
-//        JsonUpdater(JsonConstants.LEVELS_FILENAME, JsonConstants.LEVELS_URL, this)
-        val textStream = File(this.filesDir ,FileConstants.LEVELS_FILENAME)
-        Log.i("test", textStream.exists().toString())
+
+        val logout = navView.getHeaderView(0).findViewById<TextView>(R.id.logout)
+        logout.setOnClickListener {
+//            Do firebase stuff here
+//            sharedPref.edit().clear().apply()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -88,11 +88,14 @@ class DashboardFragment : Fragment() {
             "https://i.ytimg.com/vi/SPX1ps4P-_s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDXfvFRBrXm2ypsQnJUjtdq1314-w",
         )
 
-        binding.dashboardCampaign.setOnClickListener{
+        val toCampaignActivity = View.OnClickListener{
             val intent = Intent(activity, CampaignActivity::class.java)
             activity?.startActivity(intent)
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
+        binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
+        binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
+        binding.dashboardCampaignDescription.setOnClickListener(toCampaignActivity)
 
         binding.cardProfilePicture.setOnClickListener {
             val intent = Intent(activity, ProfileActivity::class.java)
@@ -112,6 +115,9 @@ class DashboardFragment : Fragment() {
         return binding.root
     }
 
+    fun toCampaign(v : View){
+
+    }
     override fun onResume() {
         super.onResume()
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)

@@ -16,9 +16,5 @@
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_menu_friends"
             android:title="@string/menu_friends" />
-        <item
-            android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_menu_settings"
-            android:title="@string/menu_settings" />
     </group>
 </menu>
