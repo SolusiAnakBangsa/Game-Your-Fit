@@ -145,7 +145,7 @@
             android:id="@+id/recommendationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:text="Today's recommendation for you:"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="16sp"
@@ -158,7 +158,7 @@
             android:id="@+id/recommendationCard"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/black"
             app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
@@ -210,82 +210,91 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:text="Gamemode"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recommendationCard" />
 
-        <HorizontalScrollView
+        <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:scrollbarStyle="outsideInset"
-            android:paddingBottom="10dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textView2">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="200dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="5dp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:cardUseCompatPadding="true"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="10dp">
+                    android:orientation="horizontal">
                     <ImageView
                         android:id="@+id/dashboardCampaign"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:scaleType="centerCrop"
                         android:clickable="true"
+                        android:background="@drawable/right_border"
+                        android:backgroundTint="@color/gray_100"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:src="@mipmap/placeholder_profile_foreground" />
+                        android:src="@mipmap/ic_launcher"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/dashboardCampaignTitle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
-                        android:paddingVertical="10dp"
-                        android:layout_gravity="bottom"
-                        android:gravity="left"
-                        android:text="Quickplay"
-                        android:background="@drawable/bg_top_rounded"
+                        android:paddingTop="10dp"
+                        android:text="Campaign"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    app:cardUseCompatPadding="true"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="10dp">
-                    <ImageView
-                        android:id="@+id/dashboardRandom"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:src="@mipmap/placeholder_profile_foreground" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingVertical="10dp"
-                        android:layout_gravity="bottom"
-                        android:gravity="left"
-                        android:text="Random"
-                        android:background="@drawable/bg_top_rounded"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-        </HorizontalScrollView>
+                        android:id="@+id/dashboardCampaignDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textSize="12sp"
+                        android:background="@drawable/bottom_border"
+                        android:backgroundTint="@color/gray_100"
+                        android:text="Play through a series of levels. Slowly increasing in intensity."
+                        app:layout_constraintBottom_toTopOf="@id/dashboardCampaignArrow"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCampaignTitle"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <ImageButton
+                        android:id="@+id/dashboardCampaignArrow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="?selectableItemBackground"
+                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        android:tint="?attr/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCampaignDescription"
+                        app:layout_constraintVertical_bias="1.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
