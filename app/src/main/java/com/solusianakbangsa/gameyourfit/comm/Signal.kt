@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.comm
 
+import android.util.Log
 import org.json.JSONObject
 
 // Wrapper class for JSONObject, intended to be used for two way communication between browser and
@@ -13,6 +14,7 @@ class Signal(exerciseType : String, status : String, repAmount : Int, flavorText
     var json : JSONObject = JSONObject()
     var meta : JSONObject = JSONObject()
     init {
+        Log.i("yabe","teslkjl")
         json.put("exerciseType", exerciseType)
         json.put("status", status)
         meta.put("targetRep", repAmount)
@@ -35,6 +37,10 @@ class Signal(exerciseType : String, status : String, repAmount : Int, flavorText
 
     fun get(key : String): Any {
         return json.get(key)
+    }
+
+    fun getFromMeta(key: String): Any{
+        return json.getJSONObject("meta").get(key)
     }
 
     override fun toString(): String {
