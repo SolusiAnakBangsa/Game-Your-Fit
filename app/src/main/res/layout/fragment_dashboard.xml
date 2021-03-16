@@ -146,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Today's recommendation for you:"
+            android:text="Today's recommendation for you"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -274,17 +274,24 @@
                         android:background="@drawable/bottom_border"
                         android:backgroundTint="@color/gray_100"
                         android:text="Play through a series of levels. Slowly increasing in intensity."
-                        app:layout_constraintBottom_toTopOf="@id/dashboardCampaignArrow"
+                        app:layout_constraintBottom_toTopOf="@id/dashboardCampaignPlay"
                         app:layout_constraintTop_toBottomOf="@id/dashboardCampaignTitle"
                         app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
                         app:layout_constraintRight_toRightOf="parent"/>
 
-                    <ImageButton
-                        android:id="@+id/dashboardCampaignArrow"
-                        android:layout_width="30dp"
+                    <TextView
+                        android:id="@+id/dashboardCampaignPlay"
+                        android:layout_width="wrap_content"
+                        android:paddingHorizontal="10dp"
                         android:layout_height="30dp"
                         android:background="?selectableItemBackground"
-                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        android:text="PLAY"
+
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary"
                         android:tint="?attr/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
 

@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +20,8 @@ import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import java.io.File
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class CampaignActivity : AppCompatActivity() {
     private lateinit var levelList : LevelList
@@ -35,17 +38,18 @@ class CampaignActivity : AppCompatActivity() {
             this.onBackPressed()
             this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }
-
+        val loading = findViewById<FrameLayout>(R.id.progress_overlay)
+        loading.visibility = View.VISIBLE
         levelContainer = findViewById(R.id.levelLayout)
+        val executor = Executors.newSingleThreadExecutor()
 
-        if(File(this.filesDir ,FileConstants.LEVELS_FILENAME).exists()){
-            readLevelsFromFile()
-        } else{
-            Log.i("json","LEVEL DOENS't EXIST")
+        executor.execute{
+            levelList = LevelList.readLevelsFromFile(this)
+            handler.post{
+                loading.visibility = View.GONE
+                initializeLevels()
+            }
         }
-
-        initializeLevels()
-
     }
 
     fun initializeLevels(){
@@ -55,8 +59,8 @@ class CampaignActivity : AppCompatActivity() {
             val levelTitle : TextView = levelView.findViewById(R.id.levelName)
             val levelLoading : ShimmerFrameLayout = levelView.findViewById(R.id.levelShimmer)
             var bmp : Bitmap? = null
-            levelTitle.text = levelList.getTitleAtLevel(i)
-            levelLoading.baseAlpha = 0.7f
+            levelTitle.text = levelList?.getTitleAtLevel(i)
+            levelLoading.baseAlpha = 0.9f
             levelLoading.duration = 1000
             levelLoading.startShimmerAnimation()
             imageReplacer.replaceImage(handler, levelButton, levelList.getThumbnailAtLevel(i), levelLoading, this, "level$i")
@@ -73,13 +77,5 @@ class CampaignActivity : AppCompatActivity() {
         }
     }
 
-    private fun readLevelsFromFile(){
-        val file = File(this.filesDir, FileConstants.LEVELS_FILENAME)
-        val taskJsonString = file.inputStream().bufferedReader().use { it.readText() }
-        levelList = LevelList(taskJsonString)
-    }
 
-    fun createLevelView(title: String,thumbnailUrl : String){
-//        TODO : implement this
-    }
 }

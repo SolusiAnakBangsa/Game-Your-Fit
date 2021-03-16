@@ -23,12 +23,14 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
+import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 class DashboardFragment : Fragment() {
 
+    private lateinit var levelList : LevelList
     private lateinit var dashboardViewModel: DashboardViewModel
     private lateinit var handler : Handler
     private var _binding: FragmentDashboardBinding? = null
