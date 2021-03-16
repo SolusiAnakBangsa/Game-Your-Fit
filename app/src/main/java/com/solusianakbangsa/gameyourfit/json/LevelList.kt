@@ -48,6 +48,9 @@ class LevelList(jsonString : String){
     fun getTitleAtLevel(index: Int) : String{
         return getLevel(index).getString("title")
     }
+    fun getXpAtLevel(index : Int) : Int{
+        return getLevel(index).getInt("xp")
+    }
 
     override fun toString(): String {
         return jsonArr.toString()

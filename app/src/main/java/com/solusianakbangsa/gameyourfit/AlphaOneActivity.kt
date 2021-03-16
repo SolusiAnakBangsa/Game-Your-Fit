@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.solusianakbangsa.gameyourfit.comm.Signal
@@ -44,6 +45,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Call webrtc function from here
         signal = Signal("jog","pause",0,"",0L)
         rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
+//        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -124,7 +126,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     fun resumeReading(view: View) {
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
-
+        findViewById<FrameLayout>(R.id.popupLayout).visibility = View.VISIBLE
+        findViewById<FrameLayout>(R.id.popupLayout).animate().alpha(1.0f)
         // Send first JSON data to web, indicates *start status*
         signal.replace("status", "start")
         signal.replace("time", SystemClock.elapsedRealtime())

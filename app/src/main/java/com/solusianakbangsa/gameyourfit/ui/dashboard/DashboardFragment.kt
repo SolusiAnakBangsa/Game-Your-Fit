@@ -26,7 +26,9 @@ import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
+import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.concurrent.Executors
 
 class DashboardFragment : Fragment() {
 
@@ -49,6 +51,9 @@ class DashboardFragment : Fragment() {
 
         binding.cardUsernameShimmer.baseAlpha = 0.9f
         binding.cardUsernameShimmer.startShimmerAnimation()
+
+        var randomLvl : Int = 0
+        val executor = Executors.newSingleThreadExecutor()
         val userId = FirebaseAuth.getInstance().uid.toString()
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
@@ -84,21 +89,31 @@ class DashboardFragment : Fragment() {
             imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
         }
 
-        imageReplacer.replaceImage(
-            handler,
-            binding.recommendationFrame,
-            "https://i.ytimg.com/vi/SPX1ps4P-_s/hqdefault.jpg?sqp=-oaymwEcCOADEI4CSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDXfvFRBrXm2ypsQnJUjtdq1314-w",
-        )
-
         val toCampaignActivity = View.OnClickListener{
             val intent = Intent(activity, CampaignActivity::class.java)
             activity?.startActivity(intent)
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
+
+        executor.execute{
+            var levelList = LevelList.readLevelsFromFile(requireActivity())
+            val randomLvl = (0 until levelList.jsonArr.length()).random()
+            handler.post{
+                imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl))
+                binding.recommendationFrame.setOnClickListener {
+                    val intent = Intent(activity, LevelInfoActivity::class.java)
+                    intent.putExtra("taskList", levelList.getTasksAtLevel(randomLvl).toString())
+                    intent.putExtra("title",levelList.getTitleAtLevel(randomLvl))
+                    intent.putExtra("thumbnail",levelList.getThumbnailAtLevel(randomLvl))
+                    activity?.startActivity(intent)
+                    activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+                }
+            }
+        }
+
         binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignDescription.setOnClickListener(toCampaignActivity)
-
         binding.cardProfilePicture.setOnClickListener {
             val intent = Intent(activity, ProfileActivity::class.java)
             val options = ActivityOptions.makeSceneTransitionAnimation(
@@ -108,18 +123,10 @@ class DashboardFragment : Fragment() {
             activity?.startActivity(intent, options.toBundle())
         }
 
-        binding.recommendationFrame.setOnClickListener {
-            val intent = Intent(activity, AlphaOneActivity::class.java)
-            activity?.startActivity(intent)
-            activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
-        }
 
         return binding.root
     }
 
-    fun toCampaign(v : View){
-
-    }
     override fun onResume() {
         super.onResume()
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
