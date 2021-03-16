@@ -37,7 +37,7 @@
         android:id="@+id/webAlpha"
         android:layout_width="410dp"
         android:layout_height="410dp"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:ignore="MissingConstraints" />
 
     <Button
