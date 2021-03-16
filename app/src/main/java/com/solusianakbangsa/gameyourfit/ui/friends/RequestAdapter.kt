@@ -47,6 +47,12 @@ class RequestAdapter(
 
     }
 
+    fun removeReq(selectedIndex: Int){
+        mUsers.toMutableList().removeAt(selectedIndex)
+        notifyDataSetChanged()
+    }
+
+
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         var requestImageView : CircleImageView = itemView.findViewById(R.id.requestProfilePicture)
         var userTxt: TextView = itemView.findViewById(R.id.requestUsername)
