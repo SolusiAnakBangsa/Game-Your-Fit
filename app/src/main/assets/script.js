@@ -2,7 +2,7 @@ var debug = document.getElementById("debug")
 var box = document.getElementById("dataBox")
 function createPeer(roomID){
     // Constructor argument is the ID of the room
-    peer = new Peer(roomID,
+        peer = new Peer(roomID,
         {host: 'rtc.gameyourfit.com',
         secure:true,
         port:6311,
@@ -42,7 +42,7 @@ function onReceiveData(conn){
     conn.on('data', function(data){
         console.log("Remote : " + JSON.stringify(data))
         box.innerHTML += "Remote : " + JSON.stringify(data)
-        Android.parseData(data)
+        Android.replaceData(JSON.stringify(data))
     })
 }
 var roomNumber = Math.random().toString(36).slice(2).substr(0, 5)
