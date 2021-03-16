@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.solusianakbangsa.gameyourfit.comm.Signal
@@ -112,27 +113,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     fun resumeReading(view: View) {
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
-
+        findViewById<FrameLayout>(R.id.popupLayout).visibility = View.VISIBLE
+        findViewById<FrameLayout>(R.id.popupLayout).animate().alpha(1.0f)
         // Send first JSON data to web, indicates *start status*
         signal.replace("status",  "mid")
 
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
-        fixedRateTimer("timer", false, 0L, 1000) {
-            this@AlphaOneActivity.runOnUiThread {
-                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
-                    signal.replace("status", "end")
-
-                    rtc.sendDataToPeer(signal.toString())
-
-                    signal.replace("repAmount", 0)
-                    this.cancel()                           // Stops timer
-                } else {
-                    time = SystemClock.elapsedRealtime()    // Get current time since epoch
-                    signal.replace("time",time)
-                    rtc.sendDataToPeer(signal.toString())
-                }
-            }
-        }
+//        fixedRateTimer("timer", false, 0L, 1000) {
+//            this@AlphaOneActivity.runOnUiThread {
+//                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+//                    signal.replace("status", "end")
+//
+//                    rtc.sendDataToPeer(signal.toString())
+//
+//                    signal.replace("repAmount", 0)
+//                    this.cancel()                           // Stops timer
+//                } else {
+//                    time = SystemClock.elapsedRealtime()    // Get current time since epoch
+//                    signal.replace("time",time)
+//                    rtc.sendDataToPeer(signal.toString())
+//                }
+//            }
+//        }
     }
 
     private fun repCount(axis: Float, high: Double, low: Double) {

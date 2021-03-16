@@ -42,12 +42,15 @@ class ImageReplacer{
                     val outputStream = FileOutputStream(file,false)
                     outputStream.write(bytes.toByteArray())
                 }
+                executor.shutdown()
                 handler.post {
                     imageView.setImageBitmap(bmp)
                     shimmer?.stopShimmerAnimation()
                 }
+
             } catch (e : Exception){
                 Log.i("yabe", "File not found, using placeholder")
+                executor.shutdown()
             }
         }
     }
