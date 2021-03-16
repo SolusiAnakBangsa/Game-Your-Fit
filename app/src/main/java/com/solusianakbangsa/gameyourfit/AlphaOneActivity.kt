@@ -41,7 +41,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
 
-//        Call webrtc function from here
         signal = Signal("jog","pause",0,"",0L)
         rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
 
@@ -112,6 +111,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 thresholdHigh = SensorConstants.SitupHigh
                 thresholdLow = SensorConstants.SitupLow
             }
+            "rhomboid pull" -> {
+                axisUsed = SensorConstants.RhomboidPullAxis
+                thresholdHigh = SensorConstants.RhomboidPullHigh
+                thresholdLow = SensorConstants.RhomboidPullLow
+            }
+            "jumping jack" -> {
+                axisUsed = SensorConstants.JumpJackAxis
+                thresholdHigh = SensorConstants.JumpJackHigh
+                thresholdLow = SensorConstants.JumpJackLow
+            }
+            "squat" -> {
+                axisUsed = SensorConstants.SquatAxis
+                thresholdHigh = SensorConstants.SquatHigh
+                thresholdLow = SensorConstants.SquatLow
+            }
         }
 
         mSensorManager.registerListener(this, mAccelerometerLinear, SensorManager.SENSOR_DELAY_GAME)
@@ -135,12 +149,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
-                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                if (signal.get("targetRep") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
 
                     rtc.sendDataToPeer(signal.toString())
 
-                    signal.replace("repAmount", 0)
+                    signal.replace("targetRep", 0)
                     this.cancel()                           // Stops timer
                     onPause()
                 } else {
@@ -161,7 +175,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep != repBefore) {
-            signal.replace("repAmount", signal.get("repAmount") as Int + 1)
+            signal.replace("targetRep", signal.get("targetRep") as Int + 1)
         }
 
         repBefore = rep
