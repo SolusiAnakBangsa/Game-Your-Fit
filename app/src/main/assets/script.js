@@ -4,7 +4,7 @@ function createPeer(roomID){
     // Constructor argument is the ID of the room
     peer = new Peer(roomID,
         {host: 'rtc.gameyourfit.com',
-        secure:false,
+        secure:true,
         port:6311,
         config: {'iceServers': [
             {url: 'stun:stun.l.google.com:19302'},

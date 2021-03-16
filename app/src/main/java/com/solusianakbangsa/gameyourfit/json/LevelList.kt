@@ -1,12 +1,37 @@
 package com.solusianakbangsa.gameyourfit.json
 
+import android.app.Activity
+import com.solusianakbangsa.gameyourfit.FileConstants
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class LevelList(jsonString : String){
     var jsonArr : JSONArray = JSONArray(
         (JSONObject(jsonString).get("levels")).toString()
     )
+
+    companion object {
+        private fun getStringFromUrl(url : String): String{
+            val textStream = URL(url).openConnection().getInputStream()
+            return textStream.bufferedReader().use { it.readText() }
+        }
+        fun readLevelsFromFile(context : Activity): LevelList{
+            val file = File(context.filesDir, FileConstants.LEVELS_FILENAME)
+            if(file.exists()){
+                val file = File(context.filesDir, FileConstants.LEVELS_FILENAME)
+                val dbJsonString = getStringFromUrl(FileConstants.LEVELS_URL)
+                val outputStream = FileOutputStream(file, false)
+                outputStream.write(dbJsonString.encodeToByteArray())
+            }
+            val taskJsonString = file.inputStream().bufferedReader().use { it.readText() }
+            return LevelList(taskJsonString)
+        }
+    }
 
     fun getLevel(index : Int) : JSONObject {
         return jsonArr.getJSONObject(index)

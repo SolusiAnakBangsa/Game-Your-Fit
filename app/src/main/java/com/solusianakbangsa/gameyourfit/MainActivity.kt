@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                 val dashboardIntent = Intent(this, HomeActivity::class.java)
                 startActivity(dashboardIntent)
                 finish()
-            }else{
+            } else{
                 val loginIntent = Intent(this, LoginActivity::class.java)
                 startActivity(loginIntent)
                 finish()
@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
             val file = File(this.filesDir, FileConstants.LEVELS_FILENAME)
             val dbJsonString = getStringFromUrl(FileConstants.LEVELS_URL)
             val outputStream = FileOutputStream(file, false)
-            Log.i("test","test")
             outputStream.write(dbJsonString.encodeToByteArray())
             executor.shutdown()
         }
