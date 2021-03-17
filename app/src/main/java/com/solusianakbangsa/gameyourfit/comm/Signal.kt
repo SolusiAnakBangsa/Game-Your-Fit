@@ -37,6 +37,10 @@ class Signal(exerciseType : String, status : String, repAmount : Int, flavorText
         return json.get(key)
     }
 
+    fun getMeta(key: String): Any{
+        return json.getJSONObject("meta").get(key)
+    }
+
     override fun toString(): String {
         return json.toString()
     }
