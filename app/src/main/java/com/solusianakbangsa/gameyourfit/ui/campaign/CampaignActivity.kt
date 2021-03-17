@@ -34,7 +34,7 @@ class CampaignActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.campaignToolbar)
         setSupportActionBar(toolbar)
-        findViewById<Toolbar>(R.id.campaignToolbar).setNavigationOnClickListener{
+        toolbar.setNavigationOnClickListener{
             this.onBackPressed()
             this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }

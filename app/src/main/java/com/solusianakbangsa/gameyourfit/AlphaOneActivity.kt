@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -38,13 +40,20 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
+        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener{
+            this.onBackPressed()
+            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
+        }
+
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
 
-        viewModel.signal = Signal("jog","pause",0,0,"",0L)
+        viewModel.signal = Signal("jog","standby",0,0,"",0L)
         signal = viewModel.signal
         rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
 //        Generates a random peer,
@@ -52,8 +61,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
-        val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
-        setSupportActionBar(toolbar)
 
 //        for (i in 0 until taskList.jsonArr.length()) {
 //            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
@@ -61,17 +68,23 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        }
 //        Log.i("exerciseList", exerciseList.toString())
 
+        val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
             if (it == "startgame"){
                 resumeReading()
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                inProgressLayout.visibility = View.VISIBLE
+                inProgressLayout.bringToFront()
             } else if(it == "end"){
 //                exercise.getNext() if index < length
 //                if(adaSisa)
 //                else{
 //                endgame
-            } else if(it == "endGame"){
-
+            } else if(it == "endgame"){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                inProgressLayout.visibility = View.GONE
+//                Show summary here
             }
         })
     }

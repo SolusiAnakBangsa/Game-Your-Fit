@@ -24,7 +24,6 @@
             app:popupTheme="@style/Theme.GameYourFit.PopupOverlay"
             app:titleTextAppearance="@style/ActionBarText"
             app:titleTextColor="?attr/colorOnPrimary" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
