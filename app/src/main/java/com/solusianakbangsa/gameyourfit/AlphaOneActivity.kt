@@ -150,12 +150,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
-                if (signal.get("targetRep") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                if (signal.getMeta("targetRep") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
 
                     rtc.sendDataToPeer(signal.toString())
 
-                    signal.replace("targetRep", 0)
+                    signal.replaceMeta("targetRep", 0)
                     this.cancel()                           // Stops timer
                     onPause()
                 } else {

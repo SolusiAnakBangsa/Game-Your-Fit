@@ -98,16 +98,16 @@ class DashboardFragment : Fragment() {
         executor.execute{
             var levelList = LevelList.readLevelsFromFile(requireActivity())
             val randomLvl = (0 until levelList.jsonArr.length()).random()
+            binding.recommendationFrame.setOnClickListener {
+                val intent = Intent(activity, LevelInfoActivity::class.java)
+                intent.putExtra("taskList", levelList.getTasksAtLevel(randomLvl).toString())
+                intent.putExtra("title",levelList.getTitleAtLevel(randomLvl))
+                intent.putExtra("thumbnail",levelList.getThumbnailAtLevel(randomLvl))
+                activity?.startActivity(intent)
+                activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+            }
             handler.post{
                 imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl))
-                binding.recommendationFrame.setOnClickListener {
-                    val intent = Intent(activity, LevelInfoActivity::class.java)
-                    intent.putExtra("taskList", levelList.getTasksAtLevel(randomLvl).toString())
-                    intent.putExtra("title",levelList.getTitleAtLevel(randomLvl))
-                    intent.putExtra("thumbnail",levelList.getThumbnailAtLevel(randomLvl))
-                    activity?.startActivity(intent)
-                    activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
-                }
             }
         }
 

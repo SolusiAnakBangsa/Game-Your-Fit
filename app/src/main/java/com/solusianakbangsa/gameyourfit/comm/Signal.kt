@@ -29,6 +29,14 @@ class Signal(exerciseType : String, status : String, repAmount : Int, flavorText
         return false
     }
 
+    fun <T> replaceMeta(key: String, value : T) : Boolean{
+        if(json.getJSONObject("meta").has(key)){
+            json.put(key,value)
+            return true
+        }
+        return false
+    }
+
     fun <T> put(key : String, value : T){
         json.put(key,value)
     }
