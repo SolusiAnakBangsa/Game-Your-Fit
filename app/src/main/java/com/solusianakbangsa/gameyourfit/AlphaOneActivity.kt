@@ -25,6 +25,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var signal : Signal
     private lateinit var taskList : TaskList
     private lateinit var viewModel : SensorViewModel
+    private lateinit var exercises : Signal
 
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -44,7 +45,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
             this.onBackPressed()
-            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
+            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right)
         }
 
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
@@ -62,29 +63,33 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
 
-//        for (i in 0 until taskList.jsonArr.length()) {
-//            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
-//            exerciseList.add(signal)
-//        }
-//        Log.i("exerciseList", exerciseList.toString())
+        for (i in 0 until taskList.jsonArr.length()) {
+            exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L)
+            exerciseList.add(exercises)
+        }
+        Log.i("exerciseList", exerciseList.toString())
 
         val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
-            if (it == "startgame"){
-                resumeReading()
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                inProgressLayout.visibility = View.VISIBLE
-                inProgressLayout.bringToFront()
-            } else if(it == "end"){
+            when (it) {
+                "startgame" -> {
+                    resumeReading()
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+//                    inProgressLayout.visibility = View.VISIBLE
+//                    inProgressLayout.bringToFront()
+                }
+                "end" -> {
 //                exercise.getNext() if index < length
 //                if(adaSisa)
 //                else{
 //                endgame
-            } else if(it == "endgame"){
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                inProgressLayout.visibility = View.GONE
-//                Show summary here
+                }
+                "endgame" -> {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+//                    inProgressLayout.visibility = View.GONE
+//                    Show summary here
+                }
             }
         })
     }
@@ -100,9 +105,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 val axisX: Float = event.values[0]
                 val axisY: Float = event.values[1]
                 val axisZ: Float = event.values[2]
-
-                /* TODO : Implement for loops to parse JSON (every task and its frequency from tasks)
-                Loop through JSON dictionary and change variable exercise to task and variable counterMax to freq */
 
                 when (axisUsed) {
                     'X' -> repCount(axisX, thresholdHigh, thresholdLow)
@@ -158,6 +160,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 thresholdHigh = SensorConstants.SquatHigh
                 thresholdLow = SensorConstants.SquatLow
             }
+            "reclined rhomboid squeeze" -> {
+                axisUsed = SensorConstants.ReclinedRhomboidAxis
+                thresholdHigh = SensorConstants.ReclinedRhomboidHigh
+                thresholdLow = SensorConstants.ReclinedRhomboidLow
+            }
+            "forward lunge" -> {
+                axisUsed = SensorConstants.ForwardLungeAxis
+                thresholdHigh = SensorConstants.ForwardLungeHigh
+                thresholdLow = SensorConstants.ForwardLungeLow
+            }
+            "jumping squat" -> {
+                axisUsed = SensorConstants.JumpSquatAxis
+                thresholdHigh = SensorConstants.JumpSquatHigh
+                thresholdLow = SensorConstants.JumpSquatLow
+            }
         }
 
         mSensorManager.registerListener(this, mAccelerometerLinear, SensorManager.SENSOR_DELAY_GAME)
@@ -168,9 +185,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mSensorManager.unregisterListener(this)
     }
 
-    fun resumeReading() {
-        Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
-
+    private fun resumeReading() {
         // Send first JSON data to web, indicates *start status*
         signal.replace("status", "start")
         signal.replace("time", SystemClock.elapsedRealtime())
@@ -179,6 +194,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         signal.replace("status",  "mid")
 
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
+        timer()
+    }
+
+    private fun timer() {
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.getMeta("targetRep") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency

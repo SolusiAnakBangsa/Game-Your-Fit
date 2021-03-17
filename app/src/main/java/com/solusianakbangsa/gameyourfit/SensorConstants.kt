@@ -6,7 +6,6 @@ import java.util.*
 
 object SensorConstants {
     // Jogging
-
     val JogAxis = 'X'
     val JogHigh = 6.5
     val JogLow = -6.5
@@ -35,4 +34,22 @@ object SensorConstants {
     val SquatAxis = 'Y'
     val SquatHigh = 0.75
     val SquatLow = -1.5
+
+    // Reclined Rhomboid Squeeze
+    val ReclinedRhomboidAxis = 'Z'
+    val ReclinedRhomboidHigh = 2.35
+    val ReclinedRhomboidLow = -4.0
+
+    // Forward Lunges
+    val ForwardLungeAxis = 'X'
+    val ForwardLungeHigh = 2.5
+    val ForwardLungeLow = -3.0
+
+    // Jumping Squat
+    val JumpSquatAxis = 'X'
+    val JumpSquatHigh = 10.0
+    val JumpSquatLow = -11.0
+
+    // Met value
+
 }
