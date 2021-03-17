@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import java.util.*
@@ -21,6 +22,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
     private lateinit var taskList : TaskList
+    private lateinit var viewModel : SensorViewModel
 
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -36,13 +38,15 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
+        viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
 
-        signal = Signal("jog","pause",0,"",0L)
-        rtc = WebRtc(findViewById(R.id.webAlpha),this, signal)
+        viewModel.signal = Signal("jog","pause",0,"",0L)
+        signal = viewModel.signal
+        rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
 //        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -56,6 +60,17 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             exerciseList.add(signal)
         }
         Log.i("exerciseList", exerciseList.toString())
+
+        viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
+            Log.i("yabe", "Status : $it")
+            if (it == "startgame"){
+                resumeReading()
+            } else if(it == "end"){
+
+            } else if(it == "endGame"){
+
+            }
+        })
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -137,7 +152,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mSensorManager.unregisterListener(this)
     }
 
-    fun resumeReading(view: View) {
+    fun resumeReading() {
         Toast.makeText(this, "Activity resumed", Toast.LENGTH_SHORT).show()
 
         // Send first JSON data to web, indicates *start status*

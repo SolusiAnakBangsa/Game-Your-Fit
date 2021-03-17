@@ -34,7 +34,7 @@ function connectToOther(destinationID){
     onReceiveData(connection)
 }
 function sendData(data){
-    box.innerHTML += "Local : " + data
+    box.innerHTML += "Local : " + JSON.stringify(data)
     connection.send(data)
 }
 
