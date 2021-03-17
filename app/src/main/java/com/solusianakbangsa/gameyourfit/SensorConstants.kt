@@ -6,6 +6,7 @@ import java.util.*
 
 object SensorConstants {
     // Jogging
+
     val JogAxis = 'X'
     val JogHigh = 6.5
     val JogLow = -6.5

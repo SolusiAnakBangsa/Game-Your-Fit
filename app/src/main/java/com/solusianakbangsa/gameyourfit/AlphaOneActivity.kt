@@ -44,7 +44,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
 
-        viewModel.signal = Signal("jog","pause",0,"",0L)
+        viewModel.signal = Signal("jog","pause",0,0,"",0L)
         signal = viewModel.signal
         rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
 //        Generates a random peer,
@@ -55,18 +55,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         setSupportActionBar(toolbar)
 
-        for (i in 0 until taskList.jsonArr.length()) {
-            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
-            exerciseList.add(signal)
-        }
-        Log.i("exerciseList", exerciseList.toString())
+//        for (i in 0 until taskList.jsonArr.length()) {
+//            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
+//            exerciseList.add(signal)
+//        }
+//        Log.i("exerciseList", exerciseList.toString())
 
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
             if (it == "startgame"){
                 resumeReading()
             } else if(it == "end"){
-
+//                exercise.getNext() if index < length
+//                if(adaSisa)
+//                else{
+//                endgame
             } else if(it == "endGame"){
 
             }
@@ -171,6 +174,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     rtc.sendDataToPeer(signal.toString())
 
                     signal.replaceMeta("targetRep", 0)
+                    viewModel.currentStatus.postValue("end")
                     this.cancel()                           // Stops timer
                     onPause()
                 } else {
@@ -191,9 +195,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep != repBefore) {
-            signal.replace("targetRep", signal.get("targetRep") as Int + 1)
+            signal.replaceMeta("targetRep", signal.getMeta("targetRep") as Int + 1)
         }
-
         repBefore = rep
     }
 }

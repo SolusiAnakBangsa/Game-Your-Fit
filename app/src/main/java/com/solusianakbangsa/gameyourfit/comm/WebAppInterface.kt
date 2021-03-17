@@ -22,7 +22,7 @@ class WebAppInterface(private val mContext: Context, var viewModel: SensorViewMo
 
 //    Function below fires when function Android.sendToAndroid is called from javascript
     @JavascriptInterface
-    fun sendToAndroid(data : String){
+    fun updateMessage(data : String){
 //        Do whatever here
         Log.i(TAG,data)
     }
