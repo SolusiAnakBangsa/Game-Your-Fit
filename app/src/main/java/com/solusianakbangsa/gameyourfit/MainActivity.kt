@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URL
 import java.util.concurrent.Executors
 
@@ -43,14 +45,19 @@ class MainActivity : AppCompatActivity() {
         val executor = Executors.newSingleThreadExecutor()
         executor.execute{
             val file = File(this.filesDir, FileConstants.LEVELS_FILENAME)
-            val dbJsonString = getStringFromUrl(FileConstants.LEVELS_URL)
+//            Will keep retrying to get LevelLists from url.
+            val dbJsonString = LevelList.getStringFromUrl(FileConstants.LEVELS_URL)
             val outputStream = FileOutputStream(file, false)
             outputStream.write(dbJsonString.encodeToByteArray())
             executor.shutdown()
         }
     }
     private fun getStringFromUrl(url : String): String{
-        val textStream = URL(url).openConnection().getInputStream()
-        return textStream.bufferedReader().use { it.readText() }
+        try{
+            val textStream = URL(url).openConnection().getInputStream()
+            return textStream.bufferedReader().use { it.readText() }
+        } catch (e : IOException){
+            return LevelList.readLevelsFromFile(this).toString()
+        }
     }
 }

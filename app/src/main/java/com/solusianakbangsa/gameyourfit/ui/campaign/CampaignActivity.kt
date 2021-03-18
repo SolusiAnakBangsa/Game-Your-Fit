@@ -34,7 +34,7 @@ class CampaignActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.campaignToolbar)
         setSupportActionBar(toolbar)
-        findViewById<Toolbar>(R.id.campaignToolbar).setNavigationOnClickListener{
+        toolbar.setNavigationOnClickListener{
             this.onBackPressed()
             this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }
@@ -59,7 +59,7 @@ class CampaignActivity : AppCompatActivity() {
             val levelTitle : TextView = levelView.findViewById(R.id.levelName)
             val levelLoading : ShimmerFrameLayout = levelView.findViewById(R.id.levelShimmer)
             var bmp : Bitmap? = null
-            levelTitle.text = levelList?.getTitleAtLevel(i)
+            levelTitle.text = levelList.getTitleAtLevel(i)
             levelLoading.baseAlpha = 0.9f
             levelLoading.duration = 1000
             levelLoading.startShimmerAnimation()
@@ -67,11 +67,12 @@ class CampaignActivity : AppCompatActivity() {
 
             levelButton.setOnClickListener{
                 val intent = Intent(this, LevelInfoActivity::class.java)
+                intent.putExtra("levelList", levelList.toString())
                 intent.putExtra("taskList", levelList.getTasksAtLevel(i).toString())
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
                 intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))
                 this.startActivity(intent)
-                this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+                this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left)
             }
             levelContainer.addView(levelView)
         }

@@ -14,10 +14,9 @@ private var TAG = "WebRTC"
 
 // Accepts a WebView object and uses that to run javascript code
 // When using this class from an activity class, provide "this", as argument for Context
-class WebRtc (webView : WebView, mContext: Context, signal : Signal){
-    private var wv : WebView
+class WebRtc (webView : WebView, mContext: Context, viewModel: SensorViewModel ){
+    private var wv : WebView = webView
     init{
-        wv = webView
         wv.settings.javaScriptEnabled = true
 
 //        Overrides javascript log message so that console shows in logcat
@@ -27,7 +26,7 @@ class WebRtc (webView : WebView, mContext: Context, signal : Signal){
             }
         }
         wv.loadUrl("file:///android_asset/androidSide.html")
-        wv.addJavascriptInterface(WebAppInterface(mContext,signal),"Android")
+        wv.addJavascriptInterface(WebAppInterface(mContext,viewModel),"Android")
 
     }
 
