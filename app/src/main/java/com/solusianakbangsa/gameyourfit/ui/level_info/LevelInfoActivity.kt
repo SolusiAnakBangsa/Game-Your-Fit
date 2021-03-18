@@ -38,7 +38,10 @@ class LevelInfoActivity : AppCompatActivity() {
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
-        val levelList = intent.getStringExtra("levelList")
+        if(intent.getStringExtra("levelList") != null){
+            levelListString = intent.getStringExtra("levelList")!!
+        }
+
         val fullTitle = intent.getStringExtra("title")
 
         title = fullTitle
