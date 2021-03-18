@@ -96,10 +96,11 @@ class DashboardFragment : Fragment() {
         }
 
         executor.execute{
-            var levelList = LevelList.readLevelsFromFile(requireActivity())
+            levelList = LevelList.readLevelsFromFile(requireActivity())
             val randomLvl = (0 until levelList.jsonArr.length()).random()
             binding.recommendationFrame.setOnClickListener {
                 val intent = Intent(activity, LevelInfoActivity::class.java)
+                intent.putExtra("levelList", levelList.toString())
                 intent.putExtra("taskList", levelList.getTasksAtLevel(randomLvl).toString())
                 intent.putExtra("title",levelList.getTitleAtLevel(randomLvl))
                 intent.putExtra("thumbnail",levelList.getThumbnailAtLevel(randomLvl))

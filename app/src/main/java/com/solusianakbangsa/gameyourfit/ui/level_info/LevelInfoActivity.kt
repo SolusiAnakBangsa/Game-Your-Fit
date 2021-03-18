@@ -64,13 +64,6 @@ class LevelInfoActivity : AppCompatActivity() {
             }
         })
 
-        if(intent.getStringExtra("taskList") != null){
-            taskList = TaskList(intent.getStringExtra("taskList")!!)
-        }
-        if(intent.getStringExtra("levelList") != null){
-            levelListString = intent.getStringExtra("levelList")!!
-        }
-
         for(i in 0 until taskList.jsonArr.length()){
 //            Log.i("json", i.toString())
             createTaskInfo(taskList.getTaskTypeAt(i), taskList.getTaskFreqAt(i), i)
