@@ -7,15 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.auth.User
 import java.text.SimpleDateFormat
@@ -69,7 +65,20 @@ class FriendsRequestFragment(
         mUsers = ArrayList()
         requestUser = ArrayList()
         retrieveAllRequests()
+        //        setData()
+
         return view
+    }
+
+    private fun setData() {
+        var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        val query= FirebaseDatabase.getInstance().reference.child("users").child(firebaseUserId)
+        val options = FirebaseRecyclerOptions.Builder<User>()
+            .setQuery(query, User:: class.java)
+            .build()
+
+//        reqAdapter = FriendRequestAdapter(options)
+        recycleView?.adapter = reqAdapter
     }
 
     private fun retrieveAllRequests() {
@@ -130,6 +139,8 @@ class FriendsRequestFragment(
 
 
 
+
+
     private fun AcceptFriend(senderUserId: String, receiverUserId: String, position: Int) {
         val date = Calendar.getInstance().time
         val formatter = SimpleDateFormat.getDateTimeInstance() //or use getDateInstance()
@@ -139,8 +150,8 @@ class FriendsRequestFragment(
 
         friendRef.child(senderUserId).child(receiverUserId).child("date").setValue(formatedDate).addOnCompleteListener{ task ->
             if (task.isSuccessful){
-                friendHash["receiver"] = receiverUserId
-                friendHash["sender"] = senderUserId
+                friendHash["friend"] = receiverUserId
+                friendHash["status"] = "friends"
                 friendRef.child(senderUserId).child(receiverUserId)
                     .updateChildren(friendHash).addOnCompleteListener{ task1 ->
                         if (task1.isSuccessful){
@@ -148,44 +159,14 @@ class FriendsRequestFragment(
                                 .child(senderUserId).child("date").setValue(formatedDate)
                                 .addOnCompleteListener{ task2 ->
                                     if (task2.isSuccessful){
-                                        friendHash["receiver"] = receiverUserId
-                                        friendHash["sender"] = senderUserId
+                                        friendHash["friend"] = senderUserId
+                                        friendHash["status"] = "friends"
                                         friendRef.child(receiverUserId)
                                             .child(senderUserId)
                                             .updateChildren(friendHash)
                                             .addOnCompleteListener{ task3->
                                                 if (task3.isSuccessful){
-
-                                                    friendReqRef.child(receiverUserId).child(
-                                                        senderUserId
-                                                    ).removeValue().addOnCompleteListener { task4 ->
-                                                        if (task4.isSuccessful){
-                                                            friendReqRef.child(senderUserId).child(
-                                                                receiverUserId
-                                                            ).removeValue().addOnCompleteListener { task5 ->
-                                                                if (task5.isSuccessful){
-                                                                    reqAdapter?.removeReq(position)
-                                                                    Toast.makeText(
-                                                                        requireContext(),
-                                                                        "Friend Accepted.",
-                                                                        Toast.LENGTH_SHORT
-                                                                    ).show()
-                                                                }else{
-                                                                    Toast.makeText(
-                                                                        requireContext(),
-                                                                        "Failed to accept",
-                                                                        Toast.LENGTH_SHORT
-                                                                    ).show()
-                                                                }
-                                                            }
-                                                        }else{
-                                                            Toast.makeText(
-                                                                requireContext(),
-                                                                "Failed to accept",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
-                                                        }
-                                                    }
+                                                    removeFromDB(friendReqRef, senderUserId, receiverUserId, "Friend Accepted.", "Failed to accept.")
                                                 }
                                             }
                                     }else{
@@ -200,7 +181,7 @@ class FriendsRequestFragment(
                             Toast.makeText(requireContext(), "Failed to accept", Toast.LENGTH_SHORT).show()
                         }
                     }
-                
+
             }else{
                 Toast.makeText(requireContext(), "Failed to accept", Toast.LENGTH_SHORT).show()
             }
@@ -208,8 +189,49 @@ class FriendsRequestFragment(
         }
     }
 
+    private fun removeFromDB(
+        friendReqRef: DatabaseReference,
+        senderUserId: String,
+        receiverUserId: String,
+        msg: String,
+        msgFail: String
+    ) {
+        friendReqRef.child(receiverUserId).child(
+            senderUserId
+        ).removeValue().addOnCompleteListener { task4 ->
+            if (task4.isSuccessful){
+                friendReqRef.child(senderUserId).child(
+                    receiverUserId
+                ).removeValue().addOnCompleteListener { task5 ->
+                    if (task5.isSuccessful){
+                        Toast.makeText(
+                            requireContext(),
+                            msg,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }else{
+                        Toast.makeText(
+                            requireContext(),
+                            msgFail,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }else{
+                Toast.makeText(
+                    requireContext(),
+                    msgFail,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     override fun OnDeclineClick(user: User, position: Int) {
-        Toast.makeText(requireContext(), "itworks", Toast.LENGTH_SHORT).show()
+        var friendReqRef = FirebaseDatabase.getInstance().reference.child("FriendRequests")
+        var senderUserId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        var receiverUserId = user.userId.toString()
+        removeFromDB(friendReqRef, senderUserId, receiverUserId, "Friend Declined.", "Failed to decline.")
     }
 
 
