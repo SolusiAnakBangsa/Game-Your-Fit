@@ -1,6 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +61,7 @@ class FriendsRequestFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.i("yabe","mamamia")
         val view: View = inflater.inflate(R.layout.fragment_friends_content, container, false)
         recycleView = view.findViewById(R.id.requestList)
         recycleView!!.setHasFixedSize(true)

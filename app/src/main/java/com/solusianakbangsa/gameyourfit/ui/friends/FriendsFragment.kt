@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_friends.view.*
 import org.w3c.dom.Text
 
 class FriendsFragment : Fragment() {
+    private lateinit var adapter: FragmentStatePagerAdapter
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -33,7 +34,7 @@ class FriendsFragment : Fragment() {
 //        TODO : RECYCLERVIEW AHHHHHH
         val root = inflater.inflate(R.layout.fragment_friends, container, false)
         var vp : ViewPager = root.findViewById(R.id.friendsViewPager)
-        var adapter : FragmentStatePagerAdapter = FriendsPagerAdapter(childFragmentManager)
+        adapter = FriendsPagerAdapter(childFragmentManager)
         vp.adapter = adapter
         vp.pageMargin = 60
 
@@ -47,5 +48,12 @@ class FriendsFragment : Fragment() {
             requireActivity().startActivity(intent)
         }
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!(adapter == null)){
+            adapter.notifyDataSetChanged()
+        }
     }
 }
