@@ -38,6 +38,13 @@ class FriendsFragment : Fragment() {
         vp.adapter = adapter
         vp.pageMargin = 60
 
+        vp.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                adapter.notifyDataSetChanged()
+            }
+        })
+
 //        vp.layoutParams = ViewGroup.LayoutParams(vp.width , Resources.getSystem().displayMetrics.heightPixels)
         var tabs : TabLayout = root.findViewById(R.id.friendsTab)
         tabs.setupWithViewPager(vp)
@@ -48,12 +55,5 @@ class FriendsFragment : Fragment() {
             requireActivity().startActivity(intent)
         }
         return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(!(adapter == null)){
-            adapter.notifyDataSetChanged()
-        }
     }
 }

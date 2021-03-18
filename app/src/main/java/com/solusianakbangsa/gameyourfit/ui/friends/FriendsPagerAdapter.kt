@@ -13,7 +13,8 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
         when(position){
             0 -> {
                 return FriendsListFragment()}
-            1 -> {return FriendsRequestFragment()}
+            1 -> {
+                return FriendsRequestFragment()}
 //            TODO : Create 'something went wrong' fragment
             else -> {return SettingsFragment()}
         }
