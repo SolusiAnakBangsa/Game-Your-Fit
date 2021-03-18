@@ -21,11 +21,6 @@ class RequestAdapter(
     private val mContext: Context = mContext
     private val mUsers: List<User> = mUsers
 
-    private var listener: ((item: User) -> Unit)? = null
-
-    fun setOnItemClickListener(listener: (item: User) -> Unit) {
-        this.listener = listener
-    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -85,4 +80,3 @@ interface OnImageClickListener{
 
     }
 }
-
