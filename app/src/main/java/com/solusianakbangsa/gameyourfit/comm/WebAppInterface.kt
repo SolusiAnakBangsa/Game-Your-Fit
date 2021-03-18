@@ -22,9 +22,9 @@ class WebAppInterface(private val mContext: Context, var viewModel: SensorViewMo
 
 //    Function below fires when function Android.sendToAndroid is called from javascript
     @JavascriptInterface
-    fun updateMessage(data : String){
+    fun updateMessage(message : String){
 //        Do whatever here
-        Log.i(TAG,data)
+        viewModel.standbyMessage.postValue(message)
     }
 
     @JavascriptInterface
@@ -39,7 +39,6 @@ class WebAppInterface(private val mContext: Context, var viewModel: SensorViewMo
         }
         if(!temp.optString("status").isNullOrEmpty()){
             status.postValue(temp.getString("status"))
-            Log.i("yabe", "jjgamer")
         }
     }
 }

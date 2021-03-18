@@ -76,7 +76,7 @@ class LevelInfoActivity : AppCompatActivity() {
     private fun createTaskInfo(name : String, freq: Int, index : Int){
         val taskInfo : View = layoutInflater.inflate(R.layout.task_info_card, null, false)
 
-        taskInfo.findViewById<TextView>(R.id.taskName).text = TaskDictionary.taskDictionary[name]
+        taskInfo.findViewById<TextView>(R.id.taskName).text = name
         taskInfo.findViewById<TextView>(R.id.taskFreq).text = "x$freq"
         levelInfoContent.addView(taskInfo, (index + 1))
     }

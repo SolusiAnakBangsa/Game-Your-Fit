@@ -13,15 +13,18 @@ function createPeer(roomID){
     peer.on('open', function(id){
         console.log("Peer opened, ID : " + id)
         debug.innerHTML += "Peer opened, ID : " + id
+        Android.updateMessage("Created room, ID : " + id)
     })
     peer.on('connection',function(conn){
         console.log("Attempting connection")
-        debug.innerHTML += "Connected"
+        debug.innerHTML += "Connecting"
         connection = conn
+        Android.updateMessage("Connecting to browser..")
         onReceiveData(connection)
     })
     peer.on('error', function(err){
         console.log(err)
+        Android.updateMessage("Something went wrong :(")
     })
     return roomID
 }

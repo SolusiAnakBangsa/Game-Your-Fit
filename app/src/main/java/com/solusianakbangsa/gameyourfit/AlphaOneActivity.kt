@@ -1,22 +1,40 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.animation.*
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.addListener
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.card.MaterialCardView
+import com.google.firebase.database.PropertyName
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
+import kotlinx.android.synthetic.main.summary_popup.*
+import org.w3c.dom.Text
+import java.time.Duration
 import java.util.*
+import java.util.stream.Stream
 import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
@@ -36,6 +54,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
     private var time = 0L
+    private val handler : Handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +66,13 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
         }
 
-        viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
+        val standbyMessageView : TextView = findViewById(R.id.sensorStandbyMessage)
+        findViewById<ImageView>(R.id.summaryHome).setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            this.startActivity(intent)
+        }
 
+        viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
@@ -61,7 +85,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
 
-
 //        for (i in 0 until taskList.jsonArr.length()) {
 //            signal = Signal(taskList.getTaskTypeAt(i), "pause", taskList.getTaskFreqAt(i), "", 0L)
 //            exerciseList.add(signal)
@@ -69,6 +92,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 //        Log.i("exerciseList", exerciseList.toString())
 
         val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
+        viewModel.standbyMessage.observe(this, androidx.lifecycle.Observer {
+            standbyMessageView.text = it
+        })
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
             if (it == "startgame"){
@@ -76,7 +102,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 inProgressLayout.visibility = View.VISIBLE
                 inProgressLayout.bringToFront()
-            } else if(it == "end"){
 //                exercise.getNext() if index < length
 //                if(adaSisa)
 //                else{
@@ -85,6 +110,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 inProgressLayout.visibility = View.GONE
 //                Show summary here
+                animateSummary("garb",20000,30000)
             }
         })
     }
@@ -211,5 +237,58 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             signal.replaceMeta("targetRep", signal.getMeta("targetRep") as Int + 1)
         }
         repBefore = rep
+    }
+
+    private fun valueAnimator(view: TextView, initialValue : Int, endValue : Int): Animator{
+//        Don't forget to remove update listener after using this
+        val animator = ValueAnimator.ofInt(initialValue, endValue)
+        animator.addUpdateListener {animation ->
+            view.text = animation.animatedValue.toString()
+            handler
+        }
+        return animator
+    }
+
+    private fun fadeInAnimator(view: View, duration : Long = 500L) : Animator{
+        var animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
+            view.alpha = 0.0f
+            setDuration(duration)
+        }
+        return animator
+    }
+    private fun animateSummary(title : String, time : Int, calories : Int){
+//        TODO : Create function to convert timeMill to HH:MM:SS
+        val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+
+        val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
+        val summaryLayoutAnim = fadeInAnimator(findViewById(R.id.summaryLayout),1000L)
+        val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
+        val levelIcon = fadeInAnimator(findViewById(R.id.summaryIcon))
+
+        val timeTitle = fadeInAnimator(findViewById(R.id.summaryTimeTitle))
+
+        val timeContentHourText : TextView = findViewById(R.id.summaryTimeHour)
+        val timeContentMinuteText : TextView = findViewById(R.id.summaryTimeMinute)
+        val timeContentSecondText : TextView = findViewById(R.id.summaryTimeSecond)
+        timeContentHourText.text = "13 :"
+        timeContentMinuteText.text = " 22 :"
+        timeContentSecondText.text = " 59"
+
+        val timeContent = fadeInAnimator(findViewById(R.id.summaryTime))
+        val caloryTitle = fadeInAnimator(findViewById(R.id.summaryCaloriesTitle))
+        val caloryContentText : TextView = findViewById(R.id.summaryCalories)
+        val caloryContent = fadeInAnimator(caloryContentText)
+        caloryContentText.text = "$calories cal"
+
+        summaryLayout.visibility = View.VISIBLE
+        val animSet = AnimatorSet().apply{
+            play(summaryLayoutAnim).before(levelTitle)
+            play(levelTitle).with(levelIcon)
+            play(levelIcon).before(timeTitle)
+            play(timeTitle).with(timeContent)
+            play(timeContent).before(caloryTitle)
+            play(caloryTitle).with(caloryContent)
+        }
+        animSet.start()
     }
 }

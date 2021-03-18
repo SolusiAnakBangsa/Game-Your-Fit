@@ -8,4 +8,5 @@ import com.solusianakbangsa.gameyourfit.comm.Signal
 class SensorViewModel : ViewModel() {
     lateinit var signal : Signal
     val currentStatus = MutableLiveData<String>()
+    val standbyMessage = MutableLiveData<String>()
 }

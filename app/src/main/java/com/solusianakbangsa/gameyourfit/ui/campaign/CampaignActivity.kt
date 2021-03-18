@@ -71,7 +71,7 @@ class CampaignActivity : AppCompatActivity() {
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
                 intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))
                 this.startActivity(intent)
-                this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+                this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left)
             }
             levelContainer.addView(levelView)
         }

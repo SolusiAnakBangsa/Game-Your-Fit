@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:animateLayoutChanges="true"
-    android:id="@+id/popupLayout"
-    android:visibility="invisible"
+    android:id="@+id/summaryLayout"
     android:alpha="0.0"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/popupCard"
+        android:id="@+id/summaryCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_bar_height"
@@ -37,22 +37,23 @@
                 android:layout_height="match_parent">
 
                 <TextView
-
+                    android:id="@+id/summaryTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-
                     android:paddingVertical="10dp"
                     android:textSize="14sp"
                     android:text="Level 1 : Game your'e Fit!!!"
                     android:textStyle="italic"/>
                 <ImageView
+                    android:id="@+id/summaryIcon"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher"/>
                 <TextView
+                    android:id="@+id/summaryTimeTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="16dp"
@@ -60,18 +61,42 @@
                     android:text="Time Elapsed : "
                     android:textSize="18sp"
                     android:gravity="center"/>
-                <TextView
+                <LinearLayout
                     android:id="@+id/summaryTime"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_marginHorizontal="20dp"
-                    android:text="00 : 06 : 24"
-                    android:textSize="40sp"
                     android:background="@drawable/dotted_vertical_border"
                     android:backgroundTint="@color/gray_300"
-                    android:gravity="center"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/summaryTimeHour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="16dp"
+                        android:text="00 :"
+                        android:textSize="40sp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/summaryTimeMinute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="16dp"
+                        android:text=" 06 "
+                        android:textSize="40sp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/summaryTimeSecond"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="16dp"
+                        android:text=": 24"
+                        android:textSize="40sp"
+                        android:gravity="center"/>
+                </LinearLayout>
                 <TextView
+                    android:id="@+id/summaryCaloriesTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="50dp"
@@ -92,6 +117,7 @@
                     android:backgroundTint="@color/gray_300"
                     android:gravity="center"/>
                 <RelativeLayout
+                    android:id="@+id/summaryHomeCard"
                     android:paddingVertical="50dp"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -102,8 +128,13 @@
                         app:cardCornerRadius="20dp"
                         app:cardBackgroundColor="?attr/colorPrimary">
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:id="@+id/summaryHome"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="7dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_menu_home"
                             app:tint="@color/white" />
