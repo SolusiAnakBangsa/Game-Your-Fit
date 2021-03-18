@@ -39,7 +39,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var viewModel : SensorViewModel
     private lateinit var exercises : Signal
     private lateinit var levelListString: String
-    private lateinit var weight : Int
 
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -57,8 +56,13 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        var weight : Int
         if(sharedPref.contains("weight")){
-            weight = sharedPref.getInt("weight")
+            weight = sharedPref.getInt("weight", 57)
+        } else{
+//            Average weight in asia
+            weight = 57
         }
 
         setSupportActionBar(toolbar)
