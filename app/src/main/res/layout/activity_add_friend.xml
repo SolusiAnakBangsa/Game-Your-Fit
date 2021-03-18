@@ -7,7 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.friends.AddFriendActivity"
     android:orientation="vertical">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Find Your Friends And Add Them!!"
+        android:layout_marginTop="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"/>
     <EditText
         android:id="@+id/searchUserTxt"
         android:layout_width="match_parent"
@@ -17,7 +24,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
         android:layout_below="@id/searchUserTxt"
         android:paddingBottom="10dp"
         android:showDividers="middle"
