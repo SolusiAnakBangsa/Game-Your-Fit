@@ -102,37 +102,86 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
         var queryUsers =
             FirebaseDatabase.getInstance().reference.child("users").orderByChild("username")
                 .startAt(str).endAt(str + "\uf8ff")
+        var receiveUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
+            firebaseUserID!!
+        ).orderByChild("request_type").equalTo("received")
+        var senderUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
+            firebaseUserID!!
+        ).orderByChild("request_type").equalTo("sent")
+        val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserID!!).orderByChild("status").equalTo("friends")
         var invalidUser: List<String>? = null
+        invalidUser = ArrayList()
 
         if (str != "") {
-            queryUsers.addListenerForSingleValueEvent(object : ValueEventListener {
 
+            dbRef.addValueEventListener(object : ValueEventListener{
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    (mUsers as ArrayList<User>).clear()
+                    (invalidUser as ArrayList<String>).clear()
                     for (data in snapshot.children) {
-                        var user: User? = User()
-                        if (user != null) {
-                            user.userId = data.child("userId").value.toString()
-                            user.username = data.child("username").value.toString()
-                            user.level = data.child("level").value.toString().toInt()
-                            user.time = data.child("time").value.toString().toInt()
-                            user.image = data.child("image").value.toString()
-                            if (!(user!!.userId).equals(firebaseUserID)) {
-                                (mUsers as ArrayList<User>).add(user)
-
-                            }
+                        invalidUser.add(data.child("friend").value.toString())
+                    }
+                    receiveUsers.addValueEventListener(object : ValueEventListener {
+                        override fun onCancelled(error: DatabaseError) {
 
                         }
-                    }
-                    userAdapter = UserAdapter(mUsers!!, this@AddFriendActivity)
-                    recycleView!!.adapter = userAdapter
-                }
 
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            for (data in snapshot.children) {
+                                (invalidUser as ArrayList<String>).add(data.child("sender").value.toString())
+                            }
+
+                            senderUsers.addValueEventListener(object :ValueEventListener{
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    for (data in snapshot.children) {
+                                        (invalidUser as ArrayList<String>).add(data.child("receiver").value.toString())
+                                    }
+                                    queryUsers.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            (mUsers as ArrayList<User>).clear()
+                                            for (data in snapshot.children) {
+                                                var user: User? = User()
+                                                if (user != null) {
+                                                    user.userId = data.child("userId").value.toString()
+                                                    user.username = data.child("username").value.toString()
+                                                    user.level = data.child("level").value.toString().toInt()
+                                                    user.time = data.child("time").value.toString().toInt()
+                                                    user.image = data.child("image").value.toString()
+                                                    if (!(user!!.userId).equals(firebaseUserID) && !(invalidUser.contains(user!!.userId))) {
+                                                        (mUsers as ArrayList<User>).add(user)
+
+                                                    }
+
+                                                }
+                                            }
+                                            userAdapter = UserAdapter(mUsers!!, this@AddFriendActivity)
+                                            recycleView!!.adapter = userAdapter
+                                        }
+
+                                    })
+
+                                }
+
+
+                            })
+
+                        }
+                    })
+                }
             })
+
         } else {
             (mUsers as ArrayList<User>).clear()
             userAdapter = UserAdapter(mUsers!!, this@AddFriendActivity)
