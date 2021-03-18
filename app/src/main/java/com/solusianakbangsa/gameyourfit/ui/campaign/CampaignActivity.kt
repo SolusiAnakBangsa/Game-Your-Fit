@@ -59,7 +59,7 @@ class CampaignActivity : AppCompatActivity() {
             val levelTitle : TextView = levelView.findViewById(R.id.levelName)
             val levelLoading : ShimmerFrameLayout = levelView.findViewById(R.id.levelShimmer)
             var bmp : Bitmap? = null
-            levelTitle.text = levelList?.getTitleAtLevel(i)
+            levelTitle.text = levelList.getTitleAtLevel(i)
             levelLoading.baseAlpha = 0.9f
             levelLoading.duration = 1000
             levelLoading.startShimmerAnimation()
@@ -67,6 +67,7 @@ class CampaignActivity : AppCompatActivity() {
 
             levelButton.setOnClickListener{
                 val intent = Intent(this, LevelInfoActivity::class.java)
+                intent.putExtra("levelList", levelList.toString())
                 intent.putExtra("taskList", levelList.getTasksAtLevel(i).toString())
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
                 intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))

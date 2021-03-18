@@ -42,6 +42,12 @@ function sendData(data){
 }
 
 function onReceiveData(conn){
+    conn.on('open', function(){
+        Android.updateMessage("Connection established")
+        Android.replaceData("{\"status\":\"calibrating\"}")
+//        TODO : send the whole levelList to jason
+
+    })
     conn.on('data', function(data){
         console.log("Remote : " + JSON.stringify(data))
         box.innerHTML += "Remote : " + JSON.stringify(data)

@@ -37,6 +37,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var taskList : TaskList
     private lateinit var viewModel : SensorViewModel
     private lateinit var exercises : Signal
+    private lateinit var levelListString: String
 
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -70,6 +71,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
+        if(intent.getStringExtra("levelList") != null){
+            levelListString = intent.getStringExtra("levelList")!!
+        }
 
         viewModel.signal = Signal("jog","standby",0,0,"",0L)
         signal = viewModel.signal
@@ -92,21 +96,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         })
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
-            if (it == "startgame"){
-                resumeReading()
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                inProgressLayout.visibility = View.VISIBLE
-                inProgressLayout.bringToFront()
-            } else if(it == "end"){
-//                exercise.getNext() if index < length
-//                if(adaSisa)
-//                else{
-//                endgame
-            } else if(it == "endgame"){
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                inProgressLayout.visibility = View.GONE
-//                Show summary here
-                animateSummary("garb",20000,30000)
+            when (it) {
+                "startgame" -> {
+                    resumeReading()
+                }
+                "calibrating" -> {
+                    rtc.sendDataToPeer(levelListString)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    inProgressLayout.visibility = View.VISIBLE
+                    inProgressLayout.bringToFront()
+                }
+                "end" -> {
+        //                exercise.getNext() if index < length
+        //                if(adaSisa)
+        //                else{
+        //                endgame
+                }
+                "endgame" -> {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    inProgressLayout.animate().alpha(0.0f)
+        //                Show summary here
+                    animateSummary("garb",20000,30000)
+                }
             }
         })
     }
@@ -254,7 +265,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val animator = ValueAnimator.ofInt(initialValue, endValue)
         animator.addUpdateListener {animation ->
             view.text = animation.animatedValue.toString()
-            handler
         }
         return animator
     }
