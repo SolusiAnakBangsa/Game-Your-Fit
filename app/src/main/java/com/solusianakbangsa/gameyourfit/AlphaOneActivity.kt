@@ -25,6 +25,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.animation.addListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.google.android.material.card.MaterialCardView
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
@@ -38,6 +39,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var viewModel : SensorViewModel
     private lateinit var exercises : Signal
     private lateinit var levelListString: String
+    private lateinit var weight : Int
 
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -54,6 +56,11 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        if(sharedPref.contains("weight")){
+            weight = sharedPref.getInt("weight")
+        }
+
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
             this.onBackPressed()

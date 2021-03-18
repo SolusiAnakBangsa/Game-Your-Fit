@@ -57,6 +57,7 @@ class HomeActivity : AppCompatActivity() {
         } else{
             ref.child("username").get().addOnSuccessListener {
                 name = it.value.toString()
+                sharedPref.edit().putString("username", it.value.toString()).apply()
             }
         }
         navView.getHeaderView(0).findViewById<TextView>(R.id.drawerName).text = name
