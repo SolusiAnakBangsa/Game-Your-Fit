@@ -9,7 +9,7 @@ class User (
     val userWeight : Float? = null,
     val userHeight : Float? = null,
     var level : Int?=null,
-    var time: Int?=null,
+    var exp: Int?=null,
     var image: String?=null){
 
 }

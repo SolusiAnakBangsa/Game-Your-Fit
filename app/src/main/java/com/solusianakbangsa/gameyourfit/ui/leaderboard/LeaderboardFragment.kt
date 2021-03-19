@@ -43,18 +43,19 @@ class LeaderboardFragment : Fragment() {
             executor.execute{
                 contentLayout.removeAllViews()
                 viewModel.loadEntries()
-                handler.post{
-                    swipeRefresh.isRefreshing = false
-                }
             }
         }
         viewModel.entryList.observe(requireActivity(), Observer{ it ->
+            swipeRefresh.isRefreshing = false
             it.sortBy { it.exp }
             rank = 1
             contentLayout.removeAllViews()
 //            Reversed is done as firebase has no option to sort with descending
             it.asReversed().forEach{
                 createView(it)
+                if(rank in 1..3){
+                    contentLayout.getChildAt(rank - 1).background.setTint(resources.getColor(R.color.amber_900))
+                }
                 rank += 1
             }
         })

@@ -28,13 +28,13 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth.currentUser
-        val dbRef = FirebaseDatabase.getInstance().reference.child("users").child(user.uid.toString())
 
 //        Creates an async request to levels, and create a local json file to later be accessed.
         createJson()
         /**If user is authenticated, send them to dashboard, if not, send to login activity*/
         Handler().postDelayed({
             if(user!=null){
+                val dbRef = FirebaseDatabase.getInstance().reference.child("users").child(user.uid.toString())
                 dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
                     override fun onCancelled(error: DatabaseError) {
                         Log.i("Error", "Could not connect to Database")

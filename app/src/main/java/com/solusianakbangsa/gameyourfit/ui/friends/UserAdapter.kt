@@ -42,18 +42,15 @@ class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
     var profileImageView : CircleImageView
     var userTxt: TextView
     var levelTxt: TextView
-    var timeTxt: TextView
 
     init{
         profileImageView = itemView.findViewById(R.id.friendProfilePicture)
         userTxt = itemView.findViewById(R.id.friendUsername)
         levelTxt = itemView.findViewById(R.id.friendLevel)
-        timeTxt = itemView.findViewById(R.id.friendTime)
     }
     fun initialize(user: User, action: OnUserClickListener){
         userTxt.text = user.username.toString()
         levelTxt.text = user.level.toString()
-        timeTxt.text = user.time.toString()
         Picasso.get().load(user.image).into(profileImageView)
 
         itemView.setOnClickListener{
