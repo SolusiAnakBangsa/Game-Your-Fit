@@ -13,9 +13,6 @@ class FriendsRequestFragment(override val layout: Int = R.layout.fragment_friend
 
 //    Do database query and then store in cache
 //    TODO : Implement cache store thing (OnSaveInstance thing type beat)
-    override fun loadEntries() {
-        viewModel.addToList(Friend("A",123,123))
-    }
 
     override fun createView(args: Friend) {
         var requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card,null,false)

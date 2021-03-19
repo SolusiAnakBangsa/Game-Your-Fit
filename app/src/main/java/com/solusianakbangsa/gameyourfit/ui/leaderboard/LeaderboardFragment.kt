@@ -26,6 +26,7 @@ import java.util.concurrent.Executors
 class LeaderboardFragment : Fragment() {
     private val viewModel : LeaderboardViewModel = LeaderboardViewModel()
     private var handler: Handler = Handler(Looper.getMainLooper())
+    private var rank = 1
     private lateinit var contentLayout : LinearLayout
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -36,7 +37,7 @@ class LeaderboardFragment : Fragment() {
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.leaderboardSwipeRefresh)
         val executor = Executors.newSingleThreadExecutor()
 
-
+        viewModel.loadEntries()
         contentLayout = root.findViewById(R.id.leaderboardContent)
         swipeRefresh.setOnRefreshListener {
             executor.execute{
@@ -47,8 +48,15 @@ class LeaderboardFragment : Fragment() {
                 }
             }
         }
-        viewModel.entryList.observe(requireActivity(), Observer{
-            createView(it[it.size - 1])
+        viewModel.entryList.observe(requireActivity(), Observer{ it ->
+            it.sortBy { it.exp }
+            rank = 1
+            contentLayout.removeAllViews()
+//            Reversed is done as firebase has no option to sort with descending
+            it.asReversed().forEach{
+                createView(it)
+                rank += 1
+            }
         })
 //        var vp : ViewPager = root.findViewById(R.id.leaderboardViewPager)
 //        var adapter : FragmentStatePagerAdapter = LeaderboardPagerAdapter(childFragmentManager)
@@ -61,9 +69,9 @@ class LeaderboardFragment : Fragment() {
     }
     private fun createView(entry : LeaderboardEntry){
         var view : View = layoutInflater.inflate(R.layout.leaderboard_entry, null, false)
-        view.leaderboardRank.text = entry.rank.toString()
+        view.leaderboardRank.text = rank.toString()
         view.leaderboardName.text = entry.username
-        view.leaderboardPoints.text = entry.points.toString()
+        view.leaderboardPoints.text = entry.exp.toString()
         contentLayout.addView(view)
     }
 }
