@@ -62,7 +62,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         if(sharedPref.contains("weight")){
-            weight = sharedPref.getInt("weight")
+            weight = sharedPref.getInt("weight", 57)
         }
 
         setSupportActionBar(toolbar)
