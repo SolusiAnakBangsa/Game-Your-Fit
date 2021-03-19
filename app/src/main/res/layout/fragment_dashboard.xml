@@ -193,12 +193,13 @@
                     app:cardCornerRadius="10dp">
 
                     <TextView
+                        android:id="@+id/recommendationTitle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:text="Level 1 : What the fuck"
+                        android:text="Level 1 : Recommendation"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2">
 
                     </TextView>

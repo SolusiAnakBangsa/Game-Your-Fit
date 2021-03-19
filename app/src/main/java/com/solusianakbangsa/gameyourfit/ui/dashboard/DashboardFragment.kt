@@ -59,11 +59,9 @@ class DashboardFragment : Fragment() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 
         if(sharedPref.contains("username")){
-            Log.i("yabe","test")
             binding.cardUsernameShimmer.stopShimmerAnimation()
             binding.cardUsername.text = sharedPref.getString("username", "")
         } else {
-            Log.i("yabe","what")
             ref.child("username").get().addOnSuccessListener {
                 sharedPref.edit().putString("username", it.value.toString()).apply()
                 binding.cardUsernameShimmer.stopShimmerAnimation()
@@ -108,6 +106,7 @@ class DashboardFragment : Fragment() {
                 activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
             }
             handler.post{
+                binding.recommendationTitle.text = levelList.getTitleAtLevel(randomLvl)
                 imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl))
             }
         }
