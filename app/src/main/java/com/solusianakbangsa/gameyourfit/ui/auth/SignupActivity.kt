@@ -134,7 +134,7 @@ class SignupActivity : AppCompatActivity() {
                                     sign_up_username.error = "Username is not valid"
                                     sign_up_username.requestFocus()
                                 }else{
-                                    registerUser(email, password, fullName, username, age, weight, height)
+                                    registerUser(email, password, username, age, weight, height)
                                 }
 
                             }
@@ -248,7 +248,7 @@ class SignupActivity : AppCompatActivity() {
                                     sign_up_username.error = "Username is not valid"
                                     sign_up_username.requestFocus()
                                 }else{
-                                    registerUser(email, password, fullName, username, age, weight, height)
+                                    registerUser(email, password, username, age, weight, height)
                                 }
 
                             }
@@ -266,7 +266,14 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser(email: String, password: String, fullName: String?, username: String, age : Int?, weight : Float?, height : Float?) {
+    private fun registerUser(
+        email: String,
+        password: String,
+        username: String,
+        age: Int?,
+        weight: Float?,
+        height: Float?
+    ) {
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
@@ -274,7 +281,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
                     val userId = FirebaseAuth.getInstance().uid.toString()
-                    val user = User(null, email, fullName, username, age, weight, height, 1)
+                    val user = User(null, email, username, age, weight, height, 1, 0)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         progressBar.visibility = View.GONE
@@ -390,7 +397,7 @@ class SignupActivity : AppCompatActivity() {
         val age : Int? = null
         val weight : Float? = null
         val height : Float? = null
-        var user = User(null, email, fullName , username, age, weight, height, 1, 0)
+        var user = User(null, email, username, age, weight, height, 1, 0)
         ref.child(userId).setValue(user).addOnCompleteListener{
             toast("Data Successfully Saved.")
         }
