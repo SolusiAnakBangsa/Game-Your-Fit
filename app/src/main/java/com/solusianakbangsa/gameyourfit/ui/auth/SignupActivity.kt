@@ -390,7 +390,7 @@ class SignupActivity : AppCompatActivity() {
         val age : Int? = null
         val weight : Float? = null
         val height : Float? = null
-        var user = User(null, email, fullName , username, age, weight, height)
+        var user = User(null, email, fullName , username, age, weight, height, 1, 0)
         ref.child(userId).setValue(user).addOnCompleteListener{
             toast("Data Successfully Saved.")
         }

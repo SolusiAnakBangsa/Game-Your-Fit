@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.hasChild("userHeight")){
                             val dashboardIntent = Intent(this@MainActivity, HomeActivity::class.java)
-                            toast("Please fill in your details.")
                             startActivity(dashboardIntent)
                             finish()
                         }else{
