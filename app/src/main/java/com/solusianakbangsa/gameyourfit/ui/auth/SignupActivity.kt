@@ -274,7 +274,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
                     val userId = FirebaseAuth.getInstance().uid.toString()
-                    val user = User(null, email, fullName, username, age, weight, height)
+                    val user = User(null, email, fullName, username, age, weight, height, 0)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         progressBar.visibility = View.GONE
