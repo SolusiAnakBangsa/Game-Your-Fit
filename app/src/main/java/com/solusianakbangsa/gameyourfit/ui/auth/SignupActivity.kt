@@ -274,16 +274,17 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
                     val userId = FirebaseAuth.getInstance().uid.toString()
-                    val user = User(userId, email, fullName, username, age, weight, height)
+                    val user = User(null, email, fullName, username, age, weight, height)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         progressBar.visibility = View.GONE
                         toast("Data Successfully Saved.")
                     }
                     progressBar.visibility = View.GONE
-                    val intent = Intent(this, ProfileActivity::class.java)
+                    val intent = Intent(this, ProfileActivity::class.java).apply{
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                     startActivity(intent)
-                    finish()
                 }else{
                     task.exception?.message?.let {
                         progressBar.visibility = View.GONE
@@ -389,7 +390,7 @@ class SignupActivity : AppCompatActivity() {
         val age : Int? = null
         val weight : Float? = null
         val height : Float? = null
-        var user = User(userId, email, fullName , username, age, weight, height)
+        var user = User(null, email, fullName , username, age, weight, height)
         ref.child(userId).setValue(user).addOnCompleteListener{
             toast("Data Successfully Saved.")
         }
