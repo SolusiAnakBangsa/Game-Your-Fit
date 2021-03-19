@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -79,7 +80,7 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                     for (data in snapshot.children) {
                         var user: User? = User()
                         if (user != null) {
-                            user.userId = data.child("userId").value.toString()
+                            user.userId = firebaseUserID
                             user.username = data.child("username").value.toString()
                             user.level = data.child("level").value.toString().toInt()
                             user.time = data.child("time").value.toString().toInt()
@@ -154,7 +155,7 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                                             for (data in snapshot.children) {
                                                 var user: User? = User()
                                                 if (user != null) {
-                                                    user.userId = data.child("userId").value.toString()
+                                                    user.userId = data.key.toString()
                                                     user.username = data.child("username").value.toString()
                                                     user.level = data.child("level").value.toString().toInt()
                                                     user.time = data.child("time").value.toString().toInt()
