@@ -9,7 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
@@ -65,21 +64,12 @@ class FriendsRequestFragment(
         mUsers = ArrayList()
         requestUser = ArrayList()
         retrieveAllRequests()
-        //        setData()
+
 
         return view
     }
 
-    private fun setData() {
-        var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
-        val query= FirebaseDatabase.getInstance().reference.child("users").child(firebaseUserId)
-        val options = FirebaseRecyclerOptions.Builder<User>()
-            .setQuery(query, User:: class.java)
-            .build()
 
-//        reqAdapter = FriendRequestAdapter(options)
-        recycleView?.adapter = reqAdapter
-    }
 
     private fun retrieveAllRequests() {
         var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -108,7 +98,7 @@ class FriendsRequestFragment(
                             (requestUser as ArrayList<User>).clear()
                             var user: User? = User()
                             if (user != null) {
-                                user.userId = snapshot.child("userId").value.toString()
+                                user.userId = userReq
                                 user.username = snapshot.child("username").value.toString()
                                 user.level = snapshot.child("level").value.toString().toInt()
                                 user.image = snapshot.child("image").value.toString()
@@ -166,7 +156,7 @@ class FriendsRequestFragment(
                                             .updateChildren(friendHash)
                                             .addOnCompleteListener{ task3->
                                                 if (task3.isSuccessful){
-                                                    removeFromDB(friendReqRef, senderUserId, receiverUserId, "Friend Accepted.", "Failed to accept.")
+                                                    removeFromDB(friendReqRef, senderUserId, receiverUserId, "Friend Accepted.", "Failed to accept.", position)
                                                 }
                                             }
                                     }else{
@@ -194,7 +184,8 @@ class FriendsRequestFragment(
         senderUserId: String,
         receiverUserId: String,
         msg: String,
-        msgFail: String
+        msgFail: String,
+        position: Int
     ) {
         friendReqRef.child(receiverUserId).child(
             senderUserId
@@ -204,6 +195,7 @@ class FriendsRequestFragment(
                     receiverUserId
                 ).removeValue().addOnCompleteListener { task5 ->
                     if (task5.isSuccessful){
+                        reqAdapter?.deleteItem(position)
                         Toast.makeText(
                             requireContext(),
                             msg,
@@ -231,7 +223,14 @@ class FriendsRequestFragment(
         var friendReqRef = FirebaseDatabase.getInstance().reference.child("FriendRequests")
         var senderUserId = FirebaseAuth.getInstance().currentUser?.uid.toString()
         var receiverUserId = user.userId.toString()
-        removeFromDB(friendReqRef, senderUserId, receiverUserId, "Friend Declined.", "Failed to decline.")
+        removeFromDB(
+            friendReqRef,
+            senderUserId,
+            receiverUserId,
+            "Friend Declined.",
+            "Failed to decline.",
+            position
+        )
     }
 
 
