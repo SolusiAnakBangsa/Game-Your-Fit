@@ -24,7 +24,6 @@ class LevelList(jsonString : String){
             } catch (e : IOException){
 //                I am so sorry. Too bad!
 //                -Aric
-
                 e.printStackTrace()
                 val nextTry =
                 if(tries == null) (0) else tries + 1

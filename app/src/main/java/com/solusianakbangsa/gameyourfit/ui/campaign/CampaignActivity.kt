@@ -67,7 +67,7 @@ class CampaignActivity : AppCompatActivity() {
 
             levelButton.setOnClickListener{
                 val intent = Intent(this, LevelInfoActivity::class.java)
-                intent.putExtra("levelList", levelList.toString())
+                intent.putExtra("level", levelList.getLevel(i).toString())
                 intent.putExtra("taskList", levelList.getTasksAtLevel(i).toString())
                 intent.putExtra("title", levelList.getTitleAtLevel(i))
                 intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(i))
