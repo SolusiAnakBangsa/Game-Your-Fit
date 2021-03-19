@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.Image
 import android.net.Uri
-import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -29,6 +27,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import id.zelory.compressor.Compressor
@@ -38,9 +37,7 @@ import kotlinx.android.synthetic.main.activity_user_information.*
 import kotlinx.coroutines.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.ByteArrayOutputStream
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallbacks {
         lateinit var ref : DatabaseReference
@@ -72,7 +69,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
         val userId = FirebaseAuth.getInstance().uid.toString()
-        val email = FirebaseAuth.getInstance().currentUser?.email.toString()
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
@@ -163,9 +159,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
             val updateHash = HashMap<String, Any>()
             updateHash["fullName"] = mFullName
-            updateHash["userAge"] = mAge
-            updateHash["userWeight"] = mWeight
-            updateHash["userHeight"] = mHeight
+            updateHash["userAge"] = mAge.toInt()
+            updateHash["userWeight"] = mWeight.toDouble()
+            updateHash["userHeight"] = mHeight.toDouble()
             ref.updateChildren(updateHash)
                 .addOnCompleteListener { updateTask ->
                     if (updateTask.isSuccessful) {
@@ -197,7 +193,27 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         }
 
+    override fun onBackPressed() {
+        val mFullName = profileName_text.text.toString().trim()
+        val mAge = profileAge_text.text.toString().trim()
+        val mWeight = profileWeight_text.text.toString().trim()
+        val mHeight = profileHeight_text.text.toString().trim()
 
+        if (mFullName.isNotEmpty() && mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
+            super.onBackPressed()
+        }else{
+            profileName_text.error = "Name Needed."
+            profileName_text.requestFocus()
+            profileAge_text.error = "Age Needed."
+            profileAge_text.requestFocus()
+            profileWeight_text.error = "Weight Needed."
+            profileWeight_text.requestFocus()
+            profileHeight_text.error = "Height Needed."
+            profileHeight_text.requestFocus()
+            toast("Please fill in your details.")
+        }
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -241,6 +257,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         task.exception?.let{
                             throw it
                         }
+
+
                     }
                     return@Continuation filePath.downloadUrl
                 }).addOnCompleteListener{task ->

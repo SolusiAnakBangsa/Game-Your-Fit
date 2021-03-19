@@ -32,10 +32,10 @@ abstract class ListFragment<T>() : Fragment() {
         val root = inflater.inflate(layout, container, false)
         contentLayout = root.findViewById(layoutContentId)
 
-        var test : Button = contentLayout.findViewById(R.id.testButton)
-        test.setOnClickListener{
-            loadEntries()
-        }
+//        var test : Button = contentLayout.findViewById(R.id.testButton)
+//        test.setOnClickListener{
+//            loadEntries()
+//        }
 
         return root
     }

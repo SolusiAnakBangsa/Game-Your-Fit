@@ -3,6 +3,7 @@ package com.solusianakbangsa.gameyourfit.ui.friends
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.solusianakbangsa.gameyourfit.ui.setting.SettingsFragment
 
 class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) {
@@ -12,7 +13,8 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
         when(position){
             0 -> {
                 return FriendsListFragment()}
-            1 -> {return FriendsRequestFragment()}
+            1 -> {
+                return FriendsRequestFragment()}
 //            TODO : Create 'something went wrong' fragment
             else -> {return SettingsFragment()}
         }
@@ -28,5 +30,9 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
             1 -> {return "Requests"}
             else-> {return ""}
         }
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE
     }
 }

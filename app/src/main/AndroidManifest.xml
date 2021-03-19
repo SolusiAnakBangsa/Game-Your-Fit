@@ -22,6 +22,9 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.GameYourFit">
         <activity
+            android:name=".ui.friends.AddFriendActivity"
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
+        <activity
             android:name=".ui.level_info.LevelInfoActivity"
             android:label=""
             android:theme="@style/Theme.GameYourFit.NoActionBar">
