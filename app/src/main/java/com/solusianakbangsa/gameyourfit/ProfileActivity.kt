@@ -57,11 +57,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
         val userId = FirebaseAuth.getInstance().uid.toString()
-        val email = FirebaseAuth.getInstance().currentUser?.email.toString()
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
-        val uid = mAuth.currentUser?.uid
 
         ref.addListenerForSingleValueEvent(
             object : ValueEventListener {
@@ -124,9 +122,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
             val updateHash = HashMap<String, Any>()
             updateHash["fullName"] = mFullName
-            updateHash["userAge"] = mAge
-            updateHash["userWeight"] = mWeight
-            updateHash["userHeight"] = mHeight
+            updateHash["userAge"] = mAge.toInt()
+            updateHash["userWeight"] = mWeight.toDouble()
+            updateHash["userHeight"] = mHeight.toDouble()
             ref.updateChildren(updateHash)
                 .addOnCompleteListener { updateTask ->
                     if (updateTask.isSuccessful) {
@@ -158,7 +156,27 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         }
 
+    override fun onBackPressed() {
+        val mFullName = profileName_text.text.toString().trim()
+        val mAge = profileAge_text.text.toString().trim()
+        val mWeight = profileWeight_text.text.toString().trim()
+        val mHeight = profileHeight_text.text.toString().trim()
 
+        if (mFullName.isNotEmpty() && mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
+            super.onBackPressed()
+        }else{
+            profileName_text.error = "Name Needed."
+            profileName_text.requestFocus()
+            profileAge_text.error = "Age Needed."
+            profileAge_text.requestFocus()
+            profileWeight_text.error = "Weight Needed."
+            profileWeight_text.requestFocus()
+            profileHeight_text.error = "Height Needed."
+            profileHeight_text.requestFocus()
+            toast("Please fill in your details.")
+        }
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
