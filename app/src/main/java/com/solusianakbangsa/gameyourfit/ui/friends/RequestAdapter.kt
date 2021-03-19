@@ -1,6 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,7 @@ class RequestAdapter(
 
 
     private val mContext: Context = mContext
-    private val mUsers: List<User> = mUsers
+    private var mUsers: List<User> = mUsers
 
 
 
@@ -42,10 +43,16 @@ class RequestAdapter(
 
     }
 
-    fun removeReq(selectedIndex: Int){
-        mUsers.toMutableList().removeAt(selectedIndex)
-        notifyDataSetChanged()
+
+
+    fun deleteItem(position: Int) {
+        val result = mUsers.toMutableList()
+        result.removeAt(position)
+        mUsers = result.toList()
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, mUsers.size)
     }
+
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
