@@ -28,7 +28,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.card.MaterialCardView
 import com.solusianakbangsa.gameyourfit.comm.Signal
+import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
@@ -38,7 +40,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var taskList : TaskList
     private lateinit var viewModel : SensorViewModel
     private lateinit var exercises : Signal
-    private lateinit var levelListString: String
+    private lateinit var levelString: String
+    private lateinit var level : JSONObject
 
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
@@ -82,8 +85,11 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
-        if(intent.getStringExtra("levelList") != null){
-            levelListString = intent.getStringExtra("levelList")!!
+        if(intent.getStringExtra("level") != null){
+            levelString = intent.getStringExtra("level")!!
+            var content = JSONObject(levelString)
+            level = JSONObject()
+            level.put("workoutList", content)
         }
 
         viewModel.signal = Signal("jog","standby",0,0,"",0L)
@@ -116,7 +122,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     resumeReading()
                 }
                 "calibrating" -> {
-                    rtc.sendDataToPeer(levelListString)
+                    rtc.sendDataToPeer(level.toString())
                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.visibility = View.VISIBLE
                     inProgressLayout.bringToFront()
