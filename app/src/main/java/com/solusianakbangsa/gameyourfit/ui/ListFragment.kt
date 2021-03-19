@@ -23,7 +23,6 @@ abstract class ListFragment<T>() : Fragment() {
     lateinit var inflater : LayoutInflater
 
     abstract fun createView(args : T)
-    abstract fun loadEntries()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,24 +30,6 @@ abstract class ListFragment<T>() : Fragment() {
     ): View? {
         val root = inflater.inflate(layout, container, false)
         contentLayout = root.findViewById(layoutContentId)
-
-//        var test : Button = contentLayout.findViewById(R.id.testButton)
-//        test.setOnClickListener{
-//            loadEntries()
-//        }
-
         return root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ListViewModel::class.java) as ListViewModel<T>
-
-        viewModel.getList().forEach{
-            createView(it)
-        }
-        viewModel.getNewEntry().observe(viewLifecycleOwner, Observer {
-            createView(it)
-        })
     }
 }

@@ -9,21 +9,17 @@ import com.solusianakbangsa.gameyourfit.ui.friends.Friend
 class LeaderboardWeeklyFragment(override val layout: Int = R.layout.fragment_leaderboard_content,
                                 override val layoutContentId: Int = R.id.leaderboardContent
 ) : com.solusianakbangsa.gameyourfit.ui.ListFragment<LeaderboardEntry>(){
-    override fun loadEntries() {
-        viewModel.addToList(LeaderboardEntry(3,"Test",102391))
-    }
-
     override fun createView(args: LeaderboardEntry) {
         var leaderboardEntry : View = layoutInflater.inflate(R.layout.leaderboard_entry, null, false)
 
-        var rankView : TextView = leaderboardEntry.findViewById(R.id.leaderboardRank)
-        rankView.text = args.rank.toString()
+//        var rankView : TextView = leaderboardEntry.findViewById(R.id.leaderboardRank)
+//        rankView.text = args.rank.toString()
 
         var usernameView : TextView = leaderboardEntry.findViewById(R.id.leaderboardName)
         usernameView.text = args.username
 
         var pointView : TextView = leaderboardEntry.findViewById(R.id.leaderboardPoints)
-        pointView.text = args.points.toString()
+        pointView.text = args.exp.toString()
 
         contentLayout.addView(leaderboardEntry)
     }
