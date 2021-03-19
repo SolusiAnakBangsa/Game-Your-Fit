@@ -2,12 +2,12 @@ package com.solusianakbangsa.gameyourfit.ui.leaderboard
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.solusianakbangsa.gameyourfit.User
 import com.solusianakbangsa.gameyourfit.ui.ListViewModel
 
 class LeaderboardViewModel : ListViewModel<LeaderboardEntry>() {
     override fun loadEntries() {
 //        Do database query here
+        entryList.value?.clear()
         var rank = 1
         val userId = FirebaseAuth.getInstance().uid.toString()
         val ref : DatabaseReference = FirebaseDatabase.getInstance().getReference("users")
