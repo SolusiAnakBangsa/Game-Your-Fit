@@ -187,22 +187,22 @@
         android:paddingLeft="10dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
-        android:text="Full Name"
+        android:text="Username"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/profileEmail"
         tools:layout_editor_absoluteX="20dp" />
-
-    <EditText
+    <TextView
         android:id="@+id/profileName_text"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:textSize="16sp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/bottom_border"
         app:layout_constraintTop_toBottomOf="@id/profileName">
-    </EditText>
+    </TextView>
+
 
     <TextView
         android:id="@+id/profileAge"
@@ -225,6 +225,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/bottom_border"
+        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@id/profileAge">
     </EditText>
 
@@ -249,6 +250,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/bottom_border"
+        android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@id/profileWeight">
     </EditText>
 
@@ -273,6 +275,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/bottom_border"
+        android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@id/profileHeight">
     </EditText>
 
