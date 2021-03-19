@@ -40,29 +40,29 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var exercises : Signal
     private lateinit var levelListString: String
 
+    private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
     private var counterMax = 300  // Temporary
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
     private var exercise = "jog"  // Temp variable for exercises
+    private var exerciseCounter = 0
     private var axisUsed = 'X'  // Default axis used is X
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
+    private var metValue = 0.0
     private var time = 0L
+    private var totalCalorie = 0
+    private var startPauseTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-
-        var weight : Int
         if(sharedPref.contains("weight")){
-            weight = sharedPref.getInt("weight", 57)
-        } else{
-//            Average weight in asia
-            weight = 57
+            weight = sharedPref.getInt("weight")
         }
 
         setSupportActionBar(toolbar)
@@ -109,6 +109,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             Log.i("yabe", "Status : $it")
             when (it) {
                 "startgame" -> {
+                    val firstExercise = exerciseList[0]
+                    signal = firstExercise
+                    exercise = firstExercise.get("exerciseType") as String
+                    counterMax = firstExercise.getMeta("targetRep") as Int
                     resumeReading()
                 }
                 "calibrating" -> {
@@ -117,17 +121,32 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     inProgressLayout.visibility = View.VISIBLE
                     inProgressLayout.bringToFront()
                 }
+                "pause" -> {
+                    startPauseTime = SystemClock.elapsedRealtime()
+
+                }
+                "unpause" -> {
+                    // bla bla bla
+                    startPauseTime = 0L
+                }
                 "end" -> {
-        //                exercise.getNext() if index < length
-        //                if(adaSisa)
-        //                else{
-        //                endgame
+                    if (exerciseCounter < exerciseList.size) {
+                        signal = exerciseList[exerciseCounter]
+                        exercise = exerciseList[exerciseCounter].get("exerciseType") as String
+                        counterMax = exerciseList[exerciseCounter].getMeta("targetRep") as Int
+                        resumeReading()
+                        exerciseCounter++
+                    } else {
+                        signal.replace("status", "endgame")
+                        rtc.sendDataToPeer(signal.toString())
+                        viewModel.currentStatus.postValue("endgame")
+                    }
                 }
                 "endgame" -> {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.animate().alpha(0.0f)
         //                Show summary here
-                    animateSummary("garb",20000,30000)
+                    animateSummary("garb",20000, totalCalorie)
                 }
             }
         })
@@ -140,7 +159,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
-            if(signal.get("status") == "mid"){
+            if (signal.get("status") == "mid"){
                 val axisX: Float = event.values[0]
                 val axisY: Float = event.values[1]
                 val axisZ: Float = event.values[2]
@@ -169,50 +188,65 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         super.onResume()
 
         when (exercise) {
-            "jog" -> {
-                axisUsed = SensorConstants.JogAxis
-                thresholdHigh = SensorConstants.JogHigh
-                thresholdLow = SensorConstants.JogLow
+            "Jog" -> {
+                axisUsed = SensorConstants.JOG_AXIS
+                thresholdHigh = SensorConstants.JOG_HIGH
+                thresholdLow = SensorConstants.JOG_LOW
+                metValue = SensorConstants.MET_JOGGING
             }
-            "pushup" -> {
-                axisUsed = SensorConstants.PushAxis
-                thresholdHigh = SensorConstants.PushHigh
-                thresholdLow = SensorConstants.PushLow
+            "Push Up" -> {
+                axisUsed = SensorConstants.PUSH_AXIS
+                thresholdHigh = SensorConstants.PUSH_HIGH
+                thresholdLow = SensorConstants.PUSH_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "situp" -> {
-                axisUsed = SensorConstants.SitupAxis
-                thresholdHigh = SensorConstants.SitupHigh
-                thresholdLow = SensorConstants.SitupLow
+            "Knee Push Up" -> {
+                axisUsed = SensorConstants.PUSH_AXIS
+                thresholdHigh = SensorConstants.PUSH_HIGH
+                thresholdLow = SensorConstants.PUSH_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "rhomboid pull" -> {
-                axisUsed = SensorConstants.RhomboidPullAxis
-                thresholdHigh = SensorConstants.RhomboidPullHigh
-                thresholdLow = SensorConstants.RhomboidPullLow
+            "Sit Up" -> {
+                axisUsed = SensorConstants.SITUP_AXIS
+                thresholdHigh = SensorConstants.SITUP_HIGH
+                thresholdLow = SensorConstants.SITUP_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "jumping jack" -> {
-                axisUsed = SensorConstants.JumpJackAxis
-                thresholdHigh = SensorConstants.JumpJackHigh
-                thresholdLow = SensorConstants.JumpJackLow
+            "Rhomboid Pull" -> {
+                axisUsed = SensorConstants.RHOMBOIDPULL_AXIS
+                thresholdHigh = SensorConstants.RHOMBOIDPULL_HIGH
+                thresholdLow = SensorConstants.RHOMBOIDPULL_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "squat" -> {
-                axisUsed = SensorConstants.SquatAxis
-                thresholdHigh = SensorConstants.SquatHigh
-                thresholdLow = SensorConstants.SquatLow
+            "Jumping Jack" -> {
+                axisUsed = SensorConstants.JUMPJACK_AXIS
+                thresholdHigh = SensorConstants.JUMPJACK_HIGH
+                thresholdLow = SensorConstants.JUMPJACK_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "reclined rhomboid squeeze" -> {
-                axisUsed = SensorConstants.ReclinedRhomboidAxis
-                thresholdHigh = SensorConstants.ReclinedRhomboidHigh
-                thresholdLow = SensorConstants.ReclinedRhomboidLow
+            "Squat" -> {
+                axisUsed = SensorConstants.SQUAT_AXIS
+                thresholdHigh = SensorConstants.SQUAT_HIGH
+                thresholdLow = SensorConstants.SQUAT_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "forward lunge" -> {
-                axisUsed = SensorConstants.ForwardLungeAxis
-                thresholdHigh = SensorConstants.ForwardLungeHigh
-                thresholdLow = SensorConstants.ForwardLungeLow
+            "Reclined Rhomboid Squeeze" -> {
+                axisUsed = SensorConstants.RECLINEDRHOMBOID_AXIS
+                thresholdHigh = SensorConstants.RECLINEDRHOMBOID_HIGH
+                thresholdLow = SensorConstants.RECLINEDRHOMBOID_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
-            "jumping squat" -> {
-                axisUsed = SensorConstants.JumpSquatAxis
-                thresholdHigh = SensorConstants.JumpSquatHigh
-                thresholdLow = SensorConstants.JumpSquatLow
+            "Forward Lunge" -> {
+                axisUsed = SensorConstants.FORWARDLUNGE_AXIS
+                thresholdHigh = SensorConstants.FORWARDLUNGE_HIGH
+                thresholdLow = SensorConstants.FORWARDLUNGE_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
+            }
+            "Jumping Squat" -> {
+                axisUsed = SensorConstants.JUMPSQUAT_AXIS
+                thresholdHigh = SensorConstants.JUMPSQUAT_HIGH
+                thresholdLow = SensorConstants.JUMPSQUAT_LOW
+                metValue = SensorConstants.MET_CALISTHENICS
             }
         }
 
@@ -225,21 +259,24 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun resumeReading() {
-        // Send first JSON data to web, indicates *start status*
+        // Send JSON data to web, indicates *start status*
         signal.replace("status", "start")
         signal.replace("time", SystemClock.elapsedRealtime())
         rtc.sendDataToPeer(signal.toString())
 
         signal.replace("status",  "mid")
 
+        Log.i("signal", signal.toString())
+
         // Sends JSON data continuously every 1 second to the web, indicates *mid status*
         timer()
     }
 
     private fun timer() {
+        onResume()
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
-                if (signal.getMeta("targetRep") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
 
                     rtc.sendDataToPeer(signal.toString())
@@ -266,9 +303,15 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep != repBefore) {
-            signal.replaceMeta("targetRep", signal.getMeta("targetRep") as Int + 1)
+            signal.replace("repAmount", signal.get("repAmount") as Int + 1)
         }
         repBefore = rep
+    }
+
+    private fun countCalorie(time: Long, met: Double, weight: Int) {
+        // Counts burnt calories for a single exercise session
+
+
     }
 
     private fun valueAnimator(view: TextView, initialValue : Int, endValue : Int): Animator{

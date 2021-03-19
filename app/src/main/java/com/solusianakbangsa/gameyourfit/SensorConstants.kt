@@ -1,55 +1,52 @@
 package com.solusianakbangsa.gameyourfit
 
-import android.os.Handler
-import android.os.Looper
-import java.util.*
-
 object SensorConstants {
     // Jogging
-    val JogAxis = 'X'
-    val JogHigh = 6.5
-    val JogLow = -6.5
+    const val JOG_AXIS = 'X'
+    const val JOG_HIGH = 6.5
+    const val JOG_LOW = -6.5
 
     // Pushups
-    val PushAxis = 'Y'
-    val PushHigh = 3.0
-    val PushLow = -3.0
+    const val PUSH_AXIS = 'Y'
+    const val PUSH_HIGH = 3.0
+    const val PUSH_LOW = -3.0
 
     // Rhomboid Pulls
-    val RhomboidPullAxis = 'Z'
-    val RhomboidPullHigh = 1.5
-    val RhomboidPullLow = -2.2
+    const val RHOMBOIDPULL_AXIS = 'Z'
+    const val RHOMBOIDPULL_HIGH = 1.5
+    const val RHOMBOIDPULL_LOW = -2.2
 
     // Situps
-    val SitupAxis = 'X'
-    val SitupHigh = 2.5
-    val SitupLow = -4.0
+    const val SITUP_AXIS = 'X'
+    const val SITUP_HIGH = 2.5
+    const val SITUP_LOW = -4.0
 
     // Jumping Jacks
-    val JumpJackAxis = 'Y'
-    val JumpJackHigh = 10.0
-    val JumpJackLow = -10.0
+    const val JUMPJACK_AXIS = 'Y'
+    const val JUMPJACK_HIGH = 10.0
+    const val JUMPJACK_LOW = -10.0
 
     // Squats
-    val SquatAxis = 'Y'
-    val SquatHigh = 0.75
-    val SquatLow = -1.5
+    const val SQUAT_AXIS = 'Y'
+    const val SQUAT_HIGH = 0.75
+    const val SQUAT_LOW = -1.5
 
     // Reclined Rhomboid Squeeze
-    val ReclinedRhomboidAxis = 'Z'
-    val ReclinedRhomboidHigh = 2.35
-    val ReclinedRhomboidLow = -4.0
+    const val RECLINEDRHOMBOID_AXIS = 'Z'
+    const val RECLINEDRHOMBOID_HIGH = 2.35
+    const val RECLINEDRHOMBOID_LOW = -4.0
 
     // Forward Lunges
-    val ForwardLungeAxis = 'X'
-    val ForwardLungeHigh = 2.5
-    val ForwardLungeLow = -3.0
+    const val FORWARDLUNGE_AXIS = 'X'
+    const val FORWARDLUNGE_HIGH = 2.5
+    const val FORWARDLUNGE_LOW = -3.0
 
     // Jumping Squat
-    val JumpSquatAxis = 'X'
-    val JumpSquatHigh = 10.0
-    val JumpSquatLow = -11.0
+    const val JUMPSQUAT_AXIS = 'X'
+    const val JUMPSQUAT_HIGH = 10.0
+    const val JUMPSQUAT_LOW = -11.0
 
     // Met value
-
+    const val MET_CALISTHENICS = 8.0
+    const val MET_JOGGING = 8.0
 }
