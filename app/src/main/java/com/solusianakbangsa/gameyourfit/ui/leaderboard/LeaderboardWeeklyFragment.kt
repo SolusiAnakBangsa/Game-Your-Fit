@@ -9,10 +9,6 @@ import com.solusianakbangsa.gameyourfit.ui.friends.Friend
 class LeaderboardWeeklyFragment(override val layout: Int = R.layout.fragment_leaderboard_content,
                                 override val layoutContentId: Int = R.id.leaderboardContent
 ) : com.solusianakbangsa.gameyourfit.ui.ListFragment<LeaderboardEntry>(){
-    override fun loadEntries() {
-        viewModel.addToList(LeaderboardEntry(3,"Test",102391))
-    }
-
     override fun createView(args: LeaderboardEntry) {
         var leaderboardEntry : View = layoutInflater.inflate(R.layout.leaderboard_entry, null, false)
 

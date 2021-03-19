@@ -16,7 +16,6 @@ class FriendsListFragment(override val layout: Int = R.layout.fragment_friends_c
 //    Do async database query here
     override fun loadEntries() {
         viewModel.addToList(Friend("A",123,123))
-
     }
 
     override fun createView(args: Friend) {
