@@ -59,6 +59,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-database:19.7.0'
+    // FirebaseUI for Firebase Auth
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
     implementation 'com.firebaseui:firebase-ui-database:4.2.1'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
     testImplementation 'junit:junit:4.13.2'
