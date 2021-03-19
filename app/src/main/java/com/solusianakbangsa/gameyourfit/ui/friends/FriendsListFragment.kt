@@ -102,7 +102,7 @@ class FriendsListFragment(override val layout: Int = R.layout.fragment_friends_c
                             (mFriends as ArrayList<User>).clear()
                             var user: User? = User()
                             if (user != null) {
-                                user.userId = snapshot.child("userId").value.toString()
+                                user.userId = userFriend
                                 user.username = snapshot.child("username").value.toString()
                                 user.time = snapshot.child("time").value.toString().toInt()
                                 user.level = snapshot.child("level").value.toString().toInt()
