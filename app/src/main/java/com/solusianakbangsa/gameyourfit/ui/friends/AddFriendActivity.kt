@@ -83,7 +83,6 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                             user.userId = firebaseUserID
                             user.username = data.child("username").value.toString()
                             user.level = data.child("level").value.toString().toInt()
-                            user.time = data.child("time").value.toString().toInt()
                             user.image = data.child("image").value.toString()
                             if (!(user!!.userId).equals(firebaseUserID)) {
                                 (mUsers as ArrayList<User>).add(user)
@@ -158,7 +157,6 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                                                     user.userId = data.key.toString()
                                                     user.username = data.child("username").value.toString()
                                                     user.level = data.child("level").value.toString().toInt()
-                                                    user.time = data.child("time").value.toString().toInt()
                                                     user.image = data.child("image").value.toString()
                                                     if (!(user!!.userId).equals(firebaseUserID) && !(invalidUser.contains(user!!.userId))) {
                                                         (mUsers as ArrayList<User>).add(user)
