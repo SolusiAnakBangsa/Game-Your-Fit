@@ -14,6 +14,7 @@ class FriendsRequestViewModel  : ListViewModel<Request>() {
     }
 
     private fun retrieveAllRequests() {
+        Log.i("yabe", "ple")
         var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
         var reqUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
             firebaseUserId
@@ -21,25 +22,16 @@ class FriendsRequestViewModel  : ListViewModel<Request>() {
         var refUsers = FirebaseDatabase.getInstance().reference.child("users")
         var senderID: String
         reqUsers.addChildEventListener(object : ChildEventListener{
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-//                Log.i("yabe", snapshot.key.toString())
+                Log.i("yabe", snapshot.key.toString())
                 initializeChildListener(snapshot.key.toString())
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                Log.i("yabe", snapshot.key.toString())
             }
         })
     }
@@ -50,8 +42,10 @@ class FriendsRequestViewModel  : ListViewModel<Request>() {
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
 //              Put data inside list and then the list go boom
+                Log.i("yabe","alkdsfjlsdkfj")
                 var request = snapshot.getValue(Request::class.java)
                 request?.uid = snapshot.key.toString()
+                Log.i("yabe", request?.uid.toString())
                 if (request != null) {
                     addToList(request)
                 }

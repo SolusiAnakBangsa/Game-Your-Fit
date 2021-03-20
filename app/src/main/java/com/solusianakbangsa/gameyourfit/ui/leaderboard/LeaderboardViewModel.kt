@@ -15,7 +15,6 @@ class LeaderboardViewModel : ListViewModel<LeaderboardEntry>() {
             object : ChildEventListener{
                 override fun onCancelled(error: DatabaseError) {}
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    entryList.value = entryList.value
                 }
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                     val entry : LeaderboardEntry? = snapshot.getValue(LeaderboardEntry::class.java)
