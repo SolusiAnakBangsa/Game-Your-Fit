@@ -72,7 +72,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
-        val uid = mAuth.currentUser?.uid
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
 
         val handler = Handler(Looper.getMainLooper())
