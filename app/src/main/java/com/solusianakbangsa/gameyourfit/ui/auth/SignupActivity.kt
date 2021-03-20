@@ -110,8 +110,14 @@ class SignupActivity : AppCompatActivity() {
             }
 
             if (username.isEmpty()){
-                sign_up_password.error = "Username is Required"
-                sign_up_password.requestFocus()
+                sign_up_username.error = "Username is Required"
+                sign_up_username.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (username.length > 20){
+                sign_up_username.error = "Username Too Long"
+                sign_up_username.requestFocus()
                 return@setOnClickListener
             }
 
