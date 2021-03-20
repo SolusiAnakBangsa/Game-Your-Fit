@@ -31,8 +31,4 @@ class FriendsPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) 
             else-> {return ""}
         }
     }
-
-    override fun getItemPosition(`object`: Any): Int {
-        return PagerAdapter.POSITION_NONE
-    }
 }
