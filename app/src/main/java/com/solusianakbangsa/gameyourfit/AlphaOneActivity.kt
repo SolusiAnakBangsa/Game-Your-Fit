@@ -46,10 +46,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
-    private var counterMax = 0
+    private var counterMax = 0  // Max rep for a certain exercise
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
-    private var exercise = "jog"  // Temp variable for exercises
+    private var exercise = ""  // Variable for exercises
     private var exerciseCounter = 1
     private var axisUsed = 'X'  // Default axis used is X
     private var thresholdHigh = 0.0
@@ -124,6 +124,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     signal = firstExercise
                     exercise = firstExercise.get("exerciseType") as String
                     counterMax = firstExercise.getMeta("targetRep") as Int
+                    onResume()
                     resumeReading()
                 }
                 "calibrating" -> {
@@ -139,6 +140,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 }
                 "unpause" -> {
                     endPauseTime = SystemClock.elapsedRealtime()
+                    onResume()
                     signal.replace("status", "mid")
                     exerciseTime -= (endPauseTime - startPauseTime)
                 }
@@ -303,7 +305,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun timer() {
-//        onResume()
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
@@ -343,6 +344,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
                     signal.replaceMeta("targetRep", 0)
                     viewModel.currentStatus.postValue("end")
+                    onPause()
+                } else if (signal.get("status") == "pause") {
                     onPause()
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
