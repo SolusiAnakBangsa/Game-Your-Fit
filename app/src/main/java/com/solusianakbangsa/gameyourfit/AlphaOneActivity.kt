@@ -8,27 +8,19 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.animation.addListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.google.android.material.card.MaterialCardView
 import com.solusianakbangsa.gameyourfit.comm.Signal
-import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
@@ -123,7 +115,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     val firstExercise = exerciseList[0]
                     signal = firstExercise
                     exercise = firstExercise.get("exerciseType") as String
-                    counterMax = firstExercise.getMeta("targetRep") as Int
+                    counterMax = firstExercise.getFromMeta("targetRep") as Int
                     onResume()
                     resumeReading()
                 }
@@ -151,7 +143,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     if (exerciseCounter < exerciseList.size) {
                         signal = exerciseList[exerciseCounter]
                         exercise = exerciseList[exerciseCounter].get("exerciseType") as String
-                        counterMax = exerciseList[exerciseCounter].getMeta("targetRep") as Int
+                        counterMax = exerciseList[exerciseCounter].getFromMeta("targetRep") as Int
                         exerciseTime = 0L
                         exerciseCounter++
                     } else {

@@ -46,7 +46,11 @@ class Signal(exerciseType : String, status : String, repAmount : Int, targetRep 
         return json.get(key)
     }
 
-    fun getMeta(key: String): Any{
+    fun getMeta(key: String): JSONObject{
+        return json.getJSONObject("meta")
+    }
+
+    fun getFromMeta(key: String): Any{
         return json.getJSONObject("meta").get(key)
     }
 
