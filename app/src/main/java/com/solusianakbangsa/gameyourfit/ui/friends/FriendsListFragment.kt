@@ -55,6 +55,7 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
         val viewModel = FriendsListViewModel()
         val root = inflater.inflate(R.layout.fragment_friends_content, container, false)
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.friendsRefresh)
+        val handler = Handler(Looper.getMainLooper())
         val executor = Executors.newSingleThreadExecutor()
         contentLayout = root.findViewById(R.id.friendsContent)
 
@@ -70,16 +71,17 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
                 var friend = it[it.size - 1]
                 createView(friend)
             } else if(viewModel.status == "remove"){
-
+                var index = viewModel.removedAt
+                if(index != -1){
+                    contentLayout.getChildAt(index!!).animate().alpha(0.0f).setDuration(1000L)
+                    handler.postDelayed({
+                        contentLayout.removeViewAt(index)
+                    }, 1000L)
+                }
             }
         })
         return root
     }
-
-
-
-
-
 
 //    private fun retrieveData() {
 //        var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid

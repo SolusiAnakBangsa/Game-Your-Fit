@@ -14,11 +14,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.auth.User
+import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>()  {
+class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>()  {
+    private val viewModel : LeaderboardViewModel = LeaderboardViewModel()
     companion object{
         fun newInstance() = FriendsRequestFragment()
     }
@@ -26,7 +28,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
 //    Do database query and then store in cache
 //    TODO : Implement cache store thing (OnSaveInstance thing type beat)
 
-    override fun createView(args: Friend) {
+    override fun createView(args: Request) {
         var requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card, null, false)
 
         var levelView : TextView = requestEntry.findViewById(R.id.requestLevel)
@@ -45,31 +47,11 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
     ): View? {
         val root: View = inflater.inflate(R.layout.fragment_friends_content, container, false)
         contentLayout = root.findViewById(R.id.friendsContent)
+        viewModel.loadEntries()
 
+//        viewModel.entryList.observe(requireActivity(), )
         return root
     }
 
-//    private fun retrieveAllRequests() {
-//        var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
-//        var reqUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
-//            firebaseUserId
-//        ).orderByChild("request_type").equalTo("received")
-//        var refUsers = FirebaseDatabase.getInstance().reference.child("users")
-//        var senderID: String
-//        reqUsers.addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                (mUsers as ArrayList<String>).clear()
-//                for (data in snapshot.children) {
-//                    (mUsers as ArrayList<String>).add(data.child("sender").value.toString())
-//                }
-//
-//            }
-//
-//        })
-//
-//    }
+
 }

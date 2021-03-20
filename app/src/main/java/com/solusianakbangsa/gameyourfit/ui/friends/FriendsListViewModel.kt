@@ -39,5 +39,6 @@ class FriendsListViewModel : ListViewModel<Friend>() {
                 }
             }
         })
+        
     }
 }
