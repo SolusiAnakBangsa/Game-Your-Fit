@@ -128,11 +128,14 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
                     signal.replace("status",  "pause")
+                    Log.i("signal", "pause")
                 }
                 "unpause" -> {
                     onResume()
                     signal.replace("status", "mid")
+                    resumeReading()
                     exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
+                    Log.i("signal", "unpause")
                 }
                 "end" -> {
                     countCalorie(SystemClock.elapsedRealtime() - exerciseTime, metValue, weight)
@@ -146,9 +149,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                         exerciseCounter++
                     } else {
                         signal.replace("status", "endgame")
-                        signal.replaceMeta("totalTime", totalTime)
-                        signal.replaceMeta("calorie", totalCalorie.toInt())
+                        signal.replaceMeta("totaltime", totalTime)
+                        signal.replaceMeta("calories", totalCalorie.toInt())
                         rtc.sendDataToPeer(signal.toString())
+                        Log.i("signal", signal.toString())
                         viewModel.currentStatus.postValue("endgame")
                     }
                 }
@@ -290,7 +294,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         Log.i("signal", signal.toString())
 
-        // Sends JSON data continuously every 1 second to the web, indicates *mid status*
+        // Sends JSON data continuously every 1 second to the web using timer() if jog
         if (exercise == "Jog") {
             timer()
         }
@@ -357,7 +361,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private fun countCalorie(time: Long, met: Double, weight: Int) {
         // Counts burnt calories for a single exercise session
         val inMinutes = (time.toDouble() / 1000.0) / 60.0
-        Log.i("signal", inMinutes.toString())
         val caloriesBurned = (met * 3.5 * weight.toDouble() / 200.0) * inMinutes
         totalCalorie += caloriesBurned
         Log.i("signalBurned", caloriesBurned.toString())
@@ -380,8 +383,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         return animator
     }
     private fun animateSummary(title : String, time : Long, calories : Int){
-        
-
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
 
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
