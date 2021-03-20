@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,9 +20,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 import java.net.URL
@@ -85,7 +88,12 @@ class HomeActivity : AppCompatActivity() {
 
         val logout = navView.getHeaderView(0).findViewById<TextView>(R.id.logout)
         logout.setOnClickListener {
-//            Do firebase stuff here
+            AuthUI.getInstance().signOut(this).addOnCompleteListener{
+                val loginIntent = Intent(this, LoginActivity::class.java)
+                startActivity(loginIntent)
+                finish()
+            }
+
 //            sharedPref.edit().clear().apply()
         }
     }

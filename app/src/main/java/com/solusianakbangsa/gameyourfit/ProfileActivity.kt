@@ -105,9 +105,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         username = snapshot.child("username").value!!.toString()
                         profileUsername.text = username
                         profileEmail_text.text = snapshot.child("email").value!!.toString()
-                        if (snapshot.child("fullName").exists()){
-                            profileName_text.setText(snapshot.child("fullName").value!!.toString())
-                        }
+                        profileName_text.text = username
                         if (snapshot.child("userAge").exists()){
                             profileAge_text.setText(snapshot.child("userAge").value!!.toString())
                         }
@@ -135,15 +133,11 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         button.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            val mFullName = profileName_text.text.toString().trim()
             val mAge = profileAge_text.text.toString().trim()
             val mWeight = profileWeight_text.text.toString().trim()
             val mHeight = profileHeight_text.text.toString().trim()
 
-            if (mFullName.isEmpty()) {
-                profileName_text.error = "Name Needed."
-                profileName_text.requestFocus()
-            }
+
             if (mAge.isEmpty()) {
                 profileAge_text.error = "Age Needed."
                 profileAge_text.requestFocus()
@@ -158,7 +152,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             }
 
             val updateHash = HashMap<String, Any>()
-            updateHash["fullName"] = mFullName
             updateHash["userAge"] = mAge.toInt()
             updateHash["userWeight"] = mWeight.toDouble()
             updateHash["userHeight"] = mHeight.toDouble()
@@ -202,8 +195,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         if (mFullName.isNotEmpty() && mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
             super.onBackPressed()
         }else{
-            profileName_text.error = "Name Needed."
-            profileName_text.requestFocus()
             profileAge_text.error = "Age Needed."
             profileAge_text.requestFocus()
             profileWeight_text.error = "Weight Needed."

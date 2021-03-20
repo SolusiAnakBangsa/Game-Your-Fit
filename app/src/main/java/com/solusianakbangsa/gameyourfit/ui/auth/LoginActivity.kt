@@ -248,7 +248,7 @@ class LoginActivity : AppCompatActivity() {
         val age: Int? = null
         val weight: Float? = null
         val height: Float? = null
-        var user = User(userId, email, fullName, username, age, weight, height)
+        var user = User(userId, email, username, age, weight, height)
         FirebaseDatabase.getInstance().getReference("users").child(userId).setValue(user)
             .addOnCompleteListener {
                 toast("Data Successfully Saved.")
