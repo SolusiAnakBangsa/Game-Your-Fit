@@ -50,7 +50,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var time = 0L
     private var totalCalorie = 0.0
     private var startPauseTime = 0L
-    private var endPauseTime = 0L
     private var exerciseTime = 0L
     private var totalTime = 0L
 
@@ -89,7 +88,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             level.put("workoutList", content)
         }
 
-        viewModel.signal = Signal("jog","standby",0,0,"",0L)
+        viewModel.signal = Signal("jog","standby",0,0,"", 0L, 0, 0L)
         signal = viewModel.signal
         rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
 //        Generates a random peer,
@@ -99,7 +98,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
 
         for (i in 0 until taskList.jsonArr.length()) {
-            exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L)
+            exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L, 0, 0L)
             exerciseList.add(exercises)
         }
         Log.i("exerciseList", exerciseList.toString())
@@ -131,10 +130,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     signal.replace("status",  "pause")
                 }
                 "unpause" -> {
-                    endPauseTime = SystemClock.elapsedRealtime()
                     onResume()
                     signal.replace("status", "mid")
-                    exerciseTime -= (endPauseTime - startPauseTime)
+                    exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
                 }
                 "end" -> {
                     countCalorie(SystemClock.elapsedRealtime() - exerciseTime, metValue, weight)
@@ -148,6 +146,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                         exerciseCounter++
                     } else {
                         signal.replace("status", "endgame")
+                        signal.replaceMeta("totalTime", totalTime)
+                        signal.replaceMeta("calorie", totalCalorie.toInt())
                         rtc.sendDataToPeer(signal.toString())
                         viewModel.currentStatus.postValue("endgame")
                     }
