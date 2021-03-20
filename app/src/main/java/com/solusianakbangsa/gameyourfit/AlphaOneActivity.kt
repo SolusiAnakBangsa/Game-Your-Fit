@@ -385,7 +385,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         return animator
     }
     private fun animateSummary(title : String, time : Long, calories : Int){
-//        TODO : Create function to convert timeMill to HH:MM:SS
+        
+
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
 
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
@@ -398,9 +399,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val timeContentHourText : TextView = findViewById(R.id.summaryTimeHour)
         val timeContentMinuteText : TextView = findViewById(R.id.summaryTimeMinute)
         val timeContentSecondText : TextView = findViewById(R.id.summaryTimeSecond)
-        timeContentHourText.text = "13 :"
-        timeContentMinuteText.text = " 22 :"
-        timeContentSecondText.text = " 59"
+        timeContentHourText.text = convertToHour(time)
+        timeContentMinuteText.text = convertToMinute(time)
+        timeContentSecondText.text = convertToSec(time)
 
         val timeContent = fadeInAnimator(findViewById(R.id.summaryTime))
         val caloryTitle = fadeInAnimator(findViewById(R.id.summaryCaloriesTitle))
@@ -418,5 +419,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             play(caloryTitle).with(caloryContent)
         }
         animSet.start()
+    }
+
+    private fun convertToSec(time: Long): CharSequence {
+        val seconds = time / 1000 % 60
+
+        return String.format("%02d", seconds)
+    }
+
+    private fun convertToMinute(time: Long): CharSequence {
+        val minutes = (time / 1000 / 60) % 60
+        return String.format("%02d:", minutes)
+    }
+
+    private fun convertToHour(time: Long): CharSequence {
+        val hours = (time / 1000 / (60 * 60)) % 24
+        return String.format("%02d:", hours)
     }
 }
