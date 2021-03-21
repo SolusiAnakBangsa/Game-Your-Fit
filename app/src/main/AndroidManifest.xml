@@ -23,6 +23,7 @@
         android:theme="@style/Theme.GameYourFit">
         <activity
             android:name=".ui.friends.AddFriendActivity"
+            android:label="Add Friends"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.level_info.LevelInfoActivity"
