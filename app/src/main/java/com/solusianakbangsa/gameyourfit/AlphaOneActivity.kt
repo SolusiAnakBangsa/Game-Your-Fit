@@ -20,10 +20,13 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
+import kotlin.properties.Delegates
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
@@ -52,6 +55,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var startPauseTime = 0L
     private var exerciseTime = 0L
     private var totalTime = 0L
+    private var uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var dbRef = FirebaseDatabase.getInstance().reference.child("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +132,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 }
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
-                    signal.replace("status",  "pause")
+                    signal.replace("status", "pause")
                     Log.i("signal", "pause")
                 }
                 "unpause" -> {
@@ -163,9 +168,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 "endgame" -> {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.animate().alpha(0.0f)
-        //                Show summary here
+                    //                Show summary here
                     animateSummary("garb", totalTime, totalCalorie.toInt())
+                    // send exp here
+                    // TODO: put the exp of the level
+                    val exp: Int = 1000
+                    updateExp(exp)
                 }
+            }
+        })
+    }
+
+    private fun updateExp(exp: Int) {
+        var currentExp: Int = 0
+        val updateHash = HashMap<String, Any>()
+
+        dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                currentExp = snapshot.child("exp").value.toString().toInt()
+                updateHash["exp"] = currentExp+exp
+                dbRef.child(uid).updateChildren(updateHash)
             }
         })
     }
