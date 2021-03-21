@@ -99,7 +99,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         }
 
 
-
         ref.addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -141,18 +140,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             val mHeight = profileHeight_text.text.toString().trim()
 
 
-            if (mAge.isEmpty()) {
-                profileAge_text.error = "Age Needed."
-                profileAge_text.requestFocus()
-            }
-            if (mWeight.isEmpty()) {
-                profileWeight_text.error = "Weight Needed."
-                profileWeight_text.requestFocus()
-            }
-            if (mHeight.isEmpty()) {
-                profileHeight_text.error = "Height Needed."
-                profileHeight_text.requestFocus()
-            }
+            emptyValidation(mAge, mWeight, mHeight)
 
             val updateHash = HashMap<String, Any>()
             updateHash["userAge"] = mAge.toInt()
@@ -189,22 +177,30 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         }
 
+    private fun emptyValidation(mAge: String, mWeight: String, mHeight: String) {
+        if (mAge.isEmpty()) {
+            profileAge_text.error = "Age Needed."
+            profileAge_text.requestFocus()
+        }
+        if (mWeight.isEmpty()) {
+            profileWeight_text.error = "Weight Needed."
+            profileWeight_text.requestFocus()
+        }
+        if (mHeight.isEmpty()) {
+            profileHeight_text.error = "Height Needed."
+            profileHeight_text.requestFocus()
+        }
+    }
+
     override fun onBackPressed() {
-        val mFullName = profileName_text.text.toString().trim()
         val mAge = profileAge_text.text.toString().trim()
         val mWeight = profileWeight_text.text.toString().trim()
         val mHeight = profileHeight_text.text.toString().trim()
 
-        if (mFullName.isNotEmpty() && mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
+        if (mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
             super.onBackPressed()
         }else{
-            profileAge_text.error = "Age Needed."
-            profileAge_text.requestFocus()
-            profileWeight_text.error = "Weight Needed."
-            profileWeight_text.requestFocus()
-            profileHeight_text.error = "Height Needed."
-            profileHeight_text.requestFocus()
-            toast("Please fill in your details.")
+            emptyValidation(mAge, mWeight, mHeight)
         }
 
     }
