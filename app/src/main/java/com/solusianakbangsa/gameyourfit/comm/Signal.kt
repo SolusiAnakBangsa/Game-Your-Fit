@@ -18,7 +18,7 @@ class Signal(exerciseType : String, status : String, repAmount : Int, targetRep 
         json.put("repAmount", repAmount)
         meta.put("targetRep", targetRep)
         meta.put("flavorText", flavorText)
-        meta.put("totaltime", totaltime)
+        meta.put("totalTime", totaltime)
         meta.put("calories", calories)
         json.put("meta", meta)
         json.put("time", time)

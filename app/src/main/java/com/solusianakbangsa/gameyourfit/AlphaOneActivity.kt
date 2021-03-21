@@ -149,7 +149,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                         exerciseCounter++
                     } else {
                         signal.replace("status", "endgame")
-                        signal.replaceMeta("totaltime", totalTime)
+                        signal.replaceMeta("totalTime", totalTime)
                         signal.replaceMeta("calories", totalCalorie.toInt())
                         rtc.sendDataToPeer(signal.toString())
                         Log.i("signal", signal.toString())
