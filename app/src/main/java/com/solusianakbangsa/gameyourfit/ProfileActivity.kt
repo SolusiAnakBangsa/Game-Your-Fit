@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -68,8 +69,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
-        val userId = FirebaseAuth.getInstance().uid.toString()
-        ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        ref = FirebaseDatabase.getInstance().reference.child("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -81,6 +82,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         }
         if(!(profilePicture.exists())){
             ref.child("images").get().addOnSuccessListener{
+                val what = it.value.toString()
+                Log.i("whatwhy", what)
                 imageReplacer.replaceImage(
                     handler,
                     findViewById<ImageView>(R.id.userProfilePicture),
@@ -91,6 +94,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                 )
             }
         } else{
+            Log.i("whatwhy", "nooooooo")
             imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
         }
 

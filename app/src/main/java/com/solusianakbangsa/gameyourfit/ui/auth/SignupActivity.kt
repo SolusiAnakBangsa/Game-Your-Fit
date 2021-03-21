@@ -283,6 +283,7 @@ class SignupActivity : AppCompatActivity() {
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
+
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
