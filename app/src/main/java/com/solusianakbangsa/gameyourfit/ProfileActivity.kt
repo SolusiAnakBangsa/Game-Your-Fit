@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -68,8 +69,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
-        val userId = FirebaseAuth.getInstance().uid.toString()
-        ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        ref = FirebaseDatabase.getInstance().reference.child("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -81,6 +82,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         }
         if(!(profilePicture.exists())){
             ref.child("images").get().addOnSuccessListener{
+                val what = it.value.toString()
+                Log.i("whatwhy", what)
                 imageReplacer.replaceImage(
                     handler,
                     findViewById<ImageView>(R.id.userProfilePicture),
@@ -91,9 +94,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                 )
             }
         } else{
+            Log.i("whatwhy", "nooooooo")
             imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
         }
-
 
 
         ref.addListenerForSingleValueEvent(
@@ -137,18 +140,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             val mHeight = profileHeight_text.text.toString().trim()
 
 
-            if (mAge.isEmpty()) {
-                profileAge_text.error = "Age Needed."
-                profileAge_text.requestFocus()
-            }
-            if (mWeight.isEmpty()) {
-                profileWeight_text.error = "Weight Needed."
-                profileWeight_text.requestFocus()
-            }
-            if (mHeight.isEmpty()) {
-                profileHeight_text.error = "Height Needed."
-                profileHeight_text.requestFocus()
-            }
+            emptyValidation(mAge, mWeight, mHeight)
 
             val updateHash = HashMap<String, Any>()
             updateHash["userAge"] = mAge.toInt()
@@ -185,22 +177,30 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         }
 
+    private fun emptyValidation(mAge: String, mWeight: String, mHeight: String) {
+        if (mAge.isEmpty()) {
+            profileAge_text.error = "Age Needed."
+            profileAge_text.requestFocus()
+        }
+        if (mWeight.isEmpty()) {
+            profileWeight_text.error = "Weight Needed."
+            profileWeight_text.requestFocus()
+        }
+        if (mHeight.isEmpty()) {
+            profileHeight_text.error = "Height Needed."
+            profileHeight_text.requestFocus()
+        }
+    }
+
     override fun onBackPressed() {
-        val mFullName = profileName_text.text.toString().trim()
         val mAge = profileAge_text.text.toString().trim()
         val mWeight = profileWeight_text.text.toString().trim()
         val mHeight = profileHeight_text.text.toString().trim()
 
-        if (mFullName.isNotEmpty() && mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
+        if (mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
             super.onBackPressed()
         }else{
-            profileAge_text.error = "Age Needed."
-            profileAge_text.requestFocus()
-            profileWeight_text.error = "Weight Needed."
-            profileWeight_text.requestFocus()
-            profileHeight_text.error = "Height Needed."
-            profileHeight_text.requestFocus()
-            toast("Please fill in your details.")
+            emptyValidation(mAge, mWeight, mHeight)
         }
 
     }

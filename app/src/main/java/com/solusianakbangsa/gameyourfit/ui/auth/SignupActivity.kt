@@ -23,7 +23,7 @@ import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.R
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.google_button
+//import kotlinx.android.synthetic.main.activity_login.google_button
 import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_user_information.*
 import kotlinx.android.synthetic.main.activity_username_google.*
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_username_google.*
 class SignupActivity : AppCompatActivity() {
     private lateinit var context: Context
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
+//    private lateinit var googleSignInClient: GoogleSignInClient
     lateinit var ref : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,12 +68,12 @@ class SignupActivity : AppCompatActivity() {
         signInSpan()
 
         /** Google sign in request */
-        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+//        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestIdToken(getString(R.string.default_web_client_id))
+//            .requestEmail()
+//            .build()
+//
+//        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         //Firebase Auth Instance
         val currentUser = mAuth.currentUser
@@ -81,9 +81,9 @@ class SignupActivity : AppCompatActivity() {
             mAuth.signOut()
         }
 
-        google_button.setOnClickListener(){
-            signIn()
-        }
+//        google_button.setOnClickListener(){
+//            signIn()
+//        }
 
         /** Getting email and password + validation */
         sign_up_button.setOnClickListener{
@@ -201,9 +201,9 @@ class SignupActivity : AppCompatActivity() {
         /** To make clickable text to switch activities */
         signInSpan()
 
-        google_button.setOnClickListener(){
-            signIn()
-        }
+//        google_button.setOnClickListener(){
+//            signIn()
+//        }
         /** Getting email and password + validation */
         sign_up_button.setOnClickListener {
             val email = sign_up_email_address.text.toString().trim()
@@ -283,6 +283,7 @@ class SignupActivity : AppCompatActivity() {
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
+
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
@@ -307,94 +308,94 @@ class SignupActivity : AppCompatActivity() {
             }
     }
 
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, 1)
-    }
+//    private fun signIn() {
+//        val signInIntent = googleSignInClient.signInIntent
+//        startActivityForResult(signInIntent, 1)
+//    }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == 1) {
-
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val exception = task.exception
-            if(task.isSuccessful){
-                try {
-                    //Google Sign In was successful, authenticate with Firebase
-                    val account = task.getResult(ApiException::class.java)!!
-                    Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account.id)
-                    firebaseAuthWithGoogle(account.idToken!!)
-                } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
-                }
-            }else{
-                Log.w("LoginActivity", exception.toString())
-            }
-        }
-
-    }
-
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        val progressBar: View = findViewById(R.id.progress_bar_overlay)
-        progressBar.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val userId = FirebaseAuth.getInstance().uid.toString()
-                    val email = FirebaseAuth.getInstance().currentUser?.email.toString()
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("LoginActivity", "signInWithCredential:success")
-                    FirebaseDatabase.getInstance().reference.child("users").child(userId).addListenerForSingleValueEvent(
-                        object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                if (snapshot.exists()) {
-                                    FirebaseDatabase.getInstance().reference.child("users").child(userId).child("username").addListenerForSingleValueEvent(
-                                        object : ValueEventListener {
-                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                if (snapshot.exists()){
-                                                    progressBar.visibility = View.GONE
-                                                    login()
-                                                }else{
-                                                    progressBar.visibility = View.GONE
-                                                    val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
-                                                    startActivity(intent)
-                                                }
-                                            }
-
-                                            override fun onCancelled(error: DatabaseError) {
-                                                TODO("Not yet implemented")
-                                            }
-                                        })
-                                } else{
-                                    saveData(userId, email)
-                                    progressBar.visibility = View.GONE
-                                    val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
-                                    startActivity(intent)
-                                }
-
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
-
-                            }
-                        })
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+//        if (requestCode == 1) {
+//
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            val exception = task.exception
+//            if(task.isSuccessful){
+//                try {
+//                    //Google Sign In was successful, authenticate with Firebase
+//                    val account = task.getResult(ApiException::class.java)!!
+//                    Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account.id)
+//                    firebaseAuthWithGoogle(account.idToken!!)
+//                } catch (e: ApiException) {
+//                    // Google Sign In failed, update UI appropriately
+//                }
+//            }else{
+//                Log.w("LoginActivity", exception.toString())
+//            }
+//        }
+//
+//    }
 
 
-                } else {
-                    progressBar.visibility = View.GONE
-                    // If sign in fails, display a message to the user.
-                    Log.d("LoginActivity", "signInWithCredential:failure", task.exception)
-                }
-
-            }
-    }
+//    private fun firebaseAuthWithGoogle(idToken: String) {
+//        val credential = GoogleAuthProvider.getCredential(idToken, null)
+//        val progressBar: View = findViewById(R.id.progress_bar_overlay)
+//        progressBar.bringToFront()
+//        progressBar.visibility = View.VISIBLE
+//        mAuth.signInWithCredential(credential)
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    val userId = FirebaseAuth.getInstance().uid.toString()
+//                    val email = FirebaseAuth.getInstance().currentUser?.email.toString()
+//                    // Sign in success, update UI with the signed-in user's information
+//                    Log.d("LoginActivity", "signInWithCredential:success")
+//                    FirebaseDatabase.getInstance().reference.child("users").child(userId).addListenerForSingleValueEvent(
+//                        object : ValueEventListener {
+//                            override fun onDataChange(snapshot: DataSnapshot) {
+//                                if (snapshot.exists()) {
+//                                    FirebaseDatabase.getInstance().reference.child("users").child(userId).child("username").addListenerForSingleValueEvent(
+//                                        object : ValueEventListener {
+//                                            override fun onDataChange(snapshot: DataSnapshot) {
+//                                                if (snapshot.exists()){
+//                                                    progressBar.visibility = View.GONE
+//                                                    login()
+//                                                }else{
+//                                                    progressBar.visibility = View.GONE
+//                                                    val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
+//                                                    startActivity(intent)
+//                                                }
+//                                            }
+//
+//                                            override fun onCancelled(error: DatabaseError) {
+//                                                TODO("Not yet implemented")
+//                                            }
+//                                        })
+//                                } else{
+//                                    saveData(userId, email)
+//                                    progressBar.visibility = View.GONE
+//                                    val intent = Intent(this@SignupActivity, UsernameGoogleActivity::class.java)
+//                                    startActivity(intent)
+//                                }
+//
+//                            }
+//
+//                            override fun onCancelled(error: DatabaseError) {
+//                                TODO("Not yet implemented")
+//
+//                            }
+//                        })
+//
+//
+//                } else {
+//                    progressBar.visibility = View.GONE
+//                    // If sign in fails, display a message to the user.
+//                    Log.d("LoginActivity", "signInWithCredential:failure", task.exception)
+//                }
+//
+//            }
+//    }
 
     private fun saveData(userId: String, email : String) {
 
