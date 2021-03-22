@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import kotlinx.android.synthetic.main.activity_alpha_one.*
+import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
 import kotlin.properties.Delegates
@@ -38,7 +40,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var levelString: String
     private lateinit var level : JSONObject
 
-    private var weight = 0
+    private var weight = 0L
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
     private var counterMax = 0  // Max rep for a certain exercise
@@ -64,7 +66,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         if(sharedPref.contains("weight")){
-            weight = sharedPref.getInt("weight", 57)
+            weight = sharedPref.getLong("weight", 57)
         } else {
             weight = 57
         }
@@ -173,6 +175,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     // TODO: put the exp of the level
                     val exp: Int = 1000
                     updateExp(exp)
+                    sensorStandbyMessage.visibility = View.GONE
                 }
             }
         })
@@ -180,6 +183,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     private fun updateExp(exp: Int) {
         var currentExp: Int = 0
+        var finalLevel: Int = 0
         val updateHash = HashMap<String, Any>()
 
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
@@ -188,6 +192,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 currentExp = snapshot.child("exp").value.toString().toInt()
                 updateHash["exp"] = currentExp+exp
+                finalLevel = (currentExp+exp)/1000
+                Log.i("bruhh", finalLevel.toString())
+                updateHash["level"] = finalLevel
                 dbRef.child(uid).updateChildren(updateHash)
             }
         })
@@ -381,7 +388,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         repBefore = rep
     }
 
-    private fun countCalorie(time: Long, met: Double, weight: Int) {
+    private fun countCalorie(time: Long, met: Double, weight: Long) {
         // Counts burnt calories for a single exercise session
         val inMinutes = (time.toDouble() / 1000.0) / 60.0
         val caloriesBurned = (met * 3.5 * weight.toDouble() / 200.0) * inMinutes

@@ -126,6 +126,7 @@ class DashboardFragment : Fragment() {
         binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignDescription.setOnClickListener(toCampaignActivity)
+        binding.dashboardCampaignPlay.setOnClickListener(toCampaignActivity)
         binding.cardProfilePicture.setOnClickListener {
             val intent = Intent(activity, ProfileActivity::class.java)
             val options = ActivityOptions.makeSceneTransitionAnimation(
@@ -156,6 +157,7 @@ class DashboardFragment : Fragment() {
         } else{
             imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
         }
+
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         if(sharedPref.contains("username")){
             binding.cardUsernameShimmer.stopShimmerAnimation()
@@ -167,6 +169,13 @@ class DashboardFragment : Fragment() {
                 binding.cardUsername.text = it.value.toString()
             }
         }
+
+//       if (!sharedPref.contains("weight")) {
+           ref.child("userWeight").get().addOnSuccessListener {
+               sharedPref.edit().putLong("weight", (it.value as Double).toLong()).apply()
+               Log.i("coolm", (sharedPref.getLong("weight", 0)).toString())
+           }
+//       }
 
         ref.child("level").get().addOnSuccessListener {
             sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
