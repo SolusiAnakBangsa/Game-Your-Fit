@@ -24,7 +24,7 @@ class LevelInfoActivity : AppCompatActivity() {
     private val imageReplacer : ImageReplacer = ImageReplacer()
     private val handler : Handler = Handler(Looper.getMainLooper())
     private lateinit var taskList : TaskList
-    private lateinit var levelListString: String
+    private lateinit var levelString: String
     private lateinit var levelInfoContent : LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +38,8 @@ class LevelInfoActivity : AppCompatActivity() {
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
-        if(intent.getStringExtra("levelList") != null){
-            levelListString = intent.getStringExtra("levelList")!!
+        if(intent.getStringExtra("level") != null){
+            levelString = intent.getStringExtra("level")!!
         }
 
         val fullTitle = intent.getStringExtra("title")
@@ -71,7 +71,7 @@ class LevelInfoActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.levelInfoStart).setOnClickListener{
             val intent = Intent(this, AlphaOneActivity::class.java)
-            intent.putExtra("levelList", levelListString)
+            intent.putExtra("level", levelString)
             intent.putExtra("taskList", taskList.jsonArr.toString())
             intent.putExtra("title", fullTitle)
 

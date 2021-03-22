@@ -111,6 +111,7 @@
 
                     <ProgressBar
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:id="@+id/cardProgress"
                         android:layout_width="0dp"
                         android:layout_height="10dp"
                         android:layout_marginStart="10dp"
@@ -123,19 +124,19 @@
                         app:layout_constraintStart_toEndOf="@id/cardLevel"
                         app:layout_constraintTop_toBottomOf="@id/cardUsernameShimmer" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="2dp"
-                        android:paddingStart="10dp"
-                        android:text="68 m ⏱"
-                        android:textColor="@color/white"
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:layout_marginTop="2dp"-->
+<!--                        android:paddingStart="10dp"-->
+<!--                        android:text="68 m ⏱"-->
+<!--                        android:textColor="@color/white"-->
 
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"
-                        app:layout_constraintTop_toBottomOf="@+id/cardLevel"/>
+<!--                        android:textSize="14sp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        app:layout_constraintStart_toEndOf="@+id/cardProfilePicture"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/cardLevel"/>-->
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 

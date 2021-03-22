@@ -38,10 +38,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:backgroundTint="@color/amber_900"
+        app:srcCompat="@drawable/ic_baseline_add_24"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        android:focusable="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

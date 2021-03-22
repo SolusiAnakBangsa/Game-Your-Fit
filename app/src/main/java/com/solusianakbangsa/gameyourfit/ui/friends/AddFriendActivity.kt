@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -22,7 +23,7 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
     private var recycleView: RecyclerView? = null
     private var searchEditTxt: EditText? = null
     private var currentState: String = "not_friends"
-    private val FriendRequestRef: DatabaseReference =
+    private val friendRequestRef: DatabaseReference =
         FirebaseDatabase.getInstance().reference.child("FriendRequests")
     private val sentHash = HashMap<String, Any>()
     private val receivedHash = HashMap<String, Any>()
@@ -37,8 +38,14 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
         recycleView!!.layoutManager = LinearLayoutManager(this)
         mUsers = ArrayList()
         searchEditTxt = findViewById(R.id.searchUserTxt)
-//        retrieveAllUsers()
 
+
+        val toolbar: Toolbar = findViewById(R.id.addFriendToolbar)
+        setSupportActionBar(toolbar)
+
+        findViewById<Toolbar>(R.id.addFriendToolbar).setNavigationOnClickListener{
+            this.onBackPressed()
+        }
 
         searchEditTxt!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -64,89 +71,48 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
         })
     }
 
-    private fun retrieveAllUsers() {
-        var firebaseUserID = FirebaseAuth.getInstance().currentUser?.uid
-        var refUsers = FirebaseDatabase.getInstance().reference.child("users")
-
-        refUsers.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                (mUsers as ArrayList<User>).clear()
-                if (searchEditTxt!!.text.toString() == "") {
-                    for (data in snapshot.children) {
-                        var user: User? = User()
-                        if (user != null) {
-                            user.userId = firebaseUserID
-                            user.username = data.child("username").value.toString()
-                            user.level = data.child("level").value.toString().toInt()
-                            user.image = data.child("image").value.toString()
-                            if (!(user!!.userId).equals(firebaseUserID)) {
-                                (mUsers as ArrayList<User>).add(user)
-                            }
-                        }
-                    }
-                    userAdapter = UserAdapter(mUsers!!, this@AddFriendActivity)
-                    recycleView!!.adapter = userAdapter
-                }
-            }
-        })
-
-    }
-
     private fun searchForUsers(str: String) {
         var firebaseUserID = FirebaseAuth.getInstance().currentUser?.uid
-        var queryUsers =
-            FirebaseDatabase.getInstance().reference.child("users").orderByChild("username")
+
+        var queryUsers = FirebaseDatabase.getInstance().reference.child("users").orderByChild("username")
                 .startAt(str).endAt(str + "\uf8ff")
-        var receiveUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
-            firebaseUserID!!
-        ).orderByChild("request_type").equalTo("received")
-        var senderUsers = FirebaseDatabase.getInstance().reference.child("FriendRequests").child(
-            firebaseUserID!!
-        ).orderByChild("request_type").equalTo("sent")
+
+        var receiveUsers = friendRequestRef.child(firebaseUserID!!).orderByChild("request_type").equalTo("received")
+
+        var senderUsers = friendRequestRef.child(firebaseUserID!!).orderByChild("request_type").equalTo("sent")
+
         val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserID!!).orderByChild("status").equalTo("friends")
+
         var invalidUser: List<String>? = null
         invalidUser = ArrayList()
 
         if (str != "") {
-
             dbRef.addValueEventListener(object : ValueEventListener{
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    (invalidUser as ArrayList<String>).clear()
+                    (invalidUser).clear()
                     for (data in snapshot.children) {
                         invalidUser.add(data.child("friend").value.toString())
                     }
                     receiveUsers.addValueEventListener(object : ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {
-
-                        }
+                        override fun onCancelled(error: DatabaseError) {}
 
                         override fun onDataChange(snapshot: DataSnapshot) {
                             for (data in snapshot.children) {
-                                (invalidUser as ArrayList<String>).add(data.child("sender").value.toString())
+                                (invalidUser).add(data.child("sender").value.toString())
                             }
 
                             senderUsers.addValueEventListener(object :ValueEventListener{
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
-                                }
+                                override fun onCancelled(error: DatabaseError) {}
 
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     for (data in snapshot.children) {
-                                        (invalidUser as ArrayList<String>).add(data.child("receiver").value.toString())
+                                        (invalidUser).add(data.child("receiver").value.toString())
                                     }
                                     queryUsers.addListenerForSingleValueEvent(object : ValueEventListener {
 
-                                        override fun onCancelled(error: DatabaseError) {
-                                            TODO("Not yet implemented")
-                                        }
+                                        override fun onCancelled(error: DatabaseError) {}
 
                                         override fun onDataChange(snapshot: DataSnapshot) {
                                             (mUsers as ArrayList<User>).clear()
@@ -171,8 +137,6 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                                     })
 
                                 }
-
-
                             })
 
                         }
@@ -199,80 +163,34 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
     }
 
     private fun sendFriendRequestToAUser(senderUserId: String, receiverUserId: String) {
-        FriendRequestRef.child(senderUserId)
-            .child(receiverUserId).child("request_type").setValue("sent")
+        sentHash["request_type"] = "sent"
+        sentHash["receiver"] = receiverUserId
+        sentHash["sender"] = senderUserId
+        friendRequestRef.child(senderUserId)
+            .child(receiverUserId).setValue(sentHash)
             .addOnCompleteListener { task ->
+
                 if (task.isSuccessful) {
-                    sentHash["receiver"] = receiverUserId
-                    sentHash["sender"] = senderUserId
-                    FriendRequestRef.child(senderUserId).child(receiverUserId)
-                        .updateChildren(sentHash).addOnCompleteListener() { task1 ->
-                            if (task1.isSuccessful) {
-                                FriendRequestRef.child(receiverUserId)
-                                    .child(senderUserId).child("request_type").setValue("received")
-                                    .addOnCompleteListener { task2 ->
-                                        if (task2.isSuccessful) {
-                                            receivedHash["receiver"] = receiverUserId
-                                            receivedHash["sender"] = senderUserId
-                                            FriendRequestRef.child(receiverUserId)
-                                                .child(senderUserId)
-                                                .updateChildren(receivedHash)
-                                                .addOnCompleteListener() { task3 ->
-                                                    if (task3.isSuccessful) {
-                                                        toast("Friend Request Sent.")
-                                                        currentState = "request_sent"
-                                                        startActivity(
-                                                            Intent(
-                                                                this,
-                                                                FriendsFragment::class.java
-                                                            )
-                                                        )
-                                                    } else {
-                                                        toast("Error in Sending Friend Request")
-                                                    }
-                                                }
-                                        } else {
-                                            toast("Error in Sending Friend Request")
-                                        }
-                                    }
-                            } else {
-                                toast("Error in Sending Friend Request")
+
+                    receivedHash["request_type"] = "received"
+                    receivedHash["receiver"] = receiverUserId
+                    receivedHash["sender"] = senderUserId
+                    friendRequestRef.child(receiverUserId).child(senderUserId).setValue(receivedHash)
+                        .addOnCompleteListener { task2 ->
+
+                            if (task2.isSuccessful) {
+                                    toast("Friend Request Sent.")
+                                    currentState = "request_sent"
+                                } else {
+                                    toast("Error in Sending Friend Request")
+                                }
                             }
-                        }
-                } else {
-                    toast("Error in Sending Friend Request")
-                }
+                    } else {
+                        toast("Error in Sending Friend Request")
+                    }
             }
+        }
     }
-}
-
-
-//FriendRequestRef.child(firebaseUserID.toString()).child(user.userId.toString()).child("request_type").addValueEventListener(object:ValueEventListener{
-//    override fun onDataChange(snapshot: DataSnapshot) {
-//        if (snapshot.exists()){
-//            //request already sent
-//        }else{
-//            FriendRequestRef.child(user.userId.toString()).child(firebaseUserID.toString()).child("request_type").addValueEventListener(object:ValueEventListener{
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    if (snapshot.exists()){
-//                        //request already sent
-//                    }else{
-//
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//
-//                }
-//            })
-//        }
-//    }
-//
-//    override fun onCancelled(error: DatabaseError) {
-//
-//    })
-//}
-
 
 
 

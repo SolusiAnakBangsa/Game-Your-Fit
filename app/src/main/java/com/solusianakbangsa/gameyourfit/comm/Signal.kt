@@ -4,11 +4,11 @@ import org.json.JSONObject
 
 // Wrapper class for JSONObject, intended to be used for two way communication between browser and
 // Phone
-class Signal(exerciseType : String, status : String, repAmount : Int, targetRep : Int, flavorText : String?, time : Long) {
+class Signal(exerciseType : String, status : String, repAmount : Int, targetRep : Int, flavorText : String?, totaltime : Long, calories : Int, time : Long) {
 //    Initializes empty JsonObject, not recommended
 
     constructor() : this(
-        "","",0, 0,"",0L
+        "","",0, 0,"", 0L, 0,0L
     )
     var json : JSONObject = JSONObject()
     var meta : JSONObject = JSONObject()
@@ -18,6 +18,8 @@ class Signal(exerciseType : String, status : String, repAmount : Int, targetRep 
         json.put("repAmount", repAmount)
         meta.put("targetRep", targetRep)
         meta.put("flavorText", flavorText)
+        meta.put("totalTime", totaltime)
+        meta.put("calories", calories)
         json.put("meta", meta)
         json.put("time", time)
     }
@@ -46,7 +48,11 @@ class Signal(exerciseType : String, status : String, repAmount : Int, targetRep 
         return json.get(key)
     }
 
-    fun getMeta(key: String): Any{
+    fun getMeta(key: String): JSONObject{
+        return json.getJSONObject("meta")
+    }
+
+    fun getFromMeta(key: String): Any{
         return json.getJSONObject("meta").get(key)
     }
 

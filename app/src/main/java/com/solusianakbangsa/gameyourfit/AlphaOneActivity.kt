@@ -8,28 +8,25 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.animation.addListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.google.android.material.card.MaterialCardView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
+import kotlin.properties.Delegates
 
 class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
@@ -38,23 +35,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var taskList : TaskList
     private lateinit var viewModel : SensorViewModel
     private lateinit var exercises : Signal
-    private lateinit var levelListString: String
+    private lateinit var levelString: String
+    private lateinit var level : JSONObject
 
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
-    private var counterMax = 300  // Temporary
+    private var counterMax = 0  // Max rep for a certain exercise
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
-    private var exercise = "jog"  // Temp variable for exercises
-    private var exerciseCounter = 0
+    private var exercise = ""  // Variable for exercises
+    private var exerciseCounter = 1
     private var axisUsed = 'X'  // Default axis used is X
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
     private var metValue = 0.0
     private var time = 0L
-    private var totalCalorie = 0
+    private var totalCalorie = 0.0
     private var startPauseTime = 0L
+    private var exerciseTime = 0L
+    private var totalTime = 0L
+    private var uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var dbRef = FirebaseDatabase.getInstance().reference.child("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +65,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         if(sharedPref.contains("weight")){
             weight = sharedPref.getInt("weight", 57)
+        } else {
+            weight = 57
         }
 
         setSupportActionBar(toolbar)
@@ -82,11 +86,14 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         if(intent.getStringExtra("taskList") != null){
             taskList = TaskList(intent.getStringExtra("taskList")!!)
         }
-        if(intent.getStringExtra("levelList") != null){
-            levelListString = intent.getStringExtra("levelList")!!
+        if(intent.getStringExtra("level") != null){
+            levelString = intent.getStringExtra("level")!!
+            val content = JSONObject(levelString)
+            level = JSONObject()
+            level.put("workoutList", content)
         }
 
-        viewModel.signal = Signal("jog","standby",0,0,"",0L)
+        viewModel.signal = Signal("jog","standby",0,0,"", 0L, 0, 0L)
         signal = viewModel.signal
         rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
 //        Generates a random peer,
@@ -96,7 +103,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
 
         for (i in 0 until taskList.jsonArr.length()) {
-            exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L)
+            exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L, 0, 0L)
             exerciseList.add(exercises)
         }
         Log.i("exerciseList", exerciseList.toString())
@@ -112,42 +119,76 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     val firstExercise = exerciseList[0]
                     signal = firstExercise
                     exercise = firstExercise.get("exerciseType") as String
-                    counterMax = firstExercise.getMeta("targetRep") as Int
+                    counterMax = firstExercise.getFromMeta("targetRep") as Int
+                    onResume()
                     resumeReading()
                 }
                 "calibrating" -> {
-                    rtc.sendDataToPeer(levelListString)
+                    rtc.sendDataToPeer(level.toString())
                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.visibility = View.VISIBLE
                     inProgressLayout.bringToFront()
+                    Log.i("signalWeight", weight.toString())
                 }
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
-
+                    signal.replace("status", "pause")
+                    Log.i("signal", "pause")
                 }
                 "unpause" -> {
-                    // bla bla bla
-                    startPauseTime = 0L
+                    onResume()
+                    resumeReading()
+                    exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
+                    Log.i("signal", "unpause")
                 }
                 "end" -> {
+                    countCalorie(SystemClock.elapsedRealtime() - exerciseTime, metValue, weight)
+                    totalTime += SystemClock.elapsedRealtime() - exerciseTime
+
                     if (exerciseCounter < exerciseList.size) {
                         signal = exerciseList[exerciseCounter]
                         exercise = exerciseList[exerciseCounter].get("exerciseType") as String
-                        counterMax = exerciseList[exerciseCounter].getMeta("targetRep") as Int
-                        resumeReading()
+                        counterMax = exerciseList[exerciseCounter].getFromMeta("targetRep") as Int
+                        exerciseTime = 0L
                         exerciseCounter++
                     } else {
                         signal.replace("status", "endgame")
+                        signal.replaceMeta("totalTime", totalTime)
+                        signal.replaceMeta("calories", totalCalorie.toInt())
                         rtc.sendDataToPeer(signal.toString())
+                        Log.i("signal", signal.toString())
                         viewModel.currentStatus.postValue("endgame")
                     }
+                }
+                "startnext" -> {
+                    onResume()
+                    resumeReading()
                 }
                 "endgame" -> {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.animate().alpha(0.0f)
-        //                Show summary here
-                    animateSummary("garb",20000, totalCalorie)
+                    //                Show summary here
+                    animateSummary("garb", totalTime, totalCalorie.toInt())
+                    // send exp here
+                    // TODO: put the exp of the level
+                    val exp: Int = 1000
+                    updateExp(exp)
                 }
+            }
+        })
+    }
+
+    private fun updateExp(exp: Int) {
+        var currentExp: Int = 0
+        val updateHash = HashMap<String, Any>()
+
+        dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {}
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                currentExp = snapshot.child("exp").value.toString().toInt()
+                updateHash["exp"] = currentExp+exp
+                dbRef.child(uid).updateChildren(updateHash)
             }
         })
     }
@@ -169,8 +210,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
                     'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
                 }
-            } else {
-
             }
         }
     }
@@ -189,6 +228,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         when (exercise) {
             "Jog" -> {
+                axisUsed = SensorConstants.JOG_AXIS
+                thresholdHigh = SensorConstants.JOG_HIGH
+                thresholdLow = SensorConstants.JOG_LOW
+                metValue = SensorConstants.MET_JOGGING
+            }
+            "High Knee" -> {
                 axisUsed = SensorConstants.JOG_AXIS
                 thresholdHigh = SensorConstants.JOG_HIGH
                 thresholdLow = SensorConstants.JOG_LOW
@@ -259,6 +304,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun resumeReading() {
+        if (exerciseTime == 0L) {
+            exerciseTime = SystemClock.elapsedRealtime()
+        }
+
         // Send JSON data to web, indicates *start status*
         signal.replace("status", "start")
         signal.replace("time", SystemClock.elapsedRealtime())
@@ -268,12 +317,13 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
         Log.i("signal", signal.toString())
 
-        // Sends JSON data continuously every 1 second to the web, indicates *mid status*
-        timer()
+        // Sends JSON data continuously every 1 second to the web using timer() if jog
+        if (exercise == "Jog") {
+            timer()
+        }
     }
 
     private fun timer() {
-        onResume()
         fixedRateTimer("timer", false, 0L, 1000) {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
@@ -285,6 +335,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     viewModel.currentStatus.postValue("end")
                     this.cancel()                           // Stops timer
                     onPause()
+                } else if (signal.get("status") == "pause") {
+                    this.cancel()
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
@@ -303,15 +355,38 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep != repBefore) {
-            signal.replace("repAmount", signal.get("repAmount") as Int + 1)
+            if (exercise != "Jog") {
+                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                    signal.replace("status", "end")
+
+                    rtc.sendDataToPeer(signal.toString())
+
+                    signal.replaceMeta("targetRep", 0)
+                    viewModel.currentStatus.postValue("end")
+                    onPause()
+                } else if (signal.get("status") == "pause") {
+                    onPause()
+                } else {
+                    time = SystemClock.elapsedRealtime()    // Get current time since epoch
+                    signal.replace("time", time)
+                    signal.replace("repAmount", signal.get("repAmount") as Int + 1)
+                    rtc.sendDataToPeer(signal.toString())
+                    Log.i("signal", signal.toString())
+                }
+            } else {
+                signal.replace("repAmount", signal.get("repAmount") as Int + 1)
+                Log.i("signal", signal.toString())
+            }
         }
         repBefore = rep
     }
 
     private fun countCalorie(time: Long, met: Double, weight: Int) {
         // Counts burnt calories for a single exercise session
-
-
+        val inMinutes = (time.toDouble() / 1000.0) / 60.0
+        val caloriesBurned = (met * 3.5 * weight.toDouble() / 200.0) * inMinutes
+        totalCalorie += caloriesBurned
+        Log.i("signalBurned", caloriesBurned.toString())
     }
 
     private fun valueAnimator(view: TextView, initialValue : Int, endValue : Int): Animator{
@@ -330,8 +405,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         }
         return animator
     }
-    private fun animateSummary(title : String, time : Int, calories : Int){
-//        TODO : Create function to convert timeMill to HH:MM:SS
+    private fun animateSummary(title : String, time : Long, calories : Int){
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
 
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
@@ -344,9 +418,9 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val timeContentHourText : TextView = findViewById(R.id.summaryTimeHour)
         val timeContentMinuteText : TextView = findViewById(R.id.summaryTimeMinute)
         val timeContentSecondText : TextView = findViewById(R.id.summaryTimeSecond)
-        timeContentHourText.text = "13 :"
-        timeContentMinuteText.text = " 22 :"
-        timeContentSecondText.text = " 59"
+        timeContentHourText.text = convertToHour(time)
+        timeContentMinuteText.text = convertToMinute(time)
+        timeContentSecondText.text = convertToSec(time)
 
         val timeContent = fadeInAnimator(findViewById(R.id.summaryTime))
         val caloryTitle = fadeInAnimator(findViewById(R.id.summaryCaloriesTitle))
@@ -364,5 +438,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             play(caloryTitle).with(caloryContent)
         }
         animSet.start()
+    }
+
+    private fun convertToSec(time: Long): CharSequence {
+        val seconds = time / 1000 % 60
+
+        return String.format("%02d", seconds)
+    }
+
+    private fun convertToMinute(time: Long): CharSequence {
+        val minutes = (time / 1000 / 60) % 60
+        return String.format("%02d:", minutes)
+    }
+
+    private fun convertToHour(time: Long): CharSequence {
+        val hours = (time / 1000 / (60 * 60)) % 24
+        return String.format("%02d:", hours)
     }
 }
