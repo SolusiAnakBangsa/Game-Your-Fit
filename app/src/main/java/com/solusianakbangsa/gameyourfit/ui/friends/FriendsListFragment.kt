@@ -66,6 +66,7 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
             executor.execute{
                 contentLayout.removeAllViews()
                 viewModel.loadEntries()
+                swipeRefresh.isRefreshing = false
             }
         }
 

@@ -82,8 +82,6 @@ class DashboardFragment : Fragment() {
             binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
         }
 
-
-
 //        TODO : replace placeholder link with link from firebase
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
         if(!(profilePicture.exists())){
