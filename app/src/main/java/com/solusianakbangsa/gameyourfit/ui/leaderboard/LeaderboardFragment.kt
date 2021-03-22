@@ -52,11 +52,13 @@ class LeaderboardFragment : Fragment() {
             contentLayout.removeAllViews()
 //            Reversed is done as firebase has no option to sort with descending
             it.asReversed().forEach{
-                createView(it)
-                if(rank in 1..3){
-                    contentLayout.getChildAt(rank - 1).background.setTint(resources.getColor(R.color.amber_900))
+                if (isAdded){
+                    createView(it)
+                    if(rank in 1..3){
+                        contentLayout.getChildAt(rank - 1).background.setTint(resources.getColor(R.color.amber_900))
+                    }
+                    rank += 1
                 }
-                rank += 1
             }
         })
 //        var vp : ViewPager = root.findViewById(R.id.leaderboardViewPager)
@@ -69,10 +71,12 @@ class LeaderboardFragment : Fragment() {
         return root
     }
     private fun createView(entry : LeaderboardEntry){
-        var view : View = layoutInflater.inflate(R.layout.leaderboard_entry, null, false)
-        view.leaderboardRank.text = rank.toString()
-        view.leaderboardName.text = entry.username
-        view.leaderboardPoints.text = entry.exp.toString()
-        contentLayout.addView(view)
+        if(isAdded){
+            var view : View = layoutInflater.inflate(R.layout.leaderboard_entry, null, false)
+            view.leaderboardRank.text = rank.toString()
+            view.leaderboardName.text = entry.username
+            view.leaderboardPoints.text = entry.exp.toString()
+            contentLayout.addView(view)
+        }
     }
 }

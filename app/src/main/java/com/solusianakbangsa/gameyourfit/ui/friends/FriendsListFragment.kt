@@ -28,23 +28,26 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
     }
 
     override fun createView(args: Friend) {
-        var replacer = ImageReplacer()
-        var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
+        if(isAdded){
+            var replacer = ImageReplacer()
+            var friendEntry : View = layoutInflater.inflate(R.layout.friend_card,null,false)
 
-        var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)
-        levelView.text = "Level ${args.level.toString()}"
+            var levelView : TextView = friendEntry.findViewById(R.id.friendLevel)
+            levelView.text = "Level ${args.level.toString()}"
 
-        var usernameView : TextView = friendEntry.findViewById(R.id.friendUsername)
-        usernameView.text = args.username
+            var usernameView : TextView = friendEntry.findViewById(R.id.friendUsername)
+            usernameView.text = args.username
 
-        var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
-        timeView.text = args.exp.toString()
+            var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
+            timeView.text = args.exp.toString()
 
-        var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
-        if (args.image != ""){
-            replacer.replaceImage(Handler(Looper.getMainLooper()), profileView, args.image)
+            var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
+            if (args.image != ""){
+                replacer.replaceImage(Handler(Looper.getMainLooper()), profileView, args.image)
+            }
+            contentLayout.addView(friendEntry)
         }
-        contentLayout.addView(friendEntry)
+
     }
 
     override fun onCreateView(
@@ -60,7 +63,10 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
         contentLayout = root.findViewById(R.id.friendsContent)
 
         swipeRefresh.setOnRefreshListener {
-            swipeRefresh.isRefreshing = false
+            executor.execute{
+                contentLayout.removeAllViews()
+                viewModel.loadEntries()
+            }
         }
 
         viewModel.loadEntries()

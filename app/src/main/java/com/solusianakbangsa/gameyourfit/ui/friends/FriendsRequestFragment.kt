@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
@@ -20,8 +21,10 @@ import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardViewModel
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.fragment_friends_content.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>()  {
@@ -55,37 +58,39 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
     }
 
     override fun createView(args: Request) {
-        val imageReplacer = ImageReplacer()
-        val userId = FirebaseAuth.getInstance().uid.toString()
+        if(isAdded){
+            val imageReplacer = ImageReplacer()
+            val userId = FirebaseAuth.getInstance().uid.toString()
 
-        val requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card, null, false)
+            val requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card, null, false)
 
-        val levelView : TextView = requestEntry.findViewById(R.id.requestLevel)
-        levelView.text = "Level ${args.level.toString()}"
+            val levelView : TextView = requestEntry.findViewById(R.id.requestLevel)
+            levelView.text = "Level ${args.level.toString()}"
 
-        val usernameView : TextView = requestEntry.findViewById(R.id.requestUsername)
-        usernameView.text = args.username
+            val usernameView : TextView = requestEntry.findViewById(R.id.requestUsername)
+            usernameView.text = args.username
 
-        val circleImage : CircleImageView = requestEntry.findViewById(R.id.requestProfilePicture)
-        imageReplacer.replaceImage(Handler(Looper.getMainLooper()), circleImage, args.image)
+            val circleImage : CircleImageView = requestEntry.findViewById(R.id.requestProfilePicture)
+            imageReplacer.replaceImage(Handler(Looper.getMainLooper()), circleImage, args.image)
 
-        requestEntry.findViewById<Button>(R.id.requestAccept).setOnClickListener{
-            deleteOldRequest(userId, args.uid!!)
-            writeFriend(userId, args.uid!!, args)
-            requestEntry.animate().alpha(0.0f).setDuration(1000L)
-            handler.postDelayed({
-                contentLayout.removeView(requestEntry)
-            }, 1000L)
+            requestEntry.findViewById<Button>(R.id.requestAccept).setOnClickListener{
+                deleteOldRequest(userId, args.uid!!)
+                writeFriend(userId, args.uid!!, args)
+                requestEntry.animate().alpha(0.0f).setDuration(1000L)
+                handler.postDelayed({
+                    contentLayout.removeView(requestEntry)
+                }, 1000L)
+            }
+            requestEntry.findViewById<Button>(R.id.requestDecline).setOnClickListener{
+                deleteOldRequest(userId, args.uid!!)
+                requestEntry.animate().alpha(0.0f).setDuration(1000L)
+                handler.postDelayed({
+                    contentLayout.removeView(requestEntry)
+                }, 1000L)
+            }
+
+            contentLayout.addView(requestEntry)
         }
-        requestEntry.findViewById<Button>(R.id.requestDecline).setOnClickListener{
-            deleteOldRequest(userId, args.uid!!)
-            requestEntry.animate().alpha(0.0f).setDuration(1000L)
-            handler.postDelayed({
-                contentLayout.removeView(requestEntry)
-            }, 1000L)
-        }
-
-        contentLayout.addView(requestEntry)
     }
 
     override fun onCreateView(
@@ -95,6 +100,14 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
     ): View? {
         val root: View = inflater.inflate(R.layout.fragment_friends_content, container, false)
         contentLayout = root.findViewById(R.id.friendsContent)
+        val executor = Executors.newSingleThreadExecutor()
+        val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.friendsRefresh)
+        swipeRefresh.setOnRefreshListener {
+            executor.execute{
+                contentLayout.removeAllViews()
+                viewModel.loadEntries()
+            }
+        }
 
         viewModel.loadEntries()
         viewModel.entryList.observe(requireActivity(), androidx.lifecycle.Observer {
