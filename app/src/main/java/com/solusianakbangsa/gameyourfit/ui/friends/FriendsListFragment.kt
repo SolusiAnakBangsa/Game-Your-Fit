@@ -39,7 +39,7 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
             usernameView.text = args.username
 
             var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
-            timeView.text = args.exp.toString()
+            timeView.text = "$args.exp.toString() pts"
 
             var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
             if (args.image != ""){
