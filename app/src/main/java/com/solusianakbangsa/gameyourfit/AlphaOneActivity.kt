@@ -137,7 +137,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 }
                 "unpause" -> {
                     onResume()
-                    signal.replace("status", "mid")
                     resumeReading()
                     exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
                     Log.i("signal", "unpause")
