@@ -170,10 +170,10 @@ class DashboardFragment : Fragment() {
         }
 
 //       if (!sharedPref.contains("weight")) {
-           ref.child("userWeight").get().addOnSuccessListener {
-               sharedPref.edit().putInt("weight", it.value as Int).apply()
+//           ref.child("userWeight").get().addOnSuccessListener {
+//               sharedPref.edit().putInt("weight", it.value as Int).apply()
 //               Log.i("yabe", (it.value is Long).toString())
-           }
+//           }
 //       }
 
         ref.child("level").get().addOnSuccessListener {
