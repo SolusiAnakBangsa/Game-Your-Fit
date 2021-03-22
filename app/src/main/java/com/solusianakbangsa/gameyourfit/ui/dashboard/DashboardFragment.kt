@@ -75,8 +75,6 @@ class DashboardFragment : Fragment() {
             binding.cardLevel.text = "Level ${it.value.toString()}"
         }
 
-
-
         ref.child("exp").get().addOnSuccessListener {
             sharedPref.edit().putLong("exp", it.value as Long).apply()
             binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
@@ -123,6 +121,7 @@ class DashboardFragment : Fragment() {
             }
         }
 
+        binding.dashboardCampaignPlay.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignDescription.setOnClickListener(toCampaignActivity)
