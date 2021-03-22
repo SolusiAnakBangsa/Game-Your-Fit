@@ -63,19 +63,5 @@
             app:layout_constraintStart_toEndOf="@+id/friendProfilePicture"
             app:layout_constraintTop_toBottomOf="@+id/friendUsername" />
 
-        <TextView
-            android:id="@+id/friendTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:paddingStart="10dp"
-            android:text="1h 69m ⏱"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/friendProfilePicture"
-            app:layout_constraintTop_toBottomOf="@id/friendLevel"
-            app:layout_constraintVertical_bias="0.375" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -38,9 +38,6 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
             var usernameView : TextView = friendEntry.findViewById(R.id.friendUsername)
             usernameView.text = args.username
 
-            var timeView : TextView = friendEntry.findViewById(R.id.friendTime)
-            timeView.text = "$args.exp.toString() pts"
-
             var profileView : CircleImageView = friendEntry.findViewById(R.id.friendProfilePicture)
             if (args.image != ""){
                 replacer.replaceImage(Handler(Looper.getMainLooper()), profileView, args.image)
