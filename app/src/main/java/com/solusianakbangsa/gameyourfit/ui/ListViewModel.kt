@@ -20,4 +20,9 @@ abstract class ListViewModel<T> : ViewModel(){
         entryList.value?.add(f)
         entryList.value = entryList.value
     }
+    fun removeFromList(f : T): Int? {
+        var removedIndex = entryList.value?.indexOf(f)
+        entryList.value?.remove(f)
+        return removedIndex
+    }
 }

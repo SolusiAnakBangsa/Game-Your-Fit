@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:fillViewport="true"
-    android:layout_width="match_parent">
-    <LinearLayout
-        android:id="@+id/friendsContent"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        android:divider="@drawable/layout_divider"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-<!--        <Button-->
-<!--            android:id="@+id/testButton"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="100dp"-->
-<!--            android:text="Button">-->
-<!--        </Button>-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/requestList"
+    android:id="@+id/friendsRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:layout_width="match_parent">
+                <LinearLayout
+                    android:id="@+id/friendsContent"
+                    android:orientation="vertical"
+                    android:showDividers="middle"
+                    android:divider="@drawable/layout_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+                <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/requestList"-->
 
-            android:paddingBottom="10dp"
-            android:showDividers="middle"
-            android:divider="@drawable/layout_divider"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+        <!--            android:paddingBottom="10dp"-->
+        <!--            android:showDividers="middle"-->
+        <!--            android:divider="@drawable/layout_divider"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"/>-->
+        </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
