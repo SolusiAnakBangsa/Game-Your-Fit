@@ -145,8 +145,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
             val updateHash = HashMap<String, Any>()
             updateHash["userAge"] = mAge.toInt()
-            updateHash["userWeight"] = mWeight.toDouble()
-            updateHash["userHeight"] = mHeight.toDouble()
+            updateHash["userWeight"] = mWeight.toInt()
+            updateHash["userHeight"] = mHeight.toInt()
             ref.updateChildren(updateHash)
                 .addOnCompleteListener { updateTask ->
                     if (updateTask.isSuccessful) {

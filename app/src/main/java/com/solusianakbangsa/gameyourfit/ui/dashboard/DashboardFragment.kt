@@ -171,8 +171,8 @@ class DashboardFragment : Fragment() {
 
 //       if (!sharedPref.contains("weight")) {
            ref.child("userWeight").get().addOnSuccessListener {
-               sharedPref.edit().putLong("weight", (it.value as Double).toLong()).apply()
-               Log.i("coolm", (sharedPref.getLong("weight", 0)).toString())
+               sharedPref.edit().putInt("weight", it.value as Int).apply()
+//               Log.i("yabe", (it.value is Long).toString())
            }
 //       }
 
