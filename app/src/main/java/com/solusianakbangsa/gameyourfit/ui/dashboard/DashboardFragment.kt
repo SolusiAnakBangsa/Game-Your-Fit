@@ -70,6 +70,20 @@ class DashboardFragment : Fragment() {
         }
 
 
+        ref.child("level").get().addOnSuccessListener {
+            sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
+            binding.cardLevel.text = "Level ${it.value.toString()}"
+        }
+
+
+
+        ref.child("exp").get().addOnSuccessListener {
+            sharedPref.edit().putLong("exp", it.value as Long).apply()
+            binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
+        }
+
+
+
 //        TODO : replace placeholder link with link from firebase
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
         if(!(profilePicture.exists())){
@@ -154,6 +168,16 @@ class DashboardFragment : Fragment() {
                 binding.cardUsernameShimmer.stopShimmerAnimation()
                 binding.cardUsername.text = it.value.toString()
             }
+        }
+
+        ref.child("level").get().addOnSuccessListener {
+            sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
+            binding.cardLevel.text = "Level ${it.value.toString()}"
+        }
+
+        ref.child("exp").get().addOnSuccessListener {
+            sharedPref.edit().putLong("exp", it.value as Long).apply()
+            binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
         }
     }
 

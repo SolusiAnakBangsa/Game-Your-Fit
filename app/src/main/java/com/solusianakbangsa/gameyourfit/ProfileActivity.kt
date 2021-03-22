@@ -108,6 +108,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         profileUsername.text = username
                         profileEmail_text.text = snapshot.child("email").value!!.toString()
                         profileName_text.text = username
+                        profileLevel.text =  "Level ${snapshot.child("level").value!!.toString()}"
+                        profileExp.progress = (((snapshot.child("exp").value as Long)% 1000)/10).toInt()
                         if (snapshot.child("userAge").exists()){
                             profileAge_text.setText(snapshot.child("userAge").value!!.toString())
                         }
@@ -120,7 +122,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         if (snapshot.child("image").exists()){
                             val image = snapshot.child("image").value!!.toString()
 //                            Picasso.get().load(image).into(userProfilePicture)
-
                         }
 
                         progressBar.visibility = View.GONE
