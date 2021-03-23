@@ -1,6 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.dashboard
 
-import android.util.Pair as UtilPair
+import android.util.Pair
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
@@ -14,10 +14,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -28,6 +30,7 @@ import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class DashboardFragment : Fragment() {
@@ -82,8 +85,10 @@ class DashboardFragment : Fragment() {
 
 //        TODO : replace placeholder link with link from firebase
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+
         if(!(profilePicture.exists())){
-            ref.child("images").get().addOnSuccessListener{
+            ref.child("image").get().addOnSuccessListener{
+                Log.i("yabe", it.value.toString())
                 imageReplacer.replaceImage(
                     handler,
                     binding.cardProfilePicture,
@@ -130,8 +135,8 @@ class DashboardFragment : Fragment() {
             val intent = Intent(activity, ProfileActivity::class.java)
             val options = ActivityOptions.makeSceneTransitionAnimation(
                 requireActivity(),
-                UtilPair.create(requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture), "keepProfilePicture"),
-                UtilPair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
+                Pair.create(requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture), "keepProfilePicture"),
+                Pair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
             activity?.startActivity(intent, options.toBundle())
         }
 
@@ -141,33 +146,39 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
-        if(!(profilePicture.exists())){
-            ref.child("images").get().addOnSuccessListener{
-                imageReplacer.replaceImage(
-                    handler,
-                    binding.cardProfilePicture,
-                    it.value.toString(),
-                    null,
-                    requireActivity(),
-                    FileConstants.PROFILE_PICTURE_FILENAME
-                )
-            }
-        } else{
-            imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
-        }
 
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        if(sharedPref.contains("username")){
-            binding.cardUsernameShimmer.stopShimmerAnimation()
-            binding.cardUsername.text = sharedPref.getString("username", "")
-        } else {
-            ref.child("username").get().addOnSuccessListener {
-                sharedPref.edit().putString("username", it.value.toString()).apply()
-                binding.cardUsernameShimmer.stopShimmerAnimation()
-                binding.cardUsername.text = it.value.toString()
+        val executor = Executors.newSingleThreadExecutor()
+        executor.execute{
+            val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+            if(!(profilePicture.exists())){
+                ref.child("image").get().addOnSuccessListener{
+                    Log.i("yabe", it.value.toString())
+                    imageReplacer.replaceImage(
+                        handler,
+                        binding.cardProfilePicture,
+                        it.value.toString(),
+                        null,
+                        requireActivity(),
+                        FileConstants.PROFILE_PICTURE_FILENAME
+                    )
+                }
+            } else{
+                val drawerImage =  requireActivity().findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById<ImageView>(R.id.drawerProfilePicture)
+                imageReplacer.replaceImage(drawerImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+                imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
             }
-        }
+
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+            if(sharedPref.contains("username")){
+                binding.cardUsernameShimmer.stopShimmerAnimation()
+                binding.cardUsername.text = sharedPref.getString("username", "")
+            } else {
+                ref.child("username").get().addOnSuccessListener {
+                    sharedPref.edit().putString("username", it.value.toString()).apply()
+                    binding.cardUsernameShimmer.stopShimmerAnimation()
+                    binding.cardUsername.text = it.value.toString()
+                }
+            }
 
 //       if (!sharedPref.contains("weight")) {
 //           ref.child("userWeight").get().addOnSuccessListener {
@@ -176,14 +187,15 @@ class DashboardFragment : Fragment() {
 //           }
 //       }
 
-        ref.child("level").get().addOnSuccessListener {
-            sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
-            binding.cardLevel.text = "Level ${it.value.toString()}"
-        }
+            ref.child("level").get().addOnSuccessListener {
+                sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
+                binding.cardLevel.text = "Level ${it.value.toString()}"
+            }
 
-        ref.child("exp").get().addOnSuccessListener {
-            sharedPref.edit().putLong("exp", it.value as Long).apply()
-            binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
+            ref.child("exp").get().addOnSuccessListener {
+                sharedPref.edit().putLong("exp", it.value as Long).apply()
+                binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
+            }
         }
     }
 

@@ -91,10 +91,11 @@ class HomeActivity : AppCompatActivity() {
             AuthUI.getInstance().signOut(this).addOnCompleteListener{
                 val loginIntent = Intent(this, LoginActivity::class.java)
                 startActivity(loginIntent)
+                val file = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+                file.delete()
+                sharedPref.edit().clear().apply()
                 finish()
             }
-
-//            sharedPref.edit().clear().apply()
         }
     }
 
