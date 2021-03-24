@@ -135,6 +135,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             })
 
         button.setOnClickListener {
+            val progressBar: View = findViewById(R.id.progress_bar_overlay)
+            progressBar.bringToFront()
             progressBar.visibility = View.VISIBLE
             val mAge = profileAge_text.text.toString().trim()
             val mWeight = profileWeight_text.text.toString().trim()
