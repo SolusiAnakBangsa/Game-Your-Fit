@@ -36,11 +36,20 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="94dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/profileCard"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:layout_marginTop="@dimen/margin_from_action_bar"
         android:layout_marginRight="@dimen/left_right_margin"
         android:layout_marginLeft="@dimen/left_right_margin"
         app:cardBackgroundColor="?attr/colorPrimary"
@@ -184,7 +193,7 @@
         android:id="@+id/profileName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="10dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
@@ -209,7 +218,7 @@
         android:id="@+id/profileAge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
         android:paddingLeft="10dp"
@@ -234,11 +243,11 @@
         android:id="@+id/profileWeight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
         android:paddingLeft="10dp"
-        android:text="Weight"
+        android:text="Weight (in kg)"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/profileAge">
     </TextView>
@@ -259,11 +268,11 @@
         android:id="@+id/profileHeight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="@dimen/left_right_margin"
         android:layout_marginRight="@dimen/left_right_margin"
         android:paddingLeft="10dp"
-        android:text="Height"
+        android:text="Height (in cm)"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/profileWeight">
     </TextView>
@@ -284,15 +293,19 @@
         android:id="@+id/button"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/button_round"
         android:text="Save Changes"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profileHeight" />
+    </LinearLayout>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/progressBar"
