@@ -28,7 +28,7 @@ object SensorConstants {
 
     // Squats
     const val SQUAT_AXIS = 'Y'
-    const val SQUAT_HIGH = 1.0
+    const val SQUAT_HIGH = 1.25
     const val SQUAT_LOW = -1.5
 
     // Reclined Rhomboid Squeeze

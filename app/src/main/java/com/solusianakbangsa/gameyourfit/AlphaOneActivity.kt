@@ -135,6 +135,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
                     signal.replace("status", "pause")
+                    onPause()
                     Log.i("signal", "pause")
                 }
                 "unpause" -> {
@@ -172,8 +173,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     //                Show summary here
                     animateSummary("garb", totalTime, totalCalorie.toInt())
                     // send exp here
-                    // TODO: put the exp of the level
-                    val exp: Int = 1000
+                    val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
+                    Log.i("signal", exp.toString())
                     updateExp(exp)
                     sensorStandbyMessage.visibility = View.GONE
                 }
@@ -335,6 +336,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
+                    Log.i("signal", signal.toString())
 
                     rtc.sendDataToPeer(signal.toString())
 
@@ -347,7 +349,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
-                    rtc.sendDataToPeer(signal.toString())
+                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                        rtc.sendDataToPeer(signal.toString())
+                        Log.i("signalJog", signal.toString())
+                    }
                 }
             }
         }
@@ -361,28 +366,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             rep = true
         }
 
-        if (rep != repBefore) {
+        if (rep && !repBefore) {
             if (exercise != "Jog") {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
+                    Log.i("signal", signal.toString())
 
                     rtc.sendDataToPeer(signal.toString())
 
                     signal.replaceMeta("targetRep", 0)
                     viewModel.currentStatus.postValue("end")
                     onPause()
-                } else if (signal.get("status") == "pause") {
-                    onPause()
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
                     signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-                    rtc.sendDataToPeer(signal.toString())
-                    Log.i("signal", signal.toString())
+                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                        rtc.sendDataToPeer(signal.toString())
+                        Log.i("signal", signal.toString())
+                    }
                 }
             } else {
-                signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-                Log.i("signal", signal.toString())
+                signal.replace("repAmount", signal.get("repAmount") as Int + 2)
             }
         }
         repBefore = rep
@@ -419,6 +424,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val summaryLayoutAnim = fadeInAnimator(findViewById(R.id.summaryLayout),1000L)
         val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
         val levelIcon = fadeInAnimator(findViewById(R.id.summaryIcon))
+        summaryTitle.text = level.getJSONObject("workoutList").get("title").toString()
 
         val timeTitle = fadeInAnimator(findViewById(R.id.summaryTimeTitle))
 
