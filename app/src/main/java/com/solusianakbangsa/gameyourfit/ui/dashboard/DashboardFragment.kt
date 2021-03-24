@@ -164,8 +164,11 @@ class DashboardFragment : Fragment() {
                 }
             } else{
                 val drawerImage =  requireActivity().findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById<ImageView>(R.id.drawerProfilePicture)
-                imageReplacer.replaceImage(drawerImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
-                imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+                val profileImage = requireActivity().findViewById<ImageView>(R.id.cardProfilePicture)
+                requireActivity().runOnUiThread{
+                    imageReplacer.replaceImage(drawerImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+                    imageReplacer.replaceImage(profileImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+                }
             }
 
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
