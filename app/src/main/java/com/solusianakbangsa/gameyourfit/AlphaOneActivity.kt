@@ -135,6 +135,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
                     signal.replace("status", "pause")
+                    onPause()
                     Log.i("signal", "pause")
                 }
                 "unpause" -> {
@@ -335,6 +336,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             this@AlphaOneActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
+                    Log.i("signal", signal.toString())
 
                     rtc.sendDataToPeer(signal.toString())
 
@@ -347,7 +349,10 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
-                    rtc.sendDataToPeer(signal.toString())
+                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                        rtc.sendDataToPeer(signal.toString())
+                        Log.i("signalJog", signal.toString())
+                    }
                 }
             }
         }
@@ -361,28 +366,28 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             rep = true
         }
 
-        if (rep != repBefore) {
+        if (rep && !repBefore) {
             if (exercise != "Jog") {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
+                    Log.i("signal", signal.toString())
 
                     rtc.sendDataToPeer(signal.toString())
 
                     signal.replaceMeta("targetRep", 0)
                     viewModel.currentStatus.postValue("end")
                     onPause()
-                } else if (signal.get("status") == "pause") {
-                    onPause()
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
                     signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-                    rtc.sendDataToPeer(signal.toString())
-                    Log.i("signal", signal.toString())
+                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                        rtc.sendDataToPeer(signal.toString())
+                        Log.i("signal", signal.toString())
+                    }
                 }
             } else {
-                signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-                Log.i("signal", signal.toString())
+                signal.replace("repAmount", signal.get("repAmount") as Int + 2)
             }
         }
         repBefore = rep
