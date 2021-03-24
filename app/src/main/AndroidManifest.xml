@@ -24,44 +24,55 @@
         <activity
             android:name=".ui.friends.AddFriendActivity"
             android:label="Add Friends"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.level_info.LevelInfoActivity"
             android:label=""
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar">
         </activity>
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".AlphaOneActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
         <activity
             android:name=".ProfileActivity"
             android:label="@string/menu_profile"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.UsernameGoogleActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.SignupActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".HomeActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar">
 
         </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
