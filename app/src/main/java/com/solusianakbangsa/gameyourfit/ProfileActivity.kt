@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
@@ -162,7 +163,25 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
             ref.child("username").get().addOnSuccessListener {
                 findViewById<TextView>(R.id.profileUsername).text = it.value.toString()
                 findViewById<TextView>(R.id.profileName_text).text = it.value.toString()
-                sharedPref.edit().putString("username", it.value.toString())
+                sharedPref.edit().putString("username", it.value.toString()).apply()
+            }
+        }
+
+        if (sharedPref.contains("level")){
+            findViewById<TextView>(R.id.profileLevel).text = "Level ${sharedPref.getInt("level", 0)}"
+        }else{
+            ref.child("level").get().addOnSuccessListener {
+                findViewById<TextView>(R.id.profileLevel).text = it.value.toString()
+                sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
+            }
+        }
+
+        if (sharedPref.contains("exp")){
+            findViewById<ProgressBar>(R.id.profileExp).progress = (((sharedPref.getLong("exp", 0L))% 1000)/10).toInt()
+        }else{
+            ref.child("exp").get().addOnSuccessListener {
+                findViewById<ProgressBar>(R.id.profileExp).progress = ((it.value.toString().toLong()% 1000)/10).toInt()
+                sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
             }
         }
 
