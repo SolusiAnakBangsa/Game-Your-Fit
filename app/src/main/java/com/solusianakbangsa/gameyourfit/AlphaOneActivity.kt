@@ -182,7 +182,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.animate().alpha(0.0f)
                     //                Show summary here
-                    animateSummary("garb", totalTime, totalCalorie.toInt())
+                    animateSummary(level.getJSONObject("workoutList").get("title").toString(), totalTime, totalCalorie.toInt())
                     // send exp here
                     val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
                     Log.i("signal", exp.toString())
@@ -472,7 +472,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         val summaryLayoutAnim = fadeInAnimator(findViewById(R.id.summaryLayout),1000L)
         val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
         val levelIcon = fadeInAnimator(findViewById(R.id.summaryIcon))
-        summaryTitle.text = level.getJSONObject("workoutList").get("title").toString()
+        summaryTitle.text = title
 
         val timeTitle = fadeInAnimator(findViewById(R.id.summaryTimeTitle))
 
