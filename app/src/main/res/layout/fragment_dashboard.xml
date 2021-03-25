@@ -240,6 +240,7 @@
                         android:id="@+id/dashboardCampaign"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:padding="10dp"
                         android:scaleType="centerCrop"
                         android:clickable="true"
                         android:background="@drawable/right_border"
