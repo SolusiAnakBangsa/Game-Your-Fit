@@ -10,20 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
-import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -31,7 +26,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
-import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
@@ -84,6 +78,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
 
         button.setOnClickListener {
+
             val progressBar: View = findViewById(R.id.progress_bar_overlay)
             progressBar.bringToFront()
             progressBar.visibility = View.VISIBLE
@@ -105,7 +100,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                         sharedPref.edit().putInt("userAge", mAge.toInt()).apply()
                         sharedPref.edit().putLong("userWeight", mWeight.toLong()).apply()
                         sharedPref.edit().putLong("userHeight", mHeight.toLong()).apply()
-                        toast("Profile is Uploaded.")
+                        toast("Profile is updated")
                         Log.i("helpme", sharedPref.all.toString())
                     } else {
                         progressBar.visibility = View.GONE
@@ -330,6 +325,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
                 mAuth = FirebaseAuth.getInstance()
                 val uid = mAuth.currentUser?.uid
+                val friendRef = FirebaseDatabase.getInstance().reference.child("Friends")
                 ref = FirebaseDatabase.getInstance().getReference("users").child(uid.toString())
 
                 val filePath = mImageStorage.child("profileImage").child("$uid.jpg")
@@ -363,7 +359,20 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                         FirebaseDatabase.getInstance().getReference("users")
                                             .child(uid.toString()).child("image").setValue(url)
                                         sharedPref.edit().putString("image", url).apply()
-                                        toast("Profile is Updated.")
+                                        Log.i("okpls", sharedPref.all.toString())
+                                        friendRef.child(uid.toString()).addListenerForSingleValueEvent(object : ValueEventListener{
+                                            override fun onCancelled(error: DatabaseError) {}
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                Log.i("okpls", snapshot.toString())
+                                                if (snapshot.exists()){
+                                                    for (friendID in snapshot.children){
+                                                        Log.i("okpls", friendID.key.toString())
+                                                        friendRef.child(friendID.key.toString()).child(uid.toString()).child("image").setValue(url)
+                                                    }
+                                                }
+                                                toast("Profile is Uploaded.")
+                                            }
+                                        })
                                         Log.i("helpme", sharedPref.all.toString())
 //                                        Picasso.get().load(url).into(userProfilePicture)
                                         val file = File(this@ProfileActivity.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
@@ -377,8 +386,20 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                             .addOnCompleteListener { updateTask ->
                                                 if (updateTask.isSuccessful) {
                                                     sharedPref.edit().putString("image", url).apply()
-                                                    toast("Profile is Uploaded.")
                                                     Picasso.get().load(url).into(userProfilePicture)
+                                                    friendRef.child(uid.toString()).addListenerForSingleValueEvent(object : ValueEventListener{
+                                                        override fun onCancelled(error: DatabaseError) {}
+                                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                                            Log.i("okpls", snapshot.toString())
+                                                            if (snapshot.exists()){
+                                                                for (friendID in snapshot.children){
+                                                                    Log.i("okpls", friendID.key.toString())
+                                                                    friendRef.child(friendID.key.toString()).child(uid.toString()).child("image").setValue(url)
+                                                                }
+                                                            }
+                                                            toast("Profile is Uploaded.")
+                                                        }
+                                                    })
                                                     progressBar.visibility = View.GONE
                                                     Log.i("helpme", sharedPref.all.toString())
                                                 } else {
