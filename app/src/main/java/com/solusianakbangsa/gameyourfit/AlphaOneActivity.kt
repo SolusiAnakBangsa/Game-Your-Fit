@@ -51,7 +51,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
     private var exercise = ""  // Variable for exercises
-    private var exerciseCounter = 1
+    private var exerciseCounter = 0
     private var axisUsed = 'X'  // Default axis used is X
     private var thresholdHigh = 0.0
     private var thresholdLow = 0.0
@@ -122,13 +122,16 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
             Log.i("yabe", "Status : $it")
             when (it) {
-                "startgame" -> {
-                    val firstExercise = exerciseList[0]
-                    signal = firstExercise
-                    exercise = firstExercise.get("exerciseType") as String
-                    counterMax = firstExercise.getFromMeta("targetRep") as Int
-                    onResume()
-                    resumeReading()
+                "startnext" -> {
+                    if (exerciseCounter < exerciseList.size) {
+                        signal = exerciseList[exerciseCounter]
+                        exercise = exerciseList[exerciseCounter].get("exerciseType") as String
+                        counterMax = exerciseList[exerciseCounter].getFromMeta("targetRep") as Int
+                        exerciseTime = 0L
+                        exerciseCounter++
+                        onResume()
+                        resumeReading()
+                    }
                 }
                 "calibrating" -> {
                     rtc.sendDataToPeer(level.toString())
@@ -159,13 +162,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     countCalorie(SystemClock.elapsedRealtime() - exerciseTime, metValue, weight)
                     totalTime += SystemClock.elapsedRealtime() - exerciseTime
 
-                    if (exerciseCounter < exerciseList.size) {
-                        signal = exerciseList[exerciseCounter]
-                        exercise = exerciseList[exerciseCounter].get("exerciseType") as String
-                        counterMax = exerciseList[exerciseCounter].getFromMeta("targetRep") as Int
-                        exerciseTime = 0L
-                        exerciseCounter++
-                    } else {
+                    if (exerciseCounter == exerciseList.size) {
                         signal.replace("status", "endgame")
                         signal.replaceMeta("totalTime", totalTime)
                         signal.replaceMeta("calories", totalCalorie.toInt())
@@ -173,10 +170,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                         Log.i("signal", signal.toString())
                         viewModel.currentStatus.postValue("endgame")
                     }
-                }
-                "startnext" -> {
-                    onResume()
-                    resumeReading()
                 }
                 "endgame" -> {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
