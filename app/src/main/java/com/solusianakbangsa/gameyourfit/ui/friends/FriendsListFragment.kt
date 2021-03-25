@@ -72,7 +72,10 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
 //            Redraw stuff here
 //            Fuck it jank time
             if(it.isNotEmpty()) {
-                root.findViewById<TextView>(R.id.noEntries).visibility = View.GONE
+                val emptyMessage = root.findViewById<TextView>(R.id.noEntries)
+                if(emptyMessage != null) {
+                    emptyMessage.visibility = View.GONE
+                }
                 if (viewModel.status == "add") {
                     var friend = it[it.size - 1]
                     createView(friend)

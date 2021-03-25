@@ -43,6 +43,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var  sharedPref: SharedPreferences
     private lateinit var friendRef: DatabaseReference
 
+    private var backLastPressedMill : Long = 0L
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
@@ -138,12 +139,18 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 }
                 "pause" -> {
                     startPauseTime = SystemClock.elapsedRealtime()
+                    if(findViewById<TextView>(R.id.sensorMessage) != null){
+                        findViewById<TextView>(R.id.sensorMessage).text = "Game is now paused"
+                    }
                     signal.replace("status", "pause")
                     onPause()
                     Log.i("signal", "pause")
                 }
                 "unpause" -> {
                     onResume()
+                    if(findViewById<TextView>(R.id.sensorMessage) != null){
+                        findViewById<TextView>(R.id.sensorMessage).text = "Your phone has been connected. \\nLook at the browser screen!"
+                    }
                     resumeReading()
                     exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
                     Log.i("signal", "unpause")
@@ -254,6 +261,21 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             // Success! Linear acceleration is present.
         } else {
             Toast.makeText(this, "No Linear Acceleration Sensor detected!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onBackPressed() {
+        if(viewModel.signal.get("status") != "standby") {
+            val interval = System.currentTimeMillis() - backLastPressedMill
+            if (interval > 3000){
+                Toast.makeText(this, "Press the back button again to go back.", Toast.LENGTH_LONG).show()
+                backLastPressedMill = System.currentTimeMillis()
+            } else if(interval in 0..2999){
+                super.onBackPressed()
+            }
+        }
+        else{
+            super.onBackPressed()
         }
     }
 
