@@ -2,7 +2,10 @@ package com.solusianakbangsa.gameyourfit.ui.auth
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Outline
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +13,7 @@ import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
@@ -38,14 +42,15 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
+
         ref = FirebaseDatabase.getInstance().getReference("users")
         context = this
-
-
         mAuth = FirebaseAuth.getInstance()
 
-
-
+        var logoBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.logo)
+        var logoDrawable : BitmapDrawable = BitmapDrawable(resources, logoBitmap)
+        logoDrawable.setAntiAlias(false)
+        findViewById<ImageView>(R.id.imageView4).setImageDrawable(logoDrawable)
 
         /** Code to make the card view rounded corners */
         val card = findViewById<CardView>(R.id.rounded_background)

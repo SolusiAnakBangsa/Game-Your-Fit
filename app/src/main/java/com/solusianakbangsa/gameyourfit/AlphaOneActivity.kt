@@ -258,7 +258,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onBackPressed() {
-
         if(viewModel.signal.get("status") != "standby" && viewModel.signal.get("status") != "endgame") {
             val interval = System.currentTimeMillis() - backLastPressedMill
             if (interval > 3000){

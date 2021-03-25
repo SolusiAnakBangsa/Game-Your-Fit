@@ -118,6 +118,10 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         swipeRefresh.setOnRefreshListener {
             executor.execute{
                 contentLayout.removeAllViews()
+                val textView : TextView =
+                    inflater.inflate(R.layout.no_entries_found, null, false) as TextView
+                textView.text = "No request found."
+                contentLayout.addView(textView)
                 viewModel.loadEntries()
                 swipeRefresh.isRefreshing = false
             }
