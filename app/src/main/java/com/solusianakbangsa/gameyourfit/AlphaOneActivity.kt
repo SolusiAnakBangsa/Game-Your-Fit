@@ -265,7 +265,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onBackPressed() {
-        if(viewModel.signal.get("status") != "standby") {
+        if(viewModel.signal.get("status") != "standby" || viewModel.signal.get("status") != "endgame") {
             val interval = System.currentTimeMillis() - backLastPressedMill
             if (interval > 3000){
                 Toast.makeText(this, "Press the back button again to go back.", Toast.LENGTH_LONG).show()
