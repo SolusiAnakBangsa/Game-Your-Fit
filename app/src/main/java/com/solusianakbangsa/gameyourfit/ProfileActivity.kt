@@ -3,6 +3,7 @@ package com.solusianakbangsa.gameyourfit
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -19,8 +20,10 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -28,6 +31,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
@@ -48,6 +52,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         private val GALLERY_PICK = 1
         lateinit var mImageStorage : StorageReference
         private val imageReplacer = ImageReplacer()
+        lateinit var sharedPref: SharedPreferences
 
         private val LOCATION_AND_CONTACTS = arrayOf<String>(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
         private val RC_CAMERA_PERM = 123
@@ -65,7 +70,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         findViewById<Toolbar>(R.id.profileToolbar).setNavigationOnClickListener{
             this.onBackPressed()
         }
-
         val progressBar: View = findViewById(R.id.progress_bar_overlay)
         progressBar.bringToFront()
         progressBar.visibility = View.VISIBLE
@@ -73,66 +77,11 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         ref = FirebaseDatabase.getInstance().reference.child("users").child(userId)
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val handler = Handler(Looper.getMainLooper())
-        val profilePicture = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
-        if(sharedPref.contains("username")){
-            findViewById<TextView>(R.id.profileUsername).text = sharedPref.getString("username", "")
-        }
-        if(!(profilePicture.exists())){
-            ref.child("images").get().addOnSuccessListener{
-                val what = it.value.toString()
-                Log.i("whatwhy", what)
-                imageReplacer.replaceImage(
-                    handler,
-                    findViewById<ImageView>(R.id.userProfilePicture),
-                    it.value.toString(),
-                    null,
-                    this,
-                    FileConstants.PROFILE_PICTURE_FILENAME
-                )
-            }
-        } else{
-            Log.i("whatwhy", "nooooooo")
-            imageReplacer.replaceImage(findViewById<ImageView>(R.id.userProfilePicture), this, FileConstants.PROFILE_PICTURE_FILENAME)
-        }
+        getProfile(userId)
+        progressBar.visibility = View.GONE
 
-
-        ref.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-
-                        username = snapshot.child("username").value!!.toString()
-                        profileUsername.text = username
-                        profileEmail_text.text = snapshot.child("email").value!!.toString()
-                        profileName_text.text = username
-                        profileLevel.text =  "Level ${snapshot.child("level").value!!.toString()}"
-                        profileExp.progress = (((snapshot.child("exp").value as Long)% 1000)/10).toInt()
-                        if (snapshot.child("userAge").exists()){
-                            profileAge_text.setText(snapshot.child("userAge").value!!.toString())
-                        }
-                        if (snapshot.child("userWeight").exists()){
-                            profileWeight_text.setText(snapshot.child("userWeight").value!!.toString())
-                        }
-                        if (snapshot.child("userHeight").exists()){
-                            profileHeight_text.setText(snapshot.child("userHeight").value!!.toString())
-                        }
-                        if (snapshot.child("image").exists()){
-                            val image = snapshot.child("image").value!!.toString()
-//                            Picasso.get().load(image).into(userProfilePicture)
-                        }
-
-                        progressBar.visibility = View.GONE
-
-                    }}
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-
-                }
-            })
 
         button.setOnClickListener {
             val progressBar: View = findViewById(R.id.progress_bar_overlay)
@@ -147,13 +96,17 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
             val updateHash = HashMap<String, Any>()
             updateHash["userAge"] = mAge.toInt()
-            updateHash["userWeight"] = mWeight.toInt()
-            updateHash["userHeight"] = mHeight.toInt()
+            updateHash["userWeight"] = mWeight.toLong()
+            updateHash["userHeight"] = mHeight.toLong()
             ref.updateChildren(updateHash)
                 .addOnCompleteListener { updateTask ->
                     if (updateTask.isSuccessful) {
                         progressBar.visibility = View.GONE
+                        sharedPref.edit().putInt("userAge", mAge.toInt()).apply()
+                        sharedPref.edit().putLong("userWeight", mWeight.toLong()).apply()
+                        sharedPref.edit().putLong("userHeight", mHeight.toLong()).apply()
                         toast("Profile is Uploaded.")
+                        Log.i("helpme", sharedPref.all.toString())
                     } else {
                         progressBar.visibility = View.GONE
                         toast("Error in Updating Profile")
@@ -176,9 +129,147 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                     *LOCATION_AND_CONTACTS);
                 }
             }
-
+/**
+        deleteAccount.setOnClickListener {
+            MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                .setTitle("Delete Account")
+                .setMessage("Are you sure you want to permanently delete this account?")
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // Respond to negative button press
+                }
+                .setPositiveButton("Delete") { dialog, which ->
+                    AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                        val loginIntent = Intent(this, LoginActivity::class.java)
+                        startActivity(loginIntent)
+                        val file = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+                        file.delete()
+                        sharedPref.edit().clear().apply()
+                        finish()
+                    }
+                }
+                .show()
+        }
+*/
 
         }
+
+    private fun getProfile(userId: String) {
+
+        ref = FirebaseDatabase.getInstance().reference.child("users").child(userId)
+
+        val handler = Handler(Looper.getMainLooper())
+        val profilePicture = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+
+        if (sharedPref.contains("username")) {
+            findViewById<TextView>(R.id.profileUsername).text = sharedPref.getString("username", "")
+            findViewById<TextView>(R.id.profileName_text).text = sharedPref.getString("username", "")
+        }else{
+            ref.child("username").get().addOnSuccessListener {
+                findViewById<TextView>(R.id.profileUsername).text = it.value.toString()
+                findViewById<TextView>(R.id.profileName_text).text = it.value.toString()
+                sharedPref.edit().putString("username", it.value.toString())
+            }
+        }
+
+        if (!(profilePicture.exists())) {
+            ref.child("images").get().addOnSuccessListener {
+                val what = it.value.toString()
+                Log.i("whatwhy", what)
+                imageReplacer.replaceImage(
+                    handler,
+                    findViewById<ImageView>(R.id.userProfilePicture),
+                    it.value.toString(),
+                    null,
+                    this,
+                    FileConstants.PROFILE_PICTURE_FILENAME
+                )
+            }
+        } else {
+            Log.i("whatwhy", "nooooooo")
+            imageReplacer.replaceImage(
+                findViewById<ImageView>(R.id.userProfilePicture),
+                this,
+                FileConstants.PROFILE_PICTURE_FILENAME
+            )
+        }
+
+        if (sharedPref.contains("email")) {
+            findViewById<TextView>(R.id.profileEmail_text).text =
+                (sharedPref.getString("email", ""))
+        } else {
+            ref.child("email").get().addOnSuccessListener {
+                profileEmail_text.text = it.value.toString()
+                sharedPref.edit().putString("email", it.value.toString()).apply()
+            }
+        }
+
+        if (sharedPref.contains("userAge")) {
+            findViewById<EditText>(R.id.profileAge_text).setText(
+                (sharedPref.getInt(
+                    "userAge",
+                    0
+                )).toString()
+            )
+        } else {
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child("userAge").exists()) {
+                        profileAge_text.setText(snapshot.child("userAge").value.toString())
+                        sharedPref.edit()
+                            .putInt("userAge", snapshot.child("userAge").value.toString().toInt())
+                            .apply()
+                    }
+                }
+            })
+        }
+
+
+        if (sharedPref.contains("userWeight")) {
+            findViewById<EditText>(R.id.profileWeight_text).setText(
+                (sharedPref.getLong(
+                    "userWeight",
+                    0L
+                )).toString()
+            )
+        } else {
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child("userWeight").exists()) {
+                        profileWeight_text.setText(snapshot.child("userWeight").value.toString())
+                        sharedPref.edit().putLong(
+                            "userWeight",
+                            snapshot.child("userWeight").value.toString().toLong()
+                        ).apply()
+                    }
+                }
+            })
+        }
+
+        if (sharedPref.contains("userHeight")) {
+            findViewById<EditText>(R.id.profileHeight_text).setText(
+                (sharedPref.getLong(
+                    "userHeight",
+                    0L
+                )).toString()
+            )
+        } else {
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.child("userHeight").exists()) {
+                        profileWeight_text.setText(snapshot.child("userHeight").value.toString())
+                        sharedPref.edit().putLong(
+                            "userHeight",
+                            snapshot.child("userHeight").value.toString().toLong()
+                        ).apply()
+                    }
+                }
+            })
+            Log.i("helpme", sharedPref.all.toString())
+        }
+    }
 
     private fun emptyValidation(mAge: String, mWeight: String, mHeight: String) {
         if (mAge.isEmpty()) {
@@ -201,7 +292,8 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val mHeight = profileHeight_text.text.toString().trim()
 
         if (mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
-            super.onBackPressed()
+            val intent = Intent(this, HomeActivity::class.java)
+            this.startActivity(intent)
         }else{
             emptyValidation(mAge, mWeight, mHeight)
         }
@@ -270,7 +362,9 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                     if (snapshot.exists()) {
                                         FirebaseDatabase.getInstance().getReference("users")
                                             .child(uid.toString()).child("image").setValue(url)
+                                        sharedPref.edit().putString("image", url).apply()
                                         toast("Profile is Updated.")
+                                        Log.i("helpme", sharedPref.all.toString())
 //                                        Picasso.get().load(url).into(userProfilePicture)
                                         val file = File(this@ProfileActivity.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
                                         val handler = Handler(Looper.getMainLooper())
@@ -282,9 +376,11 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                                         ref.updateChildren(updateHash)
                                             .addOnCompleteListener { updateTask ->
                                                 if (updateTask.isSuccessful) {
+                                                    sharedPref.edit().putString("image", url).apply()
                                                     toast("Profile is Uploaded.")
                                                     Picasso.get().load(url).into(userProfilePicture)
                                                     progressBar.visibility = View.GONE
+                                                    Log.i("helpme", sharedPref.all.toString())
                                                 } else {
                                                     progressBar.visibility = View.GONE
                                                     toast("Error in Uploading image")
