@@ -126,35 +126,7 @@ class SignupActivity : AppCompatActivity() {
                 sign_up_password.requestFocus()
                 return@setOnClickListener
             }
-
-
-            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){ //checks if there is already a node with the same data
-                        sign_up_email_address.error = "Email is already registered"
-                        sign_up_email_address.requestFocus()
-                    }else{
-                        query.addListenerForSingleValueEvent(object : ValueEventListener{
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                if(snapshot.exists()){ //checks if there is already a node with the same data
-                                    sign_up_username.error = "Username is not valid"
-                                    sign_up_username.requestFocus()
-                                }else{
-                                    registerUser(email, password, username, age, weight, height)
-                                }
-
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    }
-
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+            registerUser(email, password, username, age, weight, height)
 
 
         }
@@ -241,34 +213,8 @@ class SignupActivity : AppCompatActivity() {
                 sign_up_password.requestFocus()
                 return@setOnClickListener
             }
+            registerUser(email, password, username, age, weight, height)
 
-            FirebaseDatabase.getInstance().reference.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object: ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){ //checks if there is already a node with the same data
-                        sign_up_email_address.error = "Email is already registered"
-                        sign_up_email_address.requestFocus()
-                    }else{
-                        query.addListenerForSingleValueEvent(object : ValueEventListener{
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                if(snapshot.exists()){ //checks if there is already a node with the same data
-                                    sign_up_username.error = "Username is not valid"
-                                    sign_up_username.requestFocus()
-                                }else{
-                                    registerUser(email, password, username, age, weight, height)
-                                }
-
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    }
-
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
         }
     }
 
@@ -288,7 +234,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful){
                     val userId = FirebaseAuth.getInstance().uid.toString()
-                    val user = User(null, email, username, age, weight, height, 1, 0)
+                    val user = User(null, email, username, age, weight, height, 1, 1000)
 
                     ref.child(userId).setValue(user).addOnCompleteListener{
                         progressBar.visibility = View.GONE

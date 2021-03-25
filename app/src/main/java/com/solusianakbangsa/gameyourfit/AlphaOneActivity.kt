@@ -2,6 +2,7 @@ package com.solusianakbangsa.gameyourfit
 
 import android.animation.*
 import android.content.Intent
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -39,6 +40,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var exercises : Signal
     private lateinit var levelString: String
     private lateinit var level : JSONObject
+    private lateinit var  sharedPref: SharedPreferences
+    private lateinit var friendRef: DatabaseReference
 
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
@@ -64,7 +67,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         if(sharedPref.contains("userWeight")){
             weight = (sharedPref.getLong("userWeight", 57L)).toInt()
         } else {
@@ -188,7 +191,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         var currentExp: Int = 0
         var finalLevel: Int = 0
         val updateHash = HashMap<String, Any>()
-
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        friendRef = FirebaseDatabase.getInstance().reference.child("Friends")
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
 
@@ -198,7 +202,27 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 finalLevel = (currentExp+exp)/1000
                 Log.i("bruhh", finalLevel.toString())
                 updateHash["level"] = finalLevel
+                Log.i("pleasework", sharedPref.all.toString())
+
+                sharedPref.edit().putLong("exp", updateHash["exp"].toString().toLong()).apply()
+                sharedPref.edit().putInt("level", updateHash["level"].toString().toInt()).apply()
+
+                Log.i("pleasework", sharedPref.all.toString())
                 dbRef.child(uid).updateChildren(updateHash)
+
+                friendRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onCancelled(error: DatabaseError) {}
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.i("okpls", snapshot.toString())
+                        if (snapshot.exists()){
+                            for (friendID in snapshot.children){
+                                Log.i("okpls", friendID.key.toString())
+                                friendRef.child(friendID.key.toString()).child(uid).updateChildren(updateHash)
+                            }
+                        }
+                        toast("Profile is Uploaded.")
+                    }
+                })
             }
         })
     }
