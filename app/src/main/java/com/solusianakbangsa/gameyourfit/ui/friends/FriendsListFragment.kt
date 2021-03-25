@@ -96,7 +96,7 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
                 if (isAdded) {
                     val textView : TextView =
                         inflater.inflate(R.layout.no_entries_found, null, false) as TextView
-                    textView.text = "No friends found, press the plus button to send friend requests"
+                    textView.text = "No friends found, press the plus button to send friend requests."
                     contentLayout.addView(textView)
                 }
             }
