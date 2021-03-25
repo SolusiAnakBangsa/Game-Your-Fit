@@ -65,11 +65,12 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-//        if(sharedPref.contains("weight")){
-//            weight = sharedPref.getInt("weight", 57)
-//        } else {
+        if(sharedPref.contains("userWeight")){
+            weight = (sharedPref.getLong("userWeight", 57L)).toInt()
+        } else {
             weight = 57
-//        }
+        }
+        Log.i("okpls", weight.toString())
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
