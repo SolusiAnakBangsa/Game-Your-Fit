@@ -4,6 +4,9 @@ import android.util.Pair
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
 import java.io.File
@@ -126,6 +129,11 @@ class DashboardFragment : Fragment() {
             }
         }
 
+        var logoBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.logo)
+        var logoDrawable : BitmapDrawable = BitmapDrawable(resources, logoBitmap)
+        logoDrawable.setAntiAlias(false)
+        binding.dashboardCampaign.setImageDrawable(logoDrawable)
+//        findViewById<ImageView>(R.id.imageView2).setImageDrawable(logoDrawable)
         binding.dashboardCampaignPlay.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
