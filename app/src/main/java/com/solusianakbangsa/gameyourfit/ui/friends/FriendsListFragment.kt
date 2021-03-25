@@ -71,16 +71,26 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
         viewModel.entryList.observe(requireActivity(), Observer {
 //            Redraw stuff here
 //            Fuck it jank time
-            if (viewModel.status == "add"){
-                var friend = it[it.size - 1]
-                createView(friend)
-            } else if(viewModel.status == "remove"){
-                var index = viewModel.removedAt
-                if(index != -1){
-                    contentLayout.getChildAt(index!!).animate().alpha(0.0f).setDuration(1000L)
-                    handler.postDelayed({
-                        contentLayout.removeViewAt(index)
-                    }, 1000L)
+            if(it.isNotEmpty()) {
+                root.findViewById<TextView>(R.id.noEntries).visibility = View.GONE
+                if (viewModel.status == "add") {
+                    var friend = it[it.size - 1]
+                    createView(friend)
+                } else if (viewModel.status == "remove") {
+                    var index = viewModel.removedAt
+                    if (index != -1) {
+                        contentLayout.getChildAt(index!!).animate().alpha(0.0f).setDuration(1000L)
+                        handler.postDelayed({
+                            contentLayout.removeViewAt(index)
+                        }, 1000L)
+                    }
+                }
+            } else{
+                if (isAdded) {
+                    val textView : TextView =
+                        inflater.inflate(R.layout.no_entries_found, null, false) as TextView
+                    textView.text = "No friends found, press the plus button to send friend requests"
+                    contentLayout.addView(textView)
                 }
             }
         })

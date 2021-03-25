@@ -138,7 +138,6 @@ class DashboardFragment : Fragment() {
         binding.dashboardCampaign.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignTitle.setOnClickListener(toCampaignActivity)
         binding.dashboardCampaignDescription.setOnClickListener(toCampaignActivity)
-        binding.dashboardCampaignPlay.setOnClickListener(toCampaignActivity)
         binding.cardProfilePicture.setOnClickListener {
             val intent = Intent(activity, ProfileActivity::class.java)
             val options = ActivityOptions.makeSceneTransitionAnimation(
@@ -147,8 +146,6 @@ class DashboardFragment : Fragment() {
                 Pair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
             activity?.startActivity(intent, options.toBundle())
         }
-
-
         return binding.root
     }
 

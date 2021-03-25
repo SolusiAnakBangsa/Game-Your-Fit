@@ -125,9 +125,20 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
 
         viewModel.loadEntries()
         viewModel.entryList.observe(requireActivity(), androidx.lifecycle.Observer {
-            if(it.size != 0){
+            if(it.size > 0){
+                val noEntry = root.findViewById<TextView>(R.id.noEntries)
+                if(noEntry != null) {
+                    root.findViewById<TextView>(R.id.noEntries).visibility = View.GONE
+                }
                 val request = it[it.size-1]
                 createView(request)
+            } else{
+                if (isAdded) {
+                    val textView : TextView =
+                        inflater.inflate(R.layout.no_entries_found, null, false) as TextView
+                    textView.text = "No requests found"
+                    contentLayout.addView(textView)
+                }
             }
         })
         return root
