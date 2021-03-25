@@ -178,9 +178,11 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
 
         if (sharedPref.contains("exp")){
             findViewById<ProgressBar>(R.id.profileExp).progress = (((sharedPref.getLong("exp", 0L))% 1000)/10).toInt()
+            findViewById<TextView>(R.id.profilePoints).text = "${sharedPref.getLong("exp", 0L).toString()}pts"
         }else{
             ref.child("exp").get().addOnSuccessListener {
                 findViewById<ProgressBar>(R.id.profileExp).progress = ((it.value.toString().toLong()% 1000)/10).toInt()
+                findViewById<TextView>(R.id.profilePoints).text ="${it.value.toString()}pts"
                 sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
             }
         }
