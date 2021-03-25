@@ -177,6 +177,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                     Log.i("signal", exp.toString())
                     updateExp(exp)
                     sensorStandbyMessage.visibility = View.GONE
+                    findViewById<TextView>(R.id.sensorVisit).visibility = View.GONE
                 }
             }
         })
