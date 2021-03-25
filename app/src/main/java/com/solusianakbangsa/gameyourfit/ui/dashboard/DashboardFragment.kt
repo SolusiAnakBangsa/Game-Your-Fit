@@ -75,16 +75,26 @@ class DashboardFragment : Fragment() {
             }
         }
 
-
-        ref.child("level").get().addOnSuccessListener {
-            sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
-            binding.cardLevel.text = "Level ${it.value.toString()}"
+        if (sharedPref.contains("level")){
+            binding.cardLevel.text = "Level ${sharedPref.getInt("level", 0)}"
+        }else{
+            ref.child("level").get().addOnSuccessListener {
+                sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
+                binding.cardLevel.text = "Level ${it.value.toString()}"
+            }
         }
 
-        ref.child("exp").get().addOnSuccessListener {
-            sharedPref.edit().putLong("exp", it.value as Long).apply()
-            binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
+        if (sharedPref.contains("exp")){
+            binding.cardProgress.progress = (((sharedPref.getLong("exp", 0L))% 1000)/10).toInt()
+            binding.cardPoints.text = "${(sharedPref.getLong("exp", 0L))}pts"
+        }else{
+            ref.child("exp").get().addOnSuccessListener {
+                sharedPref.edit().putLong("exp", it.value as Long).apply()
+                binding.cardProgress.progress = (((it.value as Long)% 1000)/10).toInt()
+                binding.cardPoints.text = "${((it.value as Long))}pts"
+            }
         }
+
 
 //        TODO : replace placeholder link with link from firebase
         val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
