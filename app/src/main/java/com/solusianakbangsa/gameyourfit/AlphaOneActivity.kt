@@ -149,7 +149,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
                 "unpause" -> {
                     onResume()
                     if(findViewById<TextView>(R.id.sensorMessage) != null){
-                        findViewById<TextView>(R.id.sensorMessage).text = "Your phone has been connected. \\nLook at the browser screen!"
+                        findViewById<TextView>(R.id.sensorMessage).text = "Your phone has been connected. \nLook at the browser screen!"
                     }
                     resumeReading()
                     exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
