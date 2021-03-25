@@ -77,7 +77,7 @@ class DashboardFragment : Fragment() {
 
 
         ref.child("level").get().addOnSuccessListener {
-            sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
+            sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
             binding.cardLevel.text = "Level ${it.value.toString()}"
         }
 
@@ -199,7 +199,7 @@ class DashboardFragment : Fragment() {
 //       }
 
             ref.child("level").get().addOnSuccessListener {
-                sharedPref.edit().putString("level", "Level ${it.value.toString()}").apply()
+                sharedPref.edit().putInt("level", it.value.toString().toInt()).apply()
                 binding.cardLevel.text = "Level ${it.value.toString()}"
             }
 

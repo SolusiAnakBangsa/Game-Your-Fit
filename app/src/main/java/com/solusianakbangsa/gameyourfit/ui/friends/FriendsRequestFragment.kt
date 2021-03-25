@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.friends
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,6 +32,7 @@ import kotlin.collections.ArrayList
 class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>()  {
     private val viewModel : FriendsRequestViewModel = FriendsRequestViewModel()
     val handler : Handler = Handler(Looper.getMainLooper())
+    lateinit var sharedPref:SharedPreferences
 
     companion object{
         fun newInstance() = FriendsRequestFragment()
@@ -52,7 +55,16 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         val ref2 : DatabaseReference = FirebaseDatabase.getInstance().getReference("Friends")
             .child(uid2).child(uid1)
 
+        val userData = HashMap<String, Any>()
+        if (sharedPref.contains("image")){
+            userData["image"] = (sharedPref.getString("image", "")).toString()
+        }
+        userData["username"] = (sharedPref.getString("username", "")).toString()
+        userData["level"] = (sharedPref.getInt("level", 1)) as Int
+        userData["exp"] = (sharedPref.getLong("exp", 0L)) as Long
+
         ref1.setValue(userData2)
+        ref2.setValue(userData)
         userData2.uid = null
 //        Build request object, and then
     }
@@ -102,6 +114,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         contentLayout = root.findViewById(R.id.friendsContent)
         val executor = Executors.newSingleThreadExecutor()
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.friendsRefresh)
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         swipeRefresh.setOnRefreshListener {
             executor.execute{
                 contentLayout.removeAllViews()
