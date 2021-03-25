@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.leaderboard
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,10 +25,16 @@ import java.util.concurrent.Executors
 
 
 class LeaderboardFragment : Fragment() {
-    private val viewModel : LeaderboardViewModel = LeaderboardViewModel()
-    private var handler: Handler = Handler(Looper.getMainLooper())
+    private lateinit var viewModel : LeaderboardViewModel
     private var rank = 1
     private lateinit var contentLayout : LinearLayout
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(requireActivity()).get(LeaderboardViewModel::class.java)
+        viewModel.loadEntries()
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -36,8 +43,6 @@ class LeaderboardFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_leaderboard, container, false)
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.leaderboardSwipeRefresh)
         val executor = Executors.newSingleThreadExecutor()
-
-        viewModel.loadEntries()
         contentLayout = root.findViewById(R.id.leaderboardContent)
         swipeRefresh.setOnRefreshListener {
             executor.execute{
@@ -47,14 +52,15 @@ class LeaderboardFragment : Fragment() {
         }
         viewModel.entryList.observe(requireActivity(), Observer{ it ->
             swipeRefresh.isRefreshing = false
-            it.sortBy { it.exp }
-            rank = 1
-            contentLayout.removeAllViews()
+
+            if(isAdded) {
+                it.sortBy { it.exp }
+                rank = 1
+                contentLayout.removeAllViews()
 //            Reversed is done as firebase has no option to sort with descending
-            it.asReversed().forEach{
-                if (isAdded){
+                it.asReversed().forEach {
                     createView(it)
-                    if(rank in 1..3){
+                    if (rank in 1..3) {
                         contentLayout.getChildAt(rank - 1).background.setTint(resources.getColor(R.color.amber_900))
                     }
                     rank += 1

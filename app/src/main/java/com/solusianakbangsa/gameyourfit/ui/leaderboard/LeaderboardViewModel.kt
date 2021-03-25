@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit.ui.leaderboard
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.ui.ListViewModel
@@ -14,19 +15,17 @@ class LeaderboardViewModel : ListViewModel<LeaderboardEntry>() {
         val listener =
             object : ChildEventListener{
                 override fun onCancelled(error: DatabaseError) {}
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                }
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    val entry : LeaderboardEntry? = snapshot.getValue(LeaderboardEntry::class.java)
-                    if (entry != null) {
-                        replace(entry)
-                    }
+//                    val entry : LeaderboardEntry? = snapshot.getValue(LeaderboardEntry::class.java)
+//                    if (entry != null) {
+//                        replace(entry)
+//                    }
                 }
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    val entry : LeaderboardEntry? = snapshot.getValue(LeaderboardEntry::class.java)
-                    if (entry?.exp != null){
-                        addToList(entry)
-                    }
+                    val username = snapshot.child("username").value.toString()
+                    val exp = snapshot.child("exp").value.toString().toInt()
+                    addToList(LeaderboardEntry(username, exp))
                 }
                 override fun onChildRemoved(snapshot: DataSnapshot) {}
             }
