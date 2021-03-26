@@ -1,5 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.auth
 
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -246,10 +248,13 @@ class SignupActivity : AppCompatActivity() {
                         toast("Data Successfully Saved.")
                     }
                     progressBar.visibility = View.GONE
-                    val intent = Intent(this, ProfileActivity::class.java).apply{
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
+                    stackBuilder.addNextIntent(Intent(this, HomeActivity::class.java).apply{
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    startActivity(intent)
+                    })
+                    Log.i("coolm", stackBuilder.intents.toString())
+                    stackBuilder.addNextIntent(intent).startActivities()
                 }else{
                     task.exception?.message?.let {
                         progressBar.visibility = View.GONE
