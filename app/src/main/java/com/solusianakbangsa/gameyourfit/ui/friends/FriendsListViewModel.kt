@@ -10,6 +10,22 @@ import com.solusianakbangsa.gameyourfit.ui.ListViewModel
 import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardEntry
 
 class FriendsListViewModel : ListViewModel<Friend>() {
+    private var childEventListener =  object : ChildEventListener{
+        override fun onCancelled(error: DatabaseError){}
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?){}
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?){}
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            val entry : Friend? = snapshot.getValue(Friend::class.java)
+            if (entry?.username != "" && entry != null){
+                status = "add"
+                Log.i("yabe","friend added")
+                addToList(entry)
+            }
+        }
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+        }
+    }
+
     var removedAt : Int? = 0
     var status : String = ""
     override fun loadEntries() {
@@ -18,27 +34,7 @@ class FriendsListViewModel : ListViewModel<Friend>() {
         var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
         val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserId)
 
-        dbRef.addChildEventListener( object : ChildEventListener{
-            override fun onCancelled(error: DatabaseError){}
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?){}
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?){}
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val entry : Friend? = snapshot.getValue(Friend::class.java)
-                if (entry?.username != "" && entry != null){
-                    status = "add"
-                    Log.i("yabe","pleasbruh")
-                    addToList(entry)
-                }
-            }
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                val entry : Friend? = snapshot.getValue(Friend::class.java)
-                if (entry != null) {
-                    status = "remove"
-                    removedAt = removeFromList(entry)
-                    entryList.value = entryList.value
-                }
-            }
-        })
-        
+        dbRef.removeEventListener(childEventListener)
+        dbRef.addChildEventListener(childEventListener)
     }
 }
