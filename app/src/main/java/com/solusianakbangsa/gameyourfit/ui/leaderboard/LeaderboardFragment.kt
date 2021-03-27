@@ -46,14 +46,11 @@ class LeaderboardFragment : Fragment() {
         val executor = Executors.newSingleThreadExecutor()
         contentLayout = root.findViewById(R.id.leaderboardContent)
 
-        executor.execute{
-            contentLayout.removeAllViews()
-            viewModel.loadEntries()
-            Handler(Looper.getMainLooper()).postDelayed({
-                root.findViewById<FrameLayout>(R.id.progress_overlay).visibility = View.GONE
-                viewModel.notifyObserver()
-            }, 2000)
-        }
+        viewModel.loadEntries()
+        Handler(Looper.getMainLooper()).postDelayed({
+            root.findViewById<FrameLayout>(R.id.progress_overlay).visibility = View.GONE
+            viewModel.notifyObserver()
+        }, 2000)
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
             executor.execute{
@@ -61,7 +58,6 @@ class LeaderboardFragment : Fragment() {
                 viewModel.loadEntries()
                 Handler(Looper.getMainLooper()).postDelayed({
                     viewModel.notifyObserver()
-                    executor.shutdown()
                 },2000)
             }
         }
