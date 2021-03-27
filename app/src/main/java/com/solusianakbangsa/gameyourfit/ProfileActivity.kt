@@ -308,8 +308,7 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         val mHeight = profileHeight_text.text.toString().trim()
 
         if (mAge.isNotEmpty() && mWeight.isNotEmpty() && mHeight.isNotEmpty()) {
-            val intent = Intent(this, HomeActivity::class.java)
-            this.startActivity(intent)
+            super.onBackPressed()
         }else{
             emptyValidation(mAge, mWeight, mHeight)
         }

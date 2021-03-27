@@ -49,6 +49,7 @@
             android:name=".ProfileActivity"
             android:label="@string/menu_profile"
             android:screenOrientation="portrait"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.UsernameGoogleActivity"
