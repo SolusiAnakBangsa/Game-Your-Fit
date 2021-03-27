@@ -7,22 +7,24 @@
     android:layout_height="match_parent"
 
     tools:context=".ui.leaderboard.LeaderboardFragment">
-
+    <include layout="@layout/include_progress_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/leaderboardSwipeRefresh"
         android:layout_marginTop="@dimen/action_bar_height"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/left_right_margin"
-        android:layout_marginRight="@dimen/left_right_margin"
         app:layout_constraintBottom_toBottomOf="parent">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbarStyle="outsideInset">
             <LinearLayout
+                android:paddingHorizontal="@dimen/left_right_margin"
                 android:id="@+id/leaderboardContent"
                 android:orientation="vertical"
+                android:paddingBottom="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/layout_divider"

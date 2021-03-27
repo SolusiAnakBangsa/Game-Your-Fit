@@ -7,7 +7,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.ui.ListViewModel
-import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardEntry
 
 class FriendsListViewModel : ListViewModel<Friend>() {
     private var childEventListener =  object : ChildEventListener{
@@ -18,12 +17,10 @@ class FriendsListViewModel : ListViewModel<Friend>() {
             val entry : Friend? = snapshot.getValue(Friend::class.java)
             if (entry?.username != "" && entry != null){
                 status = "add"
-                Log.i("yabe","friend added")
                 addToList(entry)
             }
         }
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-        }
+        override fun onChildRemoved(snapshot: DataSnapshot) {}
     }
 
     var removedAt : Int? = 0

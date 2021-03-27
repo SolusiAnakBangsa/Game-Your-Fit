@@ -25,4 +25,7 @@ abstract class ListViewModel<T> : ViewModel(){
         entryList.value?.remove(f)
         return removedIndex
     }
+    fun notifyObserver(){
+        entryList.value = entryList.value
+    }
 }

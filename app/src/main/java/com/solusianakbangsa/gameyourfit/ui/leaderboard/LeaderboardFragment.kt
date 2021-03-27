@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -44,15 +45,28 @@ class LeaderboardFragment : Fragment() {
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.leaderboardSwipeRefresh)
         val executor = Executors.newSingleThreadExecutor()
         contentLayout = root.findViewById(R.id.leaderboardContent)
+
+        executor.execute{
+            contentLayout.removeAllViews()
+            viewModel.loadEntries()
+            Handler(Looper.getMainLooper()).postDelayed({
+                root.findViewById<FrameLayout>(R.id.progress_overlay).visibility = View.GONE
+                viewModel.notifyObserver()
+            }, 2000)
+        }
         swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
             executor.execute{
                 contentLayout.removeAllViews()
                 viewModel.loadEntries()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    viewModel.notifyObserver()
+                    executor.shutdown()
+                },2000)
             }
         }
-        viewModel.entryList.observe(requireActivity(), Observer{ it ->
+        viewModel.entryList.observe(viewLifecycleOwner, Observer{ it ->
             swipeRefresh.isRefreshing = false
-
             if(isAdded) {
                 it.sortBy { it.exp }
                 rank = 1

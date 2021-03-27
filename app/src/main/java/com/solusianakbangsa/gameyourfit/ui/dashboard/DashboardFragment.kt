@@ -57,6 +57,8 @@ class DashboardFragment : Fragment() {
 
         binding.cardUsernameShimmer.baseAlpha = 0.9f
         binding.cardUsernameShimmer.startShimmerAnimation()
+        binding.recommendationFrameShimmer.baseAlpha = 0.9f
+        binding.recommendationFrameShimmer.startShimmerAnimation()
 
         var randomLvl : Int = 0
         val executor = Executors.newSingleThreadExecutor()
@@ -135,7 +137,7 @@ class DashboardFragment : Fragment() {
             }
             handler.post{
                 binding.recommendationTitle.text = levelList.getTitleAtLevel(randomLvl)
-                imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl))
+                imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl), binding.recommendationFrameShimmer)
             }
         }
 

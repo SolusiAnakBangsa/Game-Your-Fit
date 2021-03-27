@@ -13,7 +13,6 @@ class FriendsRequestViewModel()  : ListViewModel<Request>() {
         override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            Log.i("yabe", "childadded")
             initializeChildListener(snapshot.key.toString())
         }
 
@@ -35,7 +34,6 @@ class FriendsRequestViewModel()  : ListViewModel<Request>() {
     }
 
     private fun retrieveAllRequests() {
-        Log.i("yabe", "ple")
         reqUsers.removeEventListener(childEventListener)
         reqUsers.addChildEventListener(childEventListener)
     }

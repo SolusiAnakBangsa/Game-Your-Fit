@@ -168,25 +168,27 @@
             app:layout_constraintTop_toBottomOf="@+id/recommendationText">
 
             <FrameLayout
-
-            android:layout_width="match_parent"
-            android:clickable="true"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:focusable="true">
-
-            <ImageView
-                android:id="@+id/recommendationFrame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
                 android:clickable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/placeholder_profile_background"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:focusable="true">
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/recommendationFrameShimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/recommendationFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:background="@color/gray_300"
+                        android:focusable="true">
 
-            </ImageView>
-
+                    </ImageView>
+                </com.facebook.shimmer.ShimmerFrameLayout>
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="36dp"

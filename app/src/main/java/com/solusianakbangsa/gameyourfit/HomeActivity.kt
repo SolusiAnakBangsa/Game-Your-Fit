@@ -67,11 +67,9 @@ class HomeActivity : AppCompatActivity() {
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("helpme", sharedPref.all.toString())
                 if (snapshot.child("username").exists()){
                     sharedPref.edit().putString("username", snapshot.child("username").value.toString()).apply()
                     navView.getHeaderView(0).findViewById<TextView>(R.id.drawerName).text = sharedPref.getString("username", "").toString()
-                    Log.i("helpme", sharedPref.all.toString())
                 }
                 if (snapshot.child("image").exists()){
                     sharedPref.edit().putString("image", snapshot.child("image").value.toString()).apply()
@@ -99,7 +97,6 @@ class HomeActivity : AppCompatActivity() {
             }
         })
 
-        Log.i("helpme", sharedPref.all.toString())
         var name: String = "Username"
 
         if (sharedPref.contains("username")) {
@@ -138,7 +135,6 @@ class HomeActivity : AppCompatActivity() {
 
         val logout = navView.getHeaderView(0).findViewById<TextView>(R.id.logout)
         logout.setOnClickListener {
-            Log.i("popup", "listenercool")
             MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout of this account?")
