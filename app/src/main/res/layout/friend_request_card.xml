@@ -19,7 +19,7 @@
             android:layout_marginBottom="10dp"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp"
-            android:src="@mipmap/placeholder_profile_foreground"
+            android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
