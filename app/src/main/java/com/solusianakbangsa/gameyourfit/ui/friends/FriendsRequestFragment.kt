@@ -123,12 +123,12 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
                 textView.text = "No request found."
                 contentLayout.addView(textView)
                 viewModel.loadEntries()
-                swipeRefresh.isRefreshing = false
             }
         }
 
         viewModel.loadEntries()
         viewModel.entryList.observe(requireActivity(), androidx.lifecycle.Observer {
+            swipeRefresh.isRefreshing = false
             if(it.size > 0){
                 val noEntry = root.findViewById<TextView>(R.id.noEntries)
                 if(noEntry != null) {

@@ -67,7 +67,6 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
                 textView.text = "No friends found, press the plus button to send friend requests."
                 contentLayout.addView(textView)
                 viewModel.loadEntries()
-                swipeRefresh.isRefreshing = false
             }
         }
 
@@ -75,6 +74,7 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
         viewModel.entryList.observe(requireActivity(), Observer {
 //            Redraw stuff here
 //            Fuck it jank time
+            swipeRefresh.isRefreshing = false
             if(it.isNotEmpty()) {
                 val emptyMessage = root.findViewById<TextView>(R.id.noEntries)
                 if(emptyMessage != null) {
