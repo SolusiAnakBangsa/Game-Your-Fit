@@ -21,6 +21,18 @@ You can get the APK on GitHub.
 
 ## Screenshots
 
+## Usage
+Have <a href="https://developer.android.com/studio?gclid=Cj0KCQjw0oCDBhCPARIsAII3C_HdgRapXULVbpa1IgTA30wwckWqGtqiAglW4MGQveWjlvM8oMUz3SUaAtbAEALw_wcB&gclsrc=aw.ds">Android Studio</a> installed and install any SDK packages that it recommends.
+
+Clone this repository
+```bash
+git clone https://github.com/SolusiAnakBangsa/Game-Your-Fit
+```
+
+Open Android Studio and click "Open an existing Android Studio Project"
+
+Locate the cloned folder and wait for the gradle to build.
+
 ## Resources Used
 - <a href="https://www.healthline.com/health/what-are-mets#calorie-connection">Calories burned calculation formula</a>
 - <a href="https://sites.google.com/site/compendiumofphysicalactivities/">MET values</a>

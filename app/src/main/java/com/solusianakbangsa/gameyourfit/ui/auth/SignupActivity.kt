@@ -122,6 +122,15 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            for (i in username.indices){
+                val a = username[i]
+                if(a.isUpperCase()){
+                    sign_up_username.error = "Username must be in lower case."
+                    sign_up_username.requestFocus()
+                    return@setOnClickListener
+                }
+            }
+
             if (username.length > 20){
                 sign_up_username.error = "Username Too Long"
                 sign_up_username.requestFocus()
