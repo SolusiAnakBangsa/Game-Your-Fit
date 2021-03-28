@@ -54,9 +54,9 @@ class LeaderboardFragment : Fragment() {
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
             executor.execute{
-                contentLayout.removeAllViews()
                 viewModel.loadEntries()
                 Handler(Looper.getMainLooper()).postDelayed({
+                    contentLayout.removeAllViews()
                     viewModel.notifyObserver()
                 },2000)
             }
