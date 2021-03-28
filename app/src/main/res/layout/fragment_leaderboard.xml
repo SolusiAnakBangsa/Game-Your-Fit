@@ -19,12 +19,12 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="20dp"
             android:scrollbarStyle="outsideInset">
             <LinearLayout
                 android:paddingHorizontal="@dimen/left_right_margin"
                 android:id="@+id/leaderboardContent"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/layout_divider"
