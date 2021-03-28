@@ -3,6 +3,7 @@ package com.solusianakbangsa.gameyourfit
 import android.animation.*
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -19,8 +20,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.comm.Signal
@@ -62,19 +65,22 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
     private var exerciseTime = 0L
     private var totalTime = 0L
     private var uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private var rootRef = FirebaseDatabase.getInstance().reference
     private var dbRef = FirebaseDatabase.getInstance().reference.child("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
         val toolbar: Toolbar = findViewById(R.id.alphaOneToolbar)
+        val likeButton : CardView = findViewById(R.id.summaryLikeButton)
+        val dislikeButton : CardView = findViewById(R.id.summaryDislikeButton)
+
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         if(sharedPref.contains("userWeight")){
             weight = (sharedPref.getLong("userWeight", 57L)).toInt()
         } else {
             weight = 57
         }
-        Log.i("okpls", weight.toString())
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
@@ -88,6 +94,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             this.startActivity(intent)
         }
 
+
+
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
         if(intent.getStringExtra("taskList") != null){
@@ -98,6 +106,36 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             val content = JSONObject(levelString)
             level = JSONObject()
             level.put("workoutList", content)
+        }
+
+        val feedbackRef= rootRef.child("LevelFeedback")
+            .child(level.getJSONObject("workoutList").get("title").toString())
+
+        val feedbackIncrementListener = object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.value == null){
+                    snapshot.ref.setValue(1)
+                } else {
+                    val oldValue : String = snapshot.value.toString()
+                    snapshot.ref.setValue(oldValue.toInt() + 1)
+                }
+            }
+        }
+        likeButton.setOnClickListener{
+            likeButton.setCardBackgroundColor(Color.GRAY)
+            dislikeButton.setCardBackgroundColor(Color.GRAY)
+            feedbackRef.child("like").addListenerForSingleValueEvent(feedbackIncrementListener)
+            likeButton.setOnClickListener(null)
+            dislikeButton.setOnClickListener(null)
+        }
+
+        dislikeButton.setOnClickListener{
+            likeButton.setCardBackgroundColor(Color.GRAY)
+            dislikeButton.setCardBackgroundColor(Color.GRAY)
+            feedbackRef.child("dislike").addListenerForSingleValueEvent(feedbackIncrementListener)
+            likeButton.setOnClickListener(null)
+            dislikeButton.setOnClickListener(null)
         }
 
         viewModel.signal = Signal("jog","standby",0,0,"", 0L, 0, 0L)
@@ -116,6 +154,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         Log.i("exerciseList", exerciseList.toString())
 
         val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
+
         viewModel.standbyMessage.observe(this, androidx.lifecycle.Observer {
             standbyMessageView.text = it
         })
@@ -468,19 +507,20 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         summaryTitle.text = title
 
         val timeTitle = fadeInAnimator(findViewById(R.id.summaryTimeTitle))
-
         val timeContentHourText : TextView = findViewById(R.id.summaryTimeHour)
         val timeContentMinuteText : TextView = findViewById(R.id.summaryTimeMinute)
         val timeContentSecondText : TextView = findViewById(R.id.summaryTimeSecond)
         timeContentHourText.text = convertToHour(time)
         timeContentMinuteText.text = convertToMinute(time)
         timeContentSecondText.text = convertToSec(time)
-
         val timeContent = fadeInAnimator(findViewById(R.id.summaryTime))
+
         val caloryTitle = fadeInAnimator(findViewById(R.id.summaryCaloriesTitle))
         val caloryContentText : TextView = findViewById(R.id.summaryCalories)
         val caloryContent = fadeInAnimator(caloryContentText)
         caloryContentText.text = "$calories cal"
+        val summaryFeedback = fadeInAnimator(findViewById(R.id.summaryFeedback))
+        val summaryHome = fadeInAnimator(findViewById(R.id.summaryHomeCard))
 
         summaryLayout.visibility = View.VISIBLE
         val animSet = AnimatorSet().apply{
@@ -490,6 +530,8 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
             play(timeTitle).with(timeContent)
             play(timeContent).before(caloryTitle)
             play(caloryTitle).with(caloryContent)
+            play(caloryContent).before(summaryFeedback)
+            play(summaryFeedback).with(summaryHome)
         }
         animSet.start()
     }

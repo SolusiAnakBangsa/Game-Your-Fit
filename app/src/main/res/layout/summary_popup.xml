@@ -2,166 +2,233 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:animateLayoutChanges="true"
     android:id="@+id/summaryLayout"
-    android:alpha="0.0"
-    android:visibility="gone"
+    android:alpha="1.0"
+    android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/summaryCard"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/action_bar_height"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/white"
-        app:cardCornerRadius="20dp"
-        app:strokeWidth="4dp"
-        app:strokeColor="?attr/colorPrimaryVariant">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:background="?attr/colorPrimaryVariant"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            android:text="Level Complete!"
-            android:textStyle="bold"/>
-        <ScrollView
+        android:layout_height="match_parent">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/summaryCard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="60dp">
-            <LinearLayout
-                android:orientation="vertical"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/white"
+            app:cardCornerRadius="20dp"
+            app:strokeWidth="4dp"
+            app:strokeColor="?attr/colorPrimaryVariant">
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/summaryTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingVertical="10dp"
-                    android:textSize="14sp"
-                    android:text="Level 1 : Game your'e Fit!!!"
-                    android:textStyle="italic"/>
-                <ImageView
-                    android:id="@+id/summaryIcon"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher"/>
-                <TextView
-                    android:id="@+id/summaryTimeTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="16dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:text="Time Elapsed : "
-                    android:textSize="18sp"
-                    android:gravity="center"/>
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:background="?attr/colorPrimaryVariant"
+                android:textSize="24sp"
+                android:textColor="@color/black"
+                android:text="Level Complete!"
+                android:textStyle="bold"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="60dp">
                 <LinearLayout
-                    android:id="@+id/summaryTime"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:background="@drawable/dotted_vertical_border"
-                    android:backgroundTint="@color/gray_300"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
+
                     <TextView
-                        android:id="@+id/summaryTimeHour"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/summaryTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingVertical="10dp"
+                        android:textSize="14sp"
+                        android:text="Level 1 : Game your'e Fit!!!"
+                        android:textStyle="italic"/>
+                    <ImageView
+                        android:id="@+id/summaryIcon"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher"/>
+                    <TextView
+                        android:id="@+id/summaryTimeTitle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingVertical="16dp"
-                        android:text="00 :"
-                        android:textSize="40sp"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="Time Elapsed : "
+                        android:textSize="18sp"
+                        android:gravity="center"/>
+                    <LinearLayout
+                        android:id="@+id/summaryTime"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/dotted_vertical_border"
+                        android:backgroundTint="@color/gray_300"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/summaryTimeHour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
+                            android:text="00 :"
+                            android:textSize="40sp"
+                            android:gravity="center"/>
+                        <TextView
+                            android:id="@+id/summaryTimeMinute"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
+                            android:text=" 06 "
+                            android:textSize="40sp"
+                            android:gravity="center"/>
+                        <TextView
+                            android:id="@+id/summaryTimeSecond"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:paddingVertical="16dp"
+                            android:text=": 24"
+                            android:textSize="40sp"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/summaryCaloriesTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="50dp"
+                        android:paddingBottom="16dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="Calories Lost : "
+                        android:textSize="18sp"
                         android:gravity="center"/>
                     <TextView
-                        android:id="@+id/summaryTimeMinute"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/summaryCalories"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingVertical="16dp"
-                        android:text=" 06 "
+                        android:layout_marginHorizontal="20dp"
+                        android:text="3000 cal"
                         android:textSize="40sp"
+                        android:background="@drawable/dotted_vertical_border"
+                        android:backgroundTint="@color/gray_300"
                         android:gravity="center"/>
-                    <TextView
-                        android:id="@+id/summaryTimeSecond"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:paddingVertical="16dp"
-                        android:text=": 24"
-                        android:textSize="40sp"
-                        android:gravity="center"/>
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/summaryCaloriesTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="50dp"
-                    android:paddingBottom="16dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:text="Calories Lost : "
-                    android:textSize="18sp"
-                    android:gravity="center"/>
-                <TextView
-                    android:id="@+id/summaryCalories"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="16dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:text="3000 cal"
-                    android:textSize="40sp"
-                    android:background="@drawable/dotted_vertical_border"
-                    android:backgroundTint="@color/gray_300"
-                    android:gravity="center"/>
-                <RelativeLayout
-                    android:id="@+id/summaryHomeCard"
-                    android:paddingVertical="50dp"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="20dp"
-                        app:cardBackgroundColor="?attr/colorPrimary">
-                        <ImageView
-                            android:id="@+id/summaryHome"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/summaryFeedback"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:paddingVertical="10dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Did you like this level?"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/summaryLikeButton"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:cardCornerRadius="10dp"
+                            app:cardBackgroundColor="#00e676"
                             android:clickable="true"
                             android:focusable="true"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="7dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_menu_home"
-                            app:tint="@color/white" />
-                    </com.google.android.material.card.MaterialCardView>
-                </RelativeLayout>
+                            android:layout_marginRight="10dp"
+                            app:layout_constraintRight_toLeftOf="@id/summaryDislikeButton"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+                            <ImageView
+                                android:clickable="false"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_thumb_up_24"
+                                app:tint="@color/white" />
+                        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/summaryDislikeButton"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:cardCornerRadius="10dp"
+                            app:cardBackgroundColor="#ff3d00"
+                            android:clickable="true"
+                            android:focusable="true"
 
-                <!--            Old stub used to include smaller elements, removed because not many elements-->
-                <!--            <RelativeLayout-->
-                <!--                android:layout_marginTop="20dp"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:layout_marginHorizontal="20dp"-->
-                <!--                android:orientation="horizontal">-->
-                <!--                <TextView-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:text="Calorie lost : "-->
-                <!--                    android:textSize="16sp"/>-->
-                <!--                <TextView-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_alignParentEnd="true"-->
-                <!--                    android:textSize="16sp"-->
-                <!--                    android:text="3000 cal "/>-->
-                <!--            </RelativeLayout>-->
-            </LinearLayout>
-        </ScrollView>
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <ImageView
+                                android:clickable="false"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_baseline_thumb_down_24"
+                                app:tint="@color/white" />
+                        </com.google.android.material.card.MaterialCardView>
 
-    </com.google.android.material.card.MaterialCardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <RelativeLayout
+                        android:id="@+id/summaryHomeCard"
+                        android:paddingVertical="30dp"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardBackgroundColor="?attr/colorPrimary">
+                            <ImageView
+                                android:id="@+id/summaryHome"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="7dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_menu_home"
+                                app:tint="@color/white" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </RelativeLayout>
+
+                    <!--            Old stub used to include smaller elements, removed because not many elements-->
+                    <!--                <RelativeLayout-->
+                    <!--                    android:layout_marginTop="20dp"-->
+                    <!--                    android:layout_width="match_parent"-->
+                    <!--                    android:layout_height="wrap_content"-->
+                    <!--                    android:layout_marginHorizontal="20dp"-->
+                    <!--                    android:orientation="horizontal">-->
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:text="Calorie lost : "-->
+                    <!--                        android:textSize="16sp"/>-->
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_alignParentEnd="true"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        android:text="3000 cal "/>-->
+                    <!--                </RelativeLayout>-->
+                </LinearLayout>
+            </ScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
+
 </FrameLayout>

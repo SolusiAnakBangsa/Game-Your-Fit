@@ -7,6 +7,7 @@
     tools:context=".AlphaOneActivity">
 
     <include
+        android:layout_marginTop="@dimen/action_bar_height"
         layout="@layout/summary_popup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
