@@ -25,7 +25,7 @@ You can get the APK on GitHub.
 Have <a href="https://developer.android.com/studio?gclid=Cj0KCQjw0oCDBhCPARIsAII3C_HdgRapXULVbpa1IgTA30wwckWqGtqiAglW4MGQveWjlvM8oMUz3SUaAtbAEALw_wcB&gclsrc=aw.ds">Android Studio</a> installed and install any SDK packages that it recommends.
 
 Clone this repository
-```bash
+```PowerShell
 git clone https://github.com/SolusiAnakBangsa/Game-Your-Fit
 ```
 
