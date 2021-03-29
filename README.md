@@ -20,12 +20,12 @@ You can get the APK on GitHub.
 <a href="https://github.com/SolusiAnakBangsa/Game-Your-Fit/releases/tag/v0.2-alpha"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="75"></a>
 
 ## Screenshots
-![Campaign](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Campaign.png "Campaign List")
-![Dashboard](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Dashboard.png "Home page for the app")
-![Friends](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Friends.png "Friends that have been added to the list")
-![Leaderboard](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Leaderboard.png "Global leaderboard")
-![Login](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Login.png "Login screen for users")
-![Profile](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Profile.png "Profile Screen")
+![Campaign](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Campaign.png "Campaign List"  | width=100)
+![Dashboard](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Dashboard.png "Home page for the app"  | width=100)
+![Friends](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Friends.png "Friends that have been added to the list"  | width=100)
+![Leaderboard](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Leaderboard.png "Global leaderboard" | width=100)
+![Login](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Login.png "Login screen for users" | width=100)
+![Profile](https://github.com/SolusiAnakBangsa/Game-Your-Fit/blob/main/Screenshots/Profile.png "Profile Screen" | width=100)
 
 ## Usage
 Have <a href="https://developer.android.com/studio?gclid=Cj0KCQjw0oCDBhCPARIsAII3C_HdgRapXULVbpa1IgTA30wwckWqGtqiAglW4MGQveWjlvM8oMUz3SUaAtbAEALw_wcB&gclsrc=aw.ds">Android Studio</a> installed and install any SDK packages that it recommends.
