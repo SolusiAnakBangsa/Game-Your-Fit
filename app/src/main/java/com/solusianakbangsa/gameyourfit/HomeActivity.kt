@@ -147,7 +147,10 @@ class HomeActivity : AppCompatActivity() {
                         startActivity(loginIntent)
                         val file = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
                         file.delete()
+
+                        val onboardingState = sharedPref.getBoolean("onboardingFinished", false)
                         sharedPref.edit().clear().apply()
+                        sharedPref.edit().putBoolean("onboardingFinished", onboardingState).apply()
                         finish()
                     }
                 }

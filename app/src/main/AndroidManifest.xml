@@ -22,6 +22,11 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.GameYourFit">
         <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:label="@string/title_activity_onboarding"
+            android:theme="@style/Theme.GameYourFit.NoActionBar">
+        </activity>
+        <activity
             android:name=".ui.friends.AddFriendActivity"
             android:label="Add Friends"
             android:screenOrientation="portrait"
@@ -30,8 +35,7 @@
             android:name=".ui.level_info.LevelInfoActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
@@ -48,8 +52,8 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/menu_profile"
-            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.UsernameGoogleActivity"
@@ -68,9 +72,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

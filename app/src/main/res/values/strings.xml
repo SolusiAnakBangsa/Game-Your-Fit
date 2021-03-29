@@ -131,4 +131,21 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_onboarding">OnboardingActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="onboarding_title_one">"What"</string>
+    <string name="onboarding_title_two">"Put armband haha"</string>
+    <string name="onboarding_title_three">"Feature lul"</string>
+
+    <string name="onboarding_description_one">"Funny description number one goes here"</string>
+    <string name="onboarding_description_two">"Funny description naldksfjlaksjdflk"</string>
+    <string name="onboarding_description_three">"Haha oh no"</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

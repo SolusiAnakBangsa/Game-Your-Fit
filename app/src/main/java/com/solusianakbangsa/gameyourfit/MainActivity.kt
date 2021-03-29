@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.ImageView
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.google.firebase.database.DataSnapshot
@@ -16,6 +18,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
+import com.solusianakbangsa.gameyourfit.ui.auth.SignupActivity
+import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -62,9 +66,14 @@ class MainActivity : AppCompatActivity() {
                 })
 
             }else{
-                val loginIntent = Intent(this, LoginActivity::class.java)
-                startActivity(loginIntent)
-                finish()
+                if (onBoardingFinished()){
+                    val intent = Intent(this, SignupActivity::class.java)
+                    this.startActivity(intent)
+                } else {
+                    val onboardIntent = Intent(this, OnboardingActivity::class.java)
+                    this.startActivity(onboardIntent)
+                    finish()
+                }
             }
         }, 2000)
     }
@@ -80,12 +89,9 @@ class MainActivity : AppCompatActivity() {
             executor.shutdown()
         }
     }
-    private fun getStringFromUrl(url : String): String{
-        try{
-            val textStream = URL(url).openConnection().getInputStream()
-            return textStream.bufferedReader().use { it.readText() }
-        } catch (e : IOException){
-            return LevelList.readLevelsFromFile(this).toString()
-        }
+
+    private fun onBoardingFinished(): Boolean{
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        return sharedPref.getBoolean("onboardingFinished", false)
     }
 }

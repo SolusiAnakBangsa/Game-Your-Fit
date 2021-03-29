@@ -498,8 +498,6 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
         return animator
     }
     private fun animateSummary(title : String, time : Long, calories : Int){
-        val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
-
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
         val summaryLayoutAnim = fadeInAnimator(findViewById(R.id.summaryLayout),1000L)
         val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
