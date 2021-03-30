@@ -13,6 +13,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.solusianakbangsa.gameyourfit.HomeActivity
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.auth.SignupActivity
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
@@ -33,6 +34,9 @@ class OnboardingActivity : AppCompatActivity() {
                 , getBitmap(R.drawable.logo)),
             OnboardingPage(resources.getString(R.string.onboarding_title_two)
                 , resources.getString(R.string.onboarding_description_two)
+                , getBitmap(R.drawable.logo)),
+            OnboardingPage(resources.getString(R.string.onboarding_title_three)
+                , resources.getString(R.string.onboarding_description_three)
                 , getBitmap(R.drawable.logo))
         )
         adapter = OnboardingViewPagerAdapter(fragmentList, this.supportFragmentManager, lifecycle)
@@ -43,15 +47,24 @@ class OnboardingActivity : AppCompatActivity() {
                 vp.currentItem += 1
             } else{
                 finishOnboarding()
-                val intent = Intent(this, SignupActivity::class.java)
-                this.startActivity(intent)
+                if(intent.getBooleanExtra("fromDashboard", false)) {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    this.startActivity(intent)
+                } else{
+                    val intent = Intent(this, SignupActivity::class.java)
+                    this.startActivity(intent)
+                }
             }
         }
         vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 if(position == fragmentList.size - 1 ){
-                    next.text = "Sign Up"
+                    if (intent.getBooleanExtra("fromDashboard", false)) {
+                        next.text = "Return"
+                    } else{
+                        next.text = "Sign Up"
+                    }
                 } else{
                     next.text = "Next"
                 }

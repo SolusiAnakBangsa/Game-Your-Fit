@@ -26,7 +26,24 @@
         app:itemIconTint="?attr/itemIconTint"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer">
-
+        <FrameLayout
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="bottom|right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/helpButton"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_help_outline_24"/>
+        </FrameLayout>
     </com.google.android.material.navigation.NavigationView>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -28,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
+import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
+import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
 import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 
@@ -132,6 +134,12 @@ class HomeActivity : AppCompatActivity() {
         navView.getHeaderView(0).findViewById<TextView>(R.id.drawerEmail).text =
             FirebaseAuth.getInstance().currentUser?.email.toString()
 //          One time initialization for the levels.json, campaignActivity will later read from this
+
+        navView.findViewById<ImageView>(R.id.helpButton).setOnClickListener{
+            val intent = Intent(this, OnboardingActivity::class.java)
+            intent.putExtra("fromDashboard", true)
+            this.startActivity(intent)
+        }
 
         val logout = navView.getHeaderView(0).findViewById<TextView>(R.id.logout)
         logout.setOnClickListener {

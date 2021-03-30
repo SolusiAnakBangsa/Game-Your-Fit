@@ -138,13 +138,14 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="onboarding_title_one">"What"</string>
-    <string name="onboarding_title_two">"Put armband haha"</string>
-    <string name="onboarding_title_three">"Feature lul"</string>
+    <string name="onboarding_title_one">"Pick A Level"</string>
+    <string name="onboarding_title_two">"Setup The Armband"</string>
+    <string name="onboarding_title_three">"Exercise"</string>
 
-    <string name="onboarding_description_one">"Funny description number one goes here"</string>
-    <string name="onboarding_description_two">"Funny description naldksfjlaksjdflk"</string>
-    <string name="onboarding_description_three">"Haha oh no"</string>
+    <string name="onboarding_description_one">"Pick a level, once the room code is generated on your phone, go to gameyourfit.com using
+        another device and insert the room code."</string>
+    <string name="onboarding_description_two">"Put your phone into an armstrap and strap it to the upper left of your arm. Make sure it's secure!"</string>
+    <string name="onboarding_description_three">"Start working out and beat the level! Enjoy the game! Good luck!"</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
