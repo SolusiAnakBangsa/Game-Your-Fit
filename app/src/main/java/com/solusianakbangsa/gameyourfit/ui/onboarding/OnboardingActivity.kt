@@ -29,14 +29,14 @@ class OnboardingActivity : AppCompatActivity() {
         val next : TextView = findViewById(R.id.next)
 
         val fragmentList = arrayListOf<Fragment>(
-            OnboardingPage(resources.getString(R.string.onboarding_title_one)
-                , resources.getString(R.string.onboarding_description_one)
+            OnboardingPage("Step 1"
+                , "Pick a level, once the room code is generated on your phone, go to gameyourfit.com using another device and insert the room code."
                 , getBitmap(R.drawable.logo)),
-            OnboardingPage(resources.getString(R.string.onboarding_title_two)
-                , resources.getString(R.string.onboarding_description_two)
+            OnboardingPage("Step 2"
+                , "Put your phone into an armstrap and strap it to the upper left of your arm. Make sure it's secure!"
                 , getBitmap(R.drawable.logo)),
-            OnboardingPage(resources.getString(R.string.onboarding_title_three)
-                , resources.getString(R.string.onboarding_description_three)
+            OnboardingPage("Step 3"
+                , "Start working out and beat the level! Enjoy the game! Good Luck!"
                 , getBitmap(R.drawable.logo))
         )
         adapter = OnboardingViewPagerAdapter(fragmentList, this.supportFragmentManager, lifecycle)
