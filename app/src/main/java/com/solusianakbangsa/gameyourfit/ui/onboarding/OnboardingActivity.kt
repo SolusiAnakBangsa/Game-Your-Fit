@@ -53,6 +53,7 @@ class OnboardingActivity : AppCompatActivity() {
                 } else{
                     val intent = Intent(this, SignupActivity::class.java)
                     this.startActivity(intent)
+                    finish()
                 }
             }
         }

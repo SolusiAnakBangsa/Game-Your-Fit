@@ -61,6 +61,8 @@
                 android:drawablePadding="10dp"
                 android:ems="10"
                 android:hint="@string/username"
+                android:inputType="text"
+                android:maxLines="1"
                 android:paddingStart="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
