@@ -6,13 +6,16 @@ An android app that aims to supply users with a fun gamified workout application
   <img width="300" height="300" src="https://github.com/SolusiAnakBangsa/Web-Stack/blob/main/public/logo.png">
 </p>
 
-Game your fit utilizes various Google technology/products such as Android, Firebase, Google Cloud Platform and WebRTC.
+Game your fit utilizes various Google technology/products such as Android, Firebase, Google Cloud Platform and WebRTC. This project consists of three repositories. Game Your Fit is the main repository, you can check out the other two from the link down below.
 
-Includes:
+This Repo Includes:
 - Resources for Android application
 - Kotlin code for Android backend
 - .xml files for Android frontend
 
+Our other repositories:
+- <a href="https://github.com/SolusiAnakBangsa/Web-Stack">Web Stack</a>
+- <a href="https://github.com/SolusiAnakBangsa/workout-endpoint">Workout Endpoint</a>
 
 ## Download
 You can get the APK on GitHub.
