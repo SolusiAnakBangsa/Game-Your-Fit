@@ -14,7 +14,6 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,7 +22,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.comm.Signal
@@ -32,9 +30,8 @@ import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
 import kotlin.concurrent.fixedRateTimer
-import kotlin.properties.Delegates
 
-class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
+class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var mSensorManager: SensorManager
     private lateinit var rtc: WebRtc
     private lateinit var signal : Signal
@@ -413,7 +410,7 @@ class AlphaOneActivity : AppCompatActivity(), SensorEventListener {
 
     private fun timer() {
         fixedRateTimer("timer", false, 0L, 1000) {
-            this@AlphaOneActivity.runOnUiThread {
+            this@SensorActivity.runOnUiThread {
                 if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
                     Log.i("signal", signal.toString())

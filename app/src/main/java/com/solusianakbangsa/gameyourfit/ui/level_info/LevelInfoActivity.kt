@@ -13,10 +13,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
-import com.solusianakbangsa.gameyourfit.AlphaOneActivity
+import com.solusianakbangsa.gameyourfit.SensorActivity
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.TaskList
-import com.solusianakbangsa.gameyourfit.TaskDictionary
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import kotlinx.android.synthetic.main.activity_level_info.*
 
@@ -70,7 +69,7 @@ class LevelInfoActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.levelInfoStart).setOnClickListener{
-            val intent = Intent(this, AlphaOneActivity::class.java)
+            val intent = Intent(this, SensorActivity::class.java)
             intent.putExtra("level", levelString)
             intent.putExtra("taskList", taskList.jsonArr.toString())
             intent.putExtra("title", fullTitle)
