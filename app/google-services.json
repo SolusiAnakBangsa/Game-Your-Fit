@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "92336032037",
+    "firebase_url": "https://game-your-fit-default-rtdb.firebaseio.com",
     "project_id": "game-your-fit",
     "storage_bucket": "game-your-fit.appspot.com"
   },
@@ -14,13 +15,29 @@
       },
       "oauth_client": [
         {
+          "client_id": "92336032037-rojd592ne4f2ppmdsgbunudsm9aiavet.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gameyourfit",
+            "certificate_hash": "3ba2b1a9e324ae28e1e5ba64e5ab252d4d995764"
+          }
+        },
+        {
+          "client_id": "92336032037-u3tvv8joi9goc77iqdludrb1286ohl8s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gameyourfit",
+            "certificate_hash": "d46897c4faed7f682b7f5e67e989b205ab117012"
+          }
+        },
+        {
           "client_id": "92336032037-mdesbu0ggc48uqc2j8rfiq9m39etgsum.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCvHIkQpTjPNzNSR9qwPN3PdWEEcJE-Nwg"
+          "current_key": "AIzaSyBcKJNUDDV3lyXct21sXnKmoACKfBhLuo0"
         }
       ],
       "services": {
