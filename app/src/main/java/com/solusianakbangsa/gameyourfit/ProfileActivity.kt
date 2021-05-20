@@ -18,6 +18,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.auth.User
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
@@ -73,10 +75,17 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
         mImageStorage = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val currentUser = mAuth.currentUser
 
         getProfile(userId)
         progressBar.visibility = View.GONE
 
+        if (currentUser.isEmailVerified){
+            imageVerified.visibility = View.VISIBLE
+        }else{
+            imageUnverified.visibility = View.VISIBLE
+            verifyNow.visibility = View.VISIBLE
+        }
 
         button.setOnClickListener {
 
@@ -111,6 +120,28 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                 }
         }
 
+        verifyNow.setOnClickListener{
+            Log.i("verifyEmail", currentUser.toString())
+            currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                if (it.isSuccessful){
+                    toast("Verification has been sent to your email.")
+                    AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                        val loginIntent = Intent(this, LoginActivity::class.java)
+                        startActivity(loginIntent)
+                        val file = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+                        file.delete()
+
+                        val onboardingState = sharedPref.getBoolean("onboardingFinished", false)
+                        sharedPref.edit().clear().apply()
+                        sharedPref.edit().putBoolean("onboardingFinished", onboardingState).apply()
+                        finish()
+                    }
+                }else{
+                    toast("${it.exception?.message}")
+                }
+            }
+        }
+
         userProfilePicture.setOnClickListener {
             if (hasLocationAndContactsPermissions()){
                 val galleryIntent = Intent()
@@ -125,27 +156,6 @@ class ProfileActivity : AppCompatActivity() , EasyPermissions.PermissionCallback
                     *LOCATION_AND_CONTACTS);
                 }
             }
-/**
-        deleteAccount.setOnClickListener {
-            MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-                .setTitle("Delete Account")
-                .setMessage("Are you sure you want to permanently delete this account?")
-                .setNegativeButton("Cancel") { dialog, which ->
-                    // Respond to negative button press
-                }
-                .setPositiveButton("Delete") { dialog, which ->
-                    AuthUI.getInstance().signOut(this).addOnCompleteListener {
-                        val loginIntent = Intent(this, LoginActivity::class.java)
-                        startActivity(loginIntent)
-                        val file = File(this.filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
-                        file.delete()
-                        sharedPref.edit().clear().apply()
-                        finish()
-                    }
-                }
-                .show()
-        }
-*/
 
         }
 
