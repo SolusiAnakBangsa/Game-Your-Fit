@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit.ui.auth
+    package com.solusianakbangsa.gameyourfit.ui.auth
 
 import android.content.Context
 import android.content.Intent
@@ -116,6 +116,25 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             loginUser(email, password)
+        }
+
+        forget_password_text.setOnClickListener {
+            mAuth = FirebaseAuth.getInstance()
+            val email = login_email_address.text.toString().trim()
+
+            if (email.isEmpty()) {
+                login_email_address.error = "Email Required"
+                login_email_address.requestFocus()
+                return@setOnClickListener
+            }else{
+                mAuth.sendPasswordResetEmail(email).addOnCompleteListener {
+                    if(it.isSuccessful){
+                        toast("Password reset email sent.")
+                    }else{
+                        toast("${it.exception?.message}")
+                    }
+                }
+            }
         }
     }
 
