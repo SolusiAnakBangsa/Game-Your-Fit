@@ -26,9 +26,9 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
     lateinit var sharedPref:SharedPreferences
 
     private fun deleteOldRequest(uid1 : String, uid2 : String){
-        val firstUserRef : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
+        val firstUserRef : DatabaseReference = firebaseInstance.getReference("FriendRequests")
             .child(uid1).child(uid2)
-        val secondUserRef : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
+        val secondUserRef : DatabaseReference = firebaseInstance.getReference("FriendRequests")
             .child(uid2).child(uid1)
         firstUserRef.removeValue()
         secondUserRef.removeValue()
@@ -36,10 +36,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
 
     override fun createView(r: Request) {
         if(isAdded){
-            firebaseInstance = FirebaseDatabase.getInstance()
-            firebaseAuth = FirebaseAuth.getInstance()
             val imageReplacer = ImageReplacer()
-            val userId = FirebaseAuth.getInstance().uid.toString()
 
             val requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card, null, false)
 
@@ -66,10 +63,14 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val root: View = inflater.inflate(R.layout.fragment_friends_content, container, false)
-        contentLayout = root.findViewById(R.id.friendsContent)
         val executor = Executors.newSingleThreadExecutor()
         val swipeRefresh = root.findViewById<SwipeRefreshLayout>(R.id.friendsRefresh)
+
+        firebaseInstance = FirebaseDatabase.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
+        contentLayout = root.findViewById(R.id.friendsContent)
         sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         swipeRefresh.setOnRefreshListener {
             executor.execute{

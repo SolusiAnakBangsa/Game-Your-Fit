@@ -79,9 +79,9 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
 
         var receiveUsers = friendRequestRef.child(firebaseUserID!!).orderByChild("request_type").equalTo("received")
 
-        var senderUsers = friendRequestRef.child(firebaseUserID!!).orderByChild("request_type").equalTo("sent")
+        var senderUsers = friendRequestRef.child(firebaseUserID).orderByChild("request_type").equalTo("sent")
 
-        val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserID!!).orderByChild("status").equalTo("friends")
+        val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserID).orderByChild("status").equalTo("friends")
 
         var invalidUser: List<String>? = null
         invalidUser = ArrayList()
@@ -89,7 +89,6 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
         if (str != "") {
             dbRef.addValueEventListener(object : ValueEventListener{
                 override fun onCancelled(error: DatabaseError) {}
-
                 override fun onDataChange(snapshot: DataSnapshot) {
                     (invalidUser).clear()
                     for (data in snapshot.children) {
@@ -97,7 +96,6 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                     }
                     receiveUsers.addValueEventListener(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
-
                         override fun onDataChange(snapshot: DataSnapshot) {
                             for (data in snapshot.children) {
                                 (invalidUser).add(data.child("sender").value.toString())
@@ -105,15 +103,12 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
 
                             senderUsers.addValueEventListener(object :ValueEventListener{
                                 override fun onCancelled(error: DatabaseError) {}
-
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     for (data in snapshot.children) {
                                         (invalidUser).add(data.child("receiver").value.toString())
                                     }
                                     queryUsers.addListenerForSingleValueEvent(object : ValueEventListener {
-
                                         override fun onCancelled(error: DatabaseError) {}
-
                                         override fun onDataChange(snapshot: DataSnapshot) {
                                             (mUsers as ArrayList<User>).clear()
                                             for (data in snapshot.children) {
@@ -125,20 +120,15 @@ class AddFriendActivity : AppCompatActivity(), OnUserClickListener {
                                                     user.image = data.child("image").value.toString()
                                                     if (!(user!!.userId).equals(firebaseUserID) && !(invalidUser.contains(user!!.userId))) {
                                                         (mUsers as ArrayList<User>).add(user)
-
                                                     }
-
                                                 }
                                             }
                                             userAdapter = UserAdapter(mUsers!!, this@AddFriendActivity)
                                             recycleView!!.adapter = userAdapter
                                         }
-
                                     })
-
                                 }
                             })
-
                         }
                     })
                 }

@@ -90,49 +90,6 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
         })
         return root
     }
-
-//    private fun retrieveData() {
-//        var firebaseUserId = FirebaseAuth.getInstance().currentUser!!.uid
-//        val dbRef = FirebaseDatabase.getInstance().reference.child("Friends").child(firebaseUserId).orderByChild("status").equalTo("friends")
-//        var refUsers = FirebaseDatabase.getInstance().reference.child("users")
-//
-//        dbRef.addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                (mUsers as ArrayList<String>).clear()
-//                for (data in snapshot.children) {
-//                    (mUsers as ArrayList<String>).add(data.child("friend").value.toString())
-//                }
-//                for (userFriend in mUsers!!) {
-//                    refUsers.child(userFriend).addValueEventListener(object : ValueEventListener {
-//                        override fun onCancelled(error: DatabaseError) {
-//
-//                        }
-//
-//                        override fun onDataChange(snapshot: DataSnapshot) {
-//                            (mFriends as ArrayList<User>).clear()
-//                            var user: User? = User()
-//                            if (user != null) {
-//                                user.userId = userFriend
-//                                user.username = snapshot.child("username").value.toString()
-//                                user.level = snapshot.child("level").value.toString().toInt()
-//                                user.image = snapshot.child("image").value.toString()
-//                                (mFriends as ArrayList<User>).add(user)
-//                            }
-//                            friendAdapter = UserAdapter(mFriends as ArrayList<User>, this@FriendsListFragment)
-//                            recycleView!!.adapter = friendAdapter
-//
-//                        }
-//
-//                    })
-//                }
-//            }
-//
-//        })
-//    }
 }
 
 
