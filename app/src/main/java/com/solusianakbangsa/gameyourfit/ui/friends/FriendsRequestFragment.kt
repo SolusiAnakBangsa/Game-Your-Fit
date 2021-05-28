@@ -4,102 +4,67 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
-import com.solusianakbangsa.gameyourfit.ui.auth.User
-import com.solusianakbangsa.gameyourfit.ui.leaderboard.LeaderboardViewModel
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_friends_content.*
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
 
-class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>()  {
+class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>() {
     private val viewModel : FriendsRequestViewModel = FriendsRequestViewModel()
+    private lateinit var  firebaseInstance : FirebaseDatabase
+    private lateinit var firebaseAuth: FirebaseAuth
     val handler : Handler = Handler(Looper.getMainLooper())
     lateinit var sharedPref:SharedPreferences
 
-    companion object{
-        fun newInstance() = FriendsRequestFragment()
-    }
-
-//    Do database query and then store in cache
-//    TODO : Implement cache store thing (OnSaveInstance thing type beat)
-
     private fun deleteOldRequest(uid1 : String, uid2 : String){
-        val ref1 : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
+        val firstUserRef : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
             .child(uid1).child(uid2)
-        val ref2 : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
+        val secondUserRef : DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
             .child(uid2).child(uid1)
-        ref1.removeValue()
-        ref2.removeValue()
-    }
-    private fun writeFriend(uid1 : String, uid2 : String, userData2 : Request){
-        val ref1 : DatabaseReference = FirebaseDatabase.getInstance().getReference("Friends")
-            .child(uid1).child(uid2)
-        val ref2 : DatabaseReference = FirebaseDatabase.getInstance().getReference("Friends")
-            .child(uid2).child(uid1)
-
-        val userData = HashMap<String, Any>()
-        if (sharedPref.contains("image")){
-            userData["image"] = (sharedPref.getString("image", "")).toString()
-        }
-        userData["username"] = (sharedPref.getString("username", "")).toString()
-        userData["level"] = (sharedPref.getInt("level", 1)) as Int
-        userData["exp"] = (sharedPref.getLong("exp", 0L)) as Long
-
-        ref1.setValue(userData2)
-        ref2.setValue(userData)
-        userData2.uid = null
-//        Build request object, and then
+        firstUserRef.removeValue()
+        secondUserRef.removeValue()
     }
 
-    override fun createView(args: Request) {
+    private fun deleteCardView(v : View, r : Request){
+        deleteOldRequest(firebaseAuth.uid.toString(), r.uid)
+        v.animate().alpha(0.0f).duration = 1000L
+        handler.postDelayed({
+            contentLayout.removeView(v)
+        }, 1000L)
+    }
+
+    override fun createView(r: Request) {
         if(isAdded){
+            firebaseInstance = FirebaseDatabase.getInstance()
+            firebaseAuth = FirebaseAuth.getInstance()
             val imageReplacer = ImageReplacer()
             val userId = FirebaseAuth.getInstance().uid.toString()
 
             val requestEntry : View = layoutInflater.inflate(R.layout.friend_request_card, null, false)
 
             val levelView : TextView = requestEntry.findViewById(R.id.requestLevel)
-            levelView.text = "Level ${args.level.toString()}"
+            levelView.text = "Level ${r.level.toString()}"
 
             val usernameView : TextView = requestEntry.findViewById(R.id.requestUsername)
-            usernameView.text = args.username
+            usernameView.text = r.username
 
             val circleImage : CircleImageView = requestEntry.findViewById(R.id.requestProfilePicture)
-            imageReplacer.replaceImage(Handler(Looper.getMainLooper()), circleImage, args.image)
+            imageReplacer.replaceImage(Handler(Looper.getMainLooper()), circleImage, r.image)
 
-            requestEntry.findViewById<Button>(R.id.requestAccept).setOnClickListener{
-                deleteOldRequest(userId, args.uid!!)
-                writeFriend(userId, args.uid!!, args)
-                requestEntry.animate().alpha(0.0f).setDuration(1000L)
-                handler.postDelayed({
-                    contentLayout.removeView(requestEntry)
-                }, 1000L)
-            }
-            requestEntry.findViewById<Button>(R.id.requestDecline).setOnClickListener{
-                deleteOldRequest(userId, args.uid!!)
-                requestEntry.animate().alpha(0.0f).setDuration(1000L)
-                handler.postDelayed({
-                    contentLayout.removeView(requestEntry)
-                }, 1000L)
-            }
+            requestEntry.findViewById<Button>(R.id.requestAccept)
+                .setOnClickListener(RequestOnClickListener(r, contentLayout, sharedPref, true))
+            requestEntry.findViewById<Button>(R.id.requestDecline)
+                .setOnClickListener(RequestOnClickListener(r, contentLayout, sharedPref, false))
 
             contentLayout.addView(requestEntry)
         }
@@ -147,6 +112,4 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         })
         return root
     }
-
-
 }

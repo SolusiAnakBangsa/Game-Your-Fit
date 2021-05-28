@@ -22,11 +22,6 @@ import kotlinx.android.synthetic.main.fragment_friends_content.*
 import java.util.concurrent.Executors
 
 class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>(){
-
-    companion object {
-        fun newInstance() = FriendsListFragment()
-    }
-
     override fun createView(args: Friend) {
         if(isAdded){
             var replacer = ImageReplacer()
