@@ -6,19 +6,12 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
-import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
-import com.solusianakbangsa.gameyourfit.ui.auth.User
+import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_friends_content.*
 import java.util.concurrent.Executors
 
 class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Friend>(){
@@ -39,7 +32,6 @@ class FriendsListFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<F
             }
             contentLayout.addView(friendEntry)
         }
-
     }
 
     override fun onCreateView(

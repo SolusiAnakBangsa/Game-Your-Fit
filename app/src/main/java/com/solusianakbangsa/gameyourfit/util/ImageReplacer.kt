@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit.ui
+package com.solusianakbangsa.gameyourfit.util
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -23,7 +23,7 @@ class ImageReplacer{
             val bmp : Bitmap = BitmapFactory.decodeStream(context.openFileInput(fileName))
             imageView.setImageBitmap(bmp)
         } catch (e : FileNotFoundException){
-            Log.i("Yabe", "File not found : $e")
+            Log.i("yabe", "File not found : $e")
         }
 
     }

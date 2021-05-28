@@ -14,9 +14,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.R
-import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.*
 import java.util.concurrent.Executors
 
 class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragment<Request>() {
@@ -33,14 +32,6 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
             .child(uid2).child(uid1)
         firstUserRef.removeValue()
         secondUserRef.removeValue()
-    }
-
-    private fun deleteCardView(v : View, r : Request){
-        deleteOldRequest(firebaseAuth.uid.toString(), r.uid)
-        v.animate().alpha(0.0f).duration = 1000L
-        handler.postDelayed({
-            contentLayout.removeView(v)
-        }, 1000L)
     }
 
     override fun createView(r: Request) {
@@ -62,9 +53,9 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
             imageReplacer.replaceImage(Handler(Looper.getMainLooper()), circleImage, r.image)
 
             requestEntry.findViewById<Button>(R.id.requestAccept)
-                .setOnClickListener(RequestOnClickListener(r, contentLayout, sharedPref, true))
+                .setOnClickListener(RequestOnClickListener(r, contentLayout, requestEntry , true))
             requestEntry.findViewById<Button>(R.id.requestDecline)
-                .setOnClickListener(RequestOnClickListener(r, contentLayout, sharedPref, false))
+                .setOnClickListener(RequestOnClickListener(r, contentLayout, requestEntry , false))
 
             contentLayout.addView(requestEntry)
         }
@@ -92,7 +83,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         }
 
         viewModel.loadEntries()
-        viewModel.entryList.observe(requireActivity(), androidx.lifecycle.Observer {
+        viewModel.entryList.observe(requireActivity(), {
             swipeRefresh.isRefreshing = false
             if(it.size > 0){
                 val noEntry = root.findViewById<TextView>(R.id.noEntries)

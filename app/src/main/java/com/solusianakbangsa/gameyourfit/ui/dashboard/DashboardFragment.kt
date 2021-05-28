@@ -2,7 +2,6 @@ package com.solusianakbangsa.gameyourfit.ui.dashboard
 
 import android.util.Pair
 import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,12 +10,10 @@ import android.os.Bundle
 import android.os.Handler
 import java.io.File
 import android.os.Looper
-import android.transition.Explode
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -29,11 +26,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
-import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
+import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class DashboardFragment : Fragment() {
