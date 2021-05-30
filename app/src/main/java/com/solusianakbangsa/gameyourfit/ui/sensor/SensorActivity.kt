@@ -29,6 +29,8 @@ import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.constants.SensorConstants
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
+import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper
+import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper.Companion.getSharedPref
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
@@ -43,7 +45,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var exercises : Signal
     private lateinit var levelString: String
     private lateinit var level : JSONObject
-    private lateinit var sharedPref: SharedPreferences
 
     private var backLastPressedMill : Long = 0L
     private var weight = 0
@@ -63,7 +64,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private var startPauseTime = 0L
     private var exerciseTime = 0L
     private var totalTime = 0L
-    private var dbRef = FirebaseHelper.buildFirebaseRef("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +72,8 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         val likeButton : CardView = findViewById(R.id.summaryLikeButton)
         val dislikeButton : CardView = findViewById(R.id.summaryDislikeButton)
 
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        weight = sharedPref.getLong("userWeight", 57L).toInt()
+        val sharedPref = getSharedPref()
+            weight = sharedPref.getLong("userWeight", 57L).toInt()
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
@@ -91,9 +91,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
-        if(intent.getStringExtra("taskList") != null){
-            taskList = TaskList(intent.getStringExtra("taskList")!!)
-        }
+        taskList = TaskList.getTaskListFromIntent(intent)
         if(intent.getStringExtra("level") != null){
             levelString = intent.getStringExtra("level")!!
             val content = JSONObject(levelString)
@@ -108,17 +106,14 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         viewModel.signal = Signal("jog","standby",0,0,"", 0L, 0, 0L)
         signal = viewModel.signal
         rtc = WebRtc(findViewById(R.id.webAlpha),this, viewModel)
-//        Generates a random peer,
 
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mAccelerometerLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-
 
         for (i in 0 until taskList.jsonArr.length()) {
             exercises = Signal(taskList.getTaskTypeAt(i), "standby", 0, taskList.getTaskFreqAt(i), "", 0L, 0, 0L)
             exerciseList.add(exercises)
         }
-        Log.i("exerciseList", exerciseList.toString())
 
         val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
 
@@ -184,51 +179,11 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     animateSummary(level.getJSONObject("workoutList").get("title").toString(), totalTime, totalCalorie.toInt())
                     // send exp here
                     val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
-                    Log.i("signal", exp.toString())
-                    updateExp(exp)
+
+                    FirebaseHelper().updateExp(this, exp)
                     sensorStandbyMessage.visibility = View.GONE
                     findViewById<TextView>(R.id.sensorVisit).visibility = View.GONE
                 }
-            }
-        })
-    }
-
-    private fun updateExp(exp: Int) {
-        var currentExp: Int = 0
-        var finalLevel: Int = 0
-        val uid = FirebaseHelper.getCurrentUID()
-        val updateHash = HashMap<String, Any>()
-        val friendRef = FirebaseHelper.buildFirebaseRef("Friends")
-        dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {}
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                currentExp = snapshot.child("exp").value.toString().toInt()
-                updateHash["exp"] = currentExp+exp
-                finalLevel = (currentExp+exp)/1000
-                Log.i("bruhh", finalLevel.toString())
-                updateHash["level"] = finalLevel
-                Log.i("pleasework", sharedPref.all.toString())
-
-                sharedPref.edit().putLong("exp", updateHash["exp"].toString().toLong()).apply()
-                sharedPref.edit().putInt("level", updateHash["level"].toString().toInt()).apply()
-
-                Log.i("pleasework", sharedPref.all.toString())
-                dbRef.child(uid).updateChildren(updateHash)
-
-                friendRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
-                    override fun onCancelled(error: DatabaseError) {}
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        Log.i("okpls", snapshot.toString())
-                        if (snapshot.exists()){
-                            for (friendID in snapshot.children){
-                                Log.i("okpls", friendID.key.toString())
-                                friendRef.child(friendID.key.toString()).child(uid).updateChildren(updateHash)
-                            }
-                        }
-                        toast("Profile is Uploaded.")
-                    }
-                })
             }
         })
     }
@@ -237,7 +192,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         // Not needed but necessary for using SensorEventListener
         return
     }
-
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             if (signal.get("status") == "mid"){
@@ -253,7 +207,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             }
         }
     }
-
     override fun onStart() {
         super.onStart()
         if (mAccelerometerLinear != null) {
@@ -262,7 +215,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             Toast.makeText(this, "No Linear Acceleration Sensor detected!", Toast.LENGTH_SHORT).show()
         }
     }
-
     override fun onBackPressed() {
         if(viewModel.signal.get("status") != "standby" && viewModel.signal.get("status") != "endgame") {
             val interval = System.currentTimeMillis() - backLastPressedMill
@@ -448,15 +400,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         Log.i("signalBurned", caloriesBurned.toString())
     }
 
-    private fun valueAnimator(view: TextView, initialValue : Int, endValue : Int): Animator{
-//        Don't forget to remove update listener after using this
-        val animator = ValueAnimator.ofInt(initialValue, endValue)
-        animator.addUpdateListener {animation ->
-            view.text = animation.animatedValue.toString()
-        }
-        return animator
-    }
-
     private fun fadeInAnimator(view: View, duration : Long = 500L) : Animator{
         val animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
             view.alpha = 0.0f
@@ -501,18 +444,15 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         animSet.start()
     }
 
-    private fun convertToSec(time: Long): CharSequence {
+    private fun convertToSec(time: Long): String {
         val seconds = time / 1000 % 60
-
         return String.format("%02d", seconds)
     }
-
-    private fun convertToMinute(time: Long): CharSequence {
+    private fun convertToMinute(time: Long): String {
         val minutes = (time / 1000 / 60) % 60
         return String.format("%02d:", minutes)
     }
-
-    private fun convertToHour(time: Long): CharSequence {
+    private fun convertToHour(time: Long): String {
         val hours = (time / 1000 / (60 * 60)) % 24
         return String.format("%02d:", hours)
     }

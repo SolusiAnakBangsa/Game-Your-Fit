@@ -4,10 +4,24 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 
-class SharedPreferencesHelper {
+class SharedPreferencesHelper(context: Context) {
+    private val sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     companion object{
-        fun getSharedPref(context: Context) : SharedPreferences{
-            return PreferenceManager.getDefaultSharedPreferences(context)
+        fun Context.getSharedPref() : SharedPreferences{
+            return PreferenceManager.getDefaultSharedPreferences(this)
         }
     }
+
+    fun putLong(key : String, value : Long){
+        sharedPref.edit().putLong(key, value).apply()
+    }
+
+    fun putInt(key : String, value : Int){
+        sharedPref.edit().putInt(key, value).apply()
+    }
+
+    fun putString(key : String, value : String){
+        sharedPref.edit().putString(key, value).apply()
+    }
+
 }
