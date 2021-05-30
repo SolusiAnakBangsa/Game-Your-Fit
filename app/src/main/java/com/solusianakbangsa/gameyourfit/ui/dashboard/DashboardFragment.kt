@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.*
+import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer

@@ -8,11 +8,8 @@ import java.util.concurrent.Executors
 import android.os.Handler
 import android.util.Log
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.solusianakbangsa.gameyourfit.FileConstants
-import com.solusianakbangsa.gameyourfit.R
 import java.io.*
 import java.net.URL
-import java.util.concurrent.Callable
 
 class ImageReplacer{
 

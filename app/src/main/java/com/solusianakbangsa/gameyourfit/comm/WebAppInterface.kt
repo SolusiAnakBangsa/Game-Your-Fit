@@ -3,8 +3,7 @@ package com.solusianakbangsa.gameyourfit.comm
 import android.content.Context
 import android.util.Log
 import android.webkit.JavascriptInterface
-import androidx.lifecycle.ViewModel
-import com.solusianakbangsa.gameyourfit.SensorViewModel
+import com.solusianakbangsa.gameyourfit.ui.sensor.SensorViewModel
 import org.json.JSONObject
 
 class WebAppInterface(private val mContext: Context, var viewModel: SensorViewModel){

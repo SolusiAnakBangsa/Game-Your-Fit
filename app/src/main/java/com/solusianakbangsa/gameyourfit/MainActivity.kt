@@ -1,6 +1,5 @@
 package com.solusianakbangsa.gameyourfit
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,13 +16,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
+import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.ui.auth.SignupActivity
 import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.net.URL
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {

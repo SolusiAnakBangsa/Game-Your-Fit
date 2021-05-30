@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager
 
 class SharedPreferencesHelper {
     companion object{
-        fun getSharedPref(context : Context) : SharedPreferences{
+        fun getSharedPref(context: Context) : SharedPreferences{
             return PreferenceManager.getDefaultSharedPreferences(context)
         }
     }

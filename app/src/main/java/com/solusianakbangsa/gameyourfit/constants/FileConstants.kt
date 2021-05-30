@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.constants
 
 object FileConstants {
     val LEVELS_FILENAME = "levels.json"

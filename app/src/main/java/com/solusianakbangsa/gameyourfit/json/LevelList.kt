@@ -1,15 +1,13 @@
 package com.solusianakbangsa.gameyourfit.json
 
 import android.app.Activity
-import com.solusianakbangsa.gameyourfit.FileConstants
+import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 class LevelList(jsonString : String){
     var jsonArr : JSONArray = JSONArray(

@@ -13,7 +13,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
-import com.solusianakbangsa.gameyourfit.SensorActivity
+import com.solusianakbangsa.gameyourfit.ui.sensor.SensorActivity
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer

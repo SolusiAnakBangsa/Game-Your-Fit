@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.ui.sensor
 
 import android.animation.*
 import android.content.Intent
@@ -24,7 +24,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.solusianakbangsa.gameyourfit.*
+import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.comm.Signal
+import com.solusianakbangsa.gameyourfit.constants.SensorConstants
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
@@ -40,7 +43,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var exercises : Signal
     private lateinit var levelString: String
     private lateinit var level : JSONObject
-    private lateinit var  sharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
     private lateinit var friendRef: DatabaseReference
 
     private var backLastPressedMill : Long = 0L
@@ -73,11 +76,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         val dislikeButton : CardView = findViewById(R.id.summaryDislikeButton)
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        if(sharedPref.contains("userWeight")){
-            weight = (sharedPref.getLong("userWeight", 57L)).toInt()
-        } else {
-            weight = 57
-        }
+        weight = sharedPref.getLong("userWeight", 57L).toInt()
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
@@ -107,35 +106,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             level.put("workoutList", content)
         }
 
-        val feedbackRef= rootRef.child("LevelFeedback")
-            .child(level.getJSONObject("workoutList").get("title").toString())
-
-        val feedbackIncrementListener = object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {}
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.value == null){
-                    snapshot.ref.setValue(1)
-                } else {
-                    val oldValue : String = snapshot.value.toString()
-                    snapshot.ref.setValue(oldValue.toInt() + 1)
-                }
-            }
-        }
-        likeButton.setOnClickListener{
-            likeButton.setCardBackgroundColor(Color.GRAY)
-            dislikeButton.setCardBackgroundColor(Color.GRAY)
-            feedbackRef.child("like").addListenerForSingleValueEvent(feedbackIncrementListener)
-            likeButton.setOnClickListener(null)
-            dislikeButton.setOnClickListener(null)
-        }
-
-        dislikeButton.setOnClickListener{
-            likeButton.setCardBackgroundColor(Color.GRAY)
-            dislikeButton.setCardBackgroundColor(Color.GRAY)
-            feedbackRef.child("dislike").addListenerForSingleValueEvent(feedbackIncrementListener)
-            likeButton.setOnClickListener(null)
-            dislikeButton.setOnClickListener(null)
-        }
+        val levelTitle = level.getJSONObject("workoutList").get("title").toString()
+        likeButton.setOnClickListener(RatingOnClickListener("like", levelTitle, likeButton,dislikeButton))
+        dislikeButton.setOnClickListener(RatingOnClickListener("dislike", levelTitle, likeButton, dislikeButton))
 
         viewModel.signal = Signal("jog","standby",0,0,"", 0L, 0, 0L)
         signal = viewModel.signal

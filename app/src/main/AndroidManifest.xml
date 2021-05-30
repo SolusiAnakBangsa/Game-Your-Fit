@@ -42,7 +42,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
-            android:name=".SensorActivity"
+            android:name=".ui.sensor.SensorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity

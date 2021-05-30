@@ -27,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.auth.User

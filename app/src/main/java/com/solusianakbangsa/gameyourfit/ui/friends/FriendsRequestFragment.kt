@@ -25,15 +25,6 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
     val handler : Handler = Handler(Looper.getMainLooper())
     lateinit var sharedPref:SharedPreferences
 
-    private fun deleteOldRequest(uid1 : String, uid2 : String){
-        val firstUserRef : DatabaseReference = firebaseInstance.getReference("FriendRequests")
-            .child(uid1).child(uid2)
-        val secondUserRef : DatabaseReference = firebaseInstance.getReference("FriendRequests")
-            .child(uid2).child(uid1)
-        firstUserRef.removeValue()
-        secondUserRef.removeValue()
-    }
-
     override fun createView(r: Request) {
         if(isAdded){
             val imageReplacer = ImageReplacer()
@@ -62,7 +53,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val root: View = inflater.inflate(R.layout.fragment_friends_content, container, false)
         val executor = Executors.newSingleThreadExecutor()
@@ -89,7 +80,7 @@ class FriendsRequestFragment() : com.solusianakbangsa.gameyourfit.ui.ListFragmen
             if(it.size > 0){
                 val noEntry = root.findViewById<TextView>(R.id.noEntries)
                 if(noEntry != null) {
-                    root.findViewById<TextView>(R.id.noEntries).visibility = View.GONE
+                    noEntry.visibility = View.GONE
                 }
                 val request = it[it.size-1]
                 createView(request)

@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
