@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.widget.ImageView
 import android.widget.TextView
@@ -26,6 +27,7 @@ import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.auth.LoginActivity
 import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
+import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 

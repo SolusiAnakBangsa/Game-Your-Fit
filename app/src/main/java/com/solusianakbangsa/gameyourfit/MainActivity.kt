@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.ImageView
 import androidx.preference.PreferenceManager
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
 import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.ui.auth.SignupActivity
 import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
+import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executors
@@ -37,18 +39,17 @@ class MainActivity : AppCompatActivity() {
 //        Creates an async request to levels, and create a local json file to later be accessed.
         createJson()
         var logoBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.logo)
-        var logoDrawable : BitmapDrawable = BitmapDrawable(resources, logoBitmap)
+        var logoDrawable = BitmapDrawable(resources, logoBitmap)
         logoDrawable.setAntiAlias(false)
         findViewById<ImageView>(R.id.imageView2).setImageDrawable(logoDrawable)
         /**If user is authenticated, send them to dashboard, if not, send to login activity*/
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             if(user!=null){
-                val dbRef = FirebaseDatabase.getInstance().reference.child("users").child(user.uid.toString())
+                val dbRef = FirebaseHelper.buildFirebaseRef("users", user.uid)
                 dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
                     override fun onCancelled(error: DatabaseError) {
                         Log.i("Error", "Could not connect to Database")
                     }
-
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.hasChild("userHeight")){
                             val dashboardIntent = Intent(this@MainActivity, HomeActivity::class.java)

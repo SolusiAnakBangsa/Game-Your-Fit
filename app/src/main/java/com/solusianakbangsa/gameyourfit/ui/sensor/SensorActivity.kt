@@ -3,7 +3,6 @@ package com.solusianakbangsa.gameyourfit.ui.sensor
 import android.animation.*
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -29,6 +28,7 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.constants.SensorConstants
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
@@ -44,7 +44,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var levelString: String
     private lateinit var level : JSONObject
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var friendRef: DatabaseReference
 
     private var backLastPressedMill : Long = 0L
     private var weight = 0
@@ -64,9 +63,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private var startPauseTime = 0L
     private var exerciseTime = 0L
     private var totalTime = 0L
-    private var uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-    private var rootRef = FirebaseDatabase.getInstance().reference
-    private var dbRef = FirebaseDatabase.getInstance().reference.child("users")
+    private var dbRef = FirebaseHelper.buildFirebaseRef("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +88,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             }
             startActivity(intent)
         }
-
-
 
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
@@ -127,10 +122,10 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
         val inProgressLayout = findViewById<FrameLayout>(R.id.sensorInProgress)
 
-        viewModel.standbyMessage.observe(this, androidx.lifecycle.Observer {
+        viewModel.standbyMessage.observe(this, {
             standbyMessageView.text = it
         })
-        viewModel.currentStatus.observe(this, androidx.lifecycle.Observer {
+        viewModel.currentStatus.observe(this, {
             Log.i("yabe", "Status : $it")
             when (it) {
                 "startnext" -> {
@@ -201,9 +196,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private fun updateExp(exp: Int) {
         var currentExp: Int = 0
         var finalLevel: Int = 0
+        val uid = FirebaseHelper.getCurrentUID()
         val updateHash = HashMap<String, Any>()
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        friendRef = FirebaseDatabase.getInstance().reference.child("Friends")
+        val friendRef = FirebaseHelper.buildFirebaseRef("Friends")
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
 
@@ -463,7 +458,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun fadeInAnimator(view: View, duration : Long = 500L) : Animator{
-        var animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
+        val animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
             view.alpha = 0.0f
             setDuration(duration)
         }
@@ -471,7 +466,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     }
     private fun animateSummary(title : String, time : Long, calories : Int){
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
-        val summaryLayoutAnim = fadeInAnimator(findViewById(R.id.summaryLayout),1000L)
+        val summaryLayoutAnim = fadeInAnimator(summaryLayout,1000L)
         val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
         val levelIcon = fadeInAnimator(findViewById(R.id.summaryIcon))
         summaryTitle.text = title
