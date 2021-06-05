@@ -5,11 +5,12 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 
 class SharedPreferencesHelper(context: Context) {
-    private val sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     companion object{
         fun Context.getSharedPref() : SharedPreferences{
             return PreferenceManager.getDefaultSharedPreferences(this)
         }
+
     }
 
     fun putLong(key : String, value : Long){

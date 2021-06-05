@@ -7,9 +7,6 @@ import org.json.JSONObject
 class Signal(exerciseType : String, status : String, repAmount : Int, targetRep : Int, flavorText : String?, totaltime : Long, calories : Int, time : Long) {
 //    Initializes empty JsonObject, not recommended
 
-    constructor() : this(
-        "","",0, 0,"", 0L, 0,0L
-    )
     var json : JSONObject = JSONObject()
     var meta : JSONObject = JSONObject()
     init {

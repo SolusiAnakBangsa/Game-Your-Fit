@@ -2,7 +2,6 @@ package com.solusianakbangsa.gameyourfit.ui.sensor
 
 import android.animation.*
 import android.content.Intent
-import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -20,8 +19,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.R
@@ -29,7 +26,6 @@ import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.constants.SensorConstants
 import com.solusianakbangsa.gameyourfit.json.TaskList
 import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
-import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper
 import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper.Companion.getSharedPref
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
@@ -45,25 +41,19 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var exercises : Signal
     private lateinit var levelString: String
     private lateinit var level : JSONObject
+    private lateinit var exerciseSensor : ExerciseSensor
+    private lateinit var exerciseMeta: ExerciseMeta
 
     private var backLastPressedMill : Long = 0L
     private var weight = 0
     private var mAccelerometerLinear: Sensor? = null
     private var exerciseList: MutableList<Signal> = mutableListOf()
-    private var counterMax = 0  // Max rep for a certain exercise
     private var rep = false  // Determines if threshold is high or low (false = high)
     private var repBefore = false
-    private var exercise = ""  // Variable for exercises
-    private var exerciseCounter = 0
-    private var axisUsed = 'X'  // Default axis used is X
-    private var thresholdHigh = 0.0
-    private var thresholdLow = 0.0
-    private var metValue = 0.0
+
     private var time = 0L
     private var totalCalorie = 0.0
     private var startPauseTime = 0L
-    private var exerciseTime = 0L
-    private var totalTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +63,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         val dislikeButton : CardView = findViewById(R.id.summaryDislikeButton)
 
         val sharedPref = getSharedPref()
-            weight = sharedPref.getLong("userWeight", 57L).toInt()
+        weight = sharedPref.getLong("userWeight", 57L).toInt()
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener{
@@ -92,6 +82,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         viewModel = ViewModelProvider(this).get(SensorViewModel::class.java)
 
         taskList = TaskList.getTaskListFromIntent(intent)
+        exerciseMeta = ExerciseMeta(taskList)
         if(intent.getStringExtra("level") != null){
             levelString = intent.getStringExtra("level")!!
             val content = JSONObject(levelString)
@@ -100,6 +91,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         }
 
         val levelTitle = level.getJSONObject("workoutList").get("title").toString()
+
         likeButton.setOnClickListener(RatingOnClickListener("like", levelTitle, likeButton,dislikeButton))
         dislikeButton.setOnClickListener(RatingOnClickListener("dislike", levelTitle, likeButton, dislikeButton))
 
@@ -121,15 +113,13 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             standbyMessageView.text = it
         })
         viewModel.currentStatus.observe(this, {
-            Log.i("yabe", "Status : $it")
+            Log.i("GYF", "Status : $it")
             when (it) {
                 "startnext" -> {
-                    if (exerciseCounter < exerciseList.size) {
-                        signal = exerciseList[exerciseCounter]
-                        exercise = exerciseList[exerciseCounter].get("exerciseType") as String
-                        counterMax = exerciseList[exerciseCounter].getFromMeta("targetRep") as Int
-                        exerciseTime = 0L
-                        exerciseCounter++
+                    if (exerciseMeta.exerciseIndex < exerciseList.size) {
+                        signal = exerciseList[exerciseMeta.exerciseIndex]
+
+                        exerciseMeta.nextExercise()
                         onResume()
                         resumeReading()
                     }
@@ -156,16 +146,17 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                         findViewById<TextView>(R.id.sensorMessage).text = "Your phone has been connected. \nLook at the browser screen!"
                     }
                     resumeReading()
-                    exerciseTime -= (SystemClock.elapsedRealtime() - startPauseTime)
+                    exerciseMeta.reduceTimeBy(startPauseTime)
+
                     Log.i("signal", "unpause")
                 }
                 "end" -> {
-                    countCalorie(SystemClock.elapsedRealtime() - exerciseTime, metValue, weight)
-                    totalTime += SystemClock.elapsedRealtime() - exerciseTime
+                    countCalorie(SystemClock.elapsedRealtime() - exerciseMeta.exerciseTime, exerciseSensor.metValue, weight)
+                    exerciseMeta.addTotalTimeBy(exerciseMeta.exerciseTime)
 
-                    if (exerciseCounter == exerciseList.size) {
+                    if (exerciseMeta.exerciseIndex == exerciseList.size) {
                         signal.replace("status", "endgame")
-                        signal.replaceMeta("totalTime", totalTime)
+                        signal.replaceMeta("totalTime", exerciseMeta.totalTime)
                         signal.replaceMeta("calories", totalCalorie.toInt())
                         rtc.sendDataToPeer(signal.toString())
                         Log.i("signal", signal.toString())
@@ -176,7 +167,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     inProgressLayout.animate().alpha(0.0f)
                     //                Show summary here
-                    animateSummary(level.getJSONObject("workoutList").get("title").toString(), totalTime, totalCalorie.toInt())
+                    animateSummary(level.getJSONObject("workoutList").get("title").toString(), exerciseMeta.totalTime, totalCalorie.toInt())
                     // send exp here
                     val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
 
@@ -199,10 +190,10 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                 val axisY: Float = event.values[1]
                 val axisZ: Float = event.values[2]
 
-                when (axisUsed) {
-                    'X' -> repCount(axisX, thresholdHigh, thresholdLow)
-                    'Y' -> repCount(axisY, thresholdHigh, thresholdLow)
-                    'Z' -> repCount(axisZ, thresholdHigh, thresholdLow)
+                when (exerciseSensor.axis) {
+                    'X' -> repCount(axisX, exerciseSensor.highThreshold, exerciseSensor.lowThreshold)
+                    'Y' -> repCount(axisY, exerciseSensor.highThreshold, exerciseSensor.lowThreshold)
+                    'Z' -> repCount(axisZ, exerciseSensor.highThreshold, exerciseSensor.lowThreshold)
                 }
             }
         }
@@ -232,12 +223,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        val currentExercise = SensorConstants.sensorMap[exercise]
+        val currentExercise = SensorConstants.SENSOR_MAP[exerciseMeta.exerciseName]
         if(currentExercise != null) {
-            axisUsed = currentExercise.axis
-            thresholdHigh = currentExercise.highThreshold
-            thresholdLow = currentExercise.lowThreshold
-            metValue = currentExercise.metValue
+            exerciseSensor = currentExercise
         }
         mSensorManager.registerListener(this, mAccelerometerLinear, SensorManager.SENSOR_DELAY_GAME)
     }
@@ -248,8 +236,8 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun resumeReading() {
-        if (exerciseTime == 0L) {
-            exerciseTime = SystemClock.elapsedRealtime()
+        if (exerciseMeta.exerciseTime == 0L) {
+            exerciseMeta.exerciseTime = SystemClock.elapsedRealtime()
         }
 
         // Send JSON data to web, indicates *start status*
@@ -262,7 +250,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         Log.i("signal", signal.toString())
 
         // Sends JSON data continuously every 1 second to the web using timer() if jog
-        if (exercise == "Jog") {
+        if (exerciseMeta.exerciseName == "Jog") {
             timer()
         }
     }
@@ -270,7 +258,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private fun timer() {
         fixedRateTimer("timer", false, 0L, 1000) {
             this@SensorActivity.runOnUiThread {
-                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+                if (signal.get("repAmount") as Int >= exerciseMeta.exerciseTargetRep) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
                     Log.i("signal", signal.toString())
 
@@ -285,7 +273,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                 } else {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
-                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                    if (signal.get("repAmount") as Int <= exerciseMeta.exerciseTargetRep - 1) {
                         rtc.sendDataToPeer(signal.toString())
                         Log.i("signalJog", signal.toString())
                     }
@@ -303,8 +291,8 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         }
 
         if (rep && !repBefore) {
-            if (exercise != "Jog") {
-                if (signal.get("repAmount") as Int >= counterMax) {    // Checks if current counter has reached / passed intended max frequency
+            if (exerciseMeta.exerciseName != "Jog") {
+                if (signal.get("repAmount") as Int >= exerciseMeta.exerciseTargetRep) {    // Checks if current counter has reached / passed intended max frequency
                     signal.replace("status", "end")
                     Log.i("signal", signal.toString())
 
@@ -317,7 +305,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     time = SystemClock.elapsedRealtime()    // Get current time since epoch
                     signal.replace("time", time)
                     signal.replace("repAmount", signal.get("repAmount") as Int + 1)
-                    if (signal.get("repAmount") as Int <= counterMax - 1) {
+                    if (signal.get("repAmount") as Int <= exerciseMeta.exerciseTargetRep - 1) {
                         rtc.sendDataToPeer(signal.toString())
                         Log.i("signal", signal.toString())
                     }

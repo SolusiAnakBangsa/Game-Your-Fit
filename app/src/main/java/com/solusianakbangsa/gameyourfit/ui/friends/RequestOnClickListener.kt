@@ -3,21 +3,19 @@ package com.solusianakbangsa.gameyourfit.ui.friends
 import android.content.SharedPreferences
 import android.view.View
 import android.widget.LinearLayout
-import com.google.android.material.card.MaterialCardView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import com.solusianakbangsa.gameyourfit.util.HandlerFactory
-import com.solusianakbangsa.gameyourfit.ui.friends.Request
 import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper
-import java.util.HashMap
+import java.util.*
 
 class RequestOnClickListener(private val r : Request,
                              private val parentLayout: LinearLayout,
                              private val root : View,
                              private val accept: Boolean = false) : View.OnClickListener {
 
-    private val sharedPref : SharedPreferences = SharedPreferencesHelper.getSharedPref(root.context)
+    private val sharedPref : SharedPreferences = SharedPreferencesHelper(root.context).sharedPref
     override fun onClick(v: View) {
         deleteOldRequest(FirebaseHelper.getCurrentUID(), this.r.uid)
         root.animate().alpha(0.0f).duration = 1000L
