@@ -232,76 +232,13 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-
-        when (exercise) {
-            "Jog" -> {
-                axisUsed = SensorConstants.JOG_AXIS
-                thresholdHigh = SensorConstants.JOG_HIGH
-                thresholdLow = SensorConstants.JOG_LOW
-                metValue = SensorConstants.MET_JOGGING
-            }
-            "High Knee" -> {
-                axisUsed = SensorConstants.JOG_AXIS
-                thresholdHigh = SensorConstants.JOG_HIGH
-                thresholdLow = SensorConstants.JOG_LOW
-                metValue = SensorConstants.MET_JOGGING
-            }
-            "Push Up" -> {
-                axisUsed = SensorConstants.PUSH_AXIS
-                thresholdHigh = SensorConstants.PUSH_HIGH
-                thresholdLow = SensorConstants.PUSH_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Knee Push Up" -> {
-                axisUsed = SensorConstants.PUSH_AXIS
-                thresholdHigh = SensorConstants.PUSH_HIGH
-                thresholdLow = SensorConstants.PUSH_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Sit Up" -> {
-                axisUsed = SensorConstants.SITUP_AXIS
-                thresholdHigh = SensorConstants.SITUP_HIGH
-                thresholdLow = SensorConstants.SITUP_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Rhomboid Pull" -> {
-                axisUsed = SensorConstants.RHOMBOIDPULL_AXIS
-                thresholdHigh = SensorConstants.RHOMBOIDPULL_HIGH
-                thresholdLow = SensorConstants.RHOMBOIDPULL_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Jumping Jack" -> {
-                axisUsed = SensorConstants.JUMPJACK_AXIS
-                thresholdHigh = SensorConstants.JUMPJACK_HIGH
-                thresholdLow = SensorConstants.JUMPJACK_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Squat" -> {
-                axisUsed = SensorConstants.SQUAT_AXIS
-                thresholdHigh = SensorConstants.SQUAT_HIGH
-                thresholdLow = SensorConstants.SQUAT_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Reclined Rhomboid Squeeze" -> {
-                axisUsed = SensorConstants.RECLINEDRHOMBOID_AXIS
-                thresholdHigh = SensorConstants.RECLINEDRHOMBOID_HIGH
-                thresholdLow = SensorConstants.RECLINEDRHOMBOID_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Forward Lunge" -> {
-                axisUsed = SensorConstants.FORWARDLUNGE_AXIS
-                thresholdHigh = SensorConstants.FORWARDLUNGE_HIGH
-                thresholdLow = SensorConstants.FORWARDLUNGE_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
-            "Jumping Squat" -> {
-                axisUsed = SensorConstants.JUMPSQUAT_AXIS
-                thresholdHigh = SensorConstants.JUMPSQUAT_HIGH
-                thresholdLow = SensorConstants.JUMPSQUAT_LOW
-                metValue = SensorConstants.MET_CALISTHENICS
-            }
+        val currentExercise = SensorConstants.sensorMap[exercise]
+        if(currentExercise != null) {
+            axisUsed = currentExercise.axis
+            thresholdHigh = currentExercise.highThreshold
+            thresholdLow = currentExercise.lowThreshold
+            metValue = currentExercise.metValue
         }
-
         mSensorManager.registerListener(this, mAccelerometerLinear, SensorManager.SENSOR_DELAY_GAME)
     }
 
