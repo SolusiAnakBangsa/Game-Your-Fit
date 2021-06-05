@@ -28,6 +28,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_login.*
 //import kotlinx.android.synthetic.main.activity_login.google_button
 import kotlinx.android.synthetic.main.activity_signup.*
