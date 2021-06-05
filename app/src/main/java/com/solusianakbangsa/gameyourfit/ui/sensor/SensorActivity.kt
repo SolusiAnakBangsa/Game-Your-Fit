@@ -328,12 +328,17 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private fun addSummary(level: String, time: Long, cal: Int){
         val hashSummary = HashMap<String, Any>()
         val currentDateTime = LocalDateTime.now()
-        hashSummary["date"] = currentDateTime
+        hashSummary["date"] = currentDateTime.toString()
         hashSummary["level"] = level
         hashSummary["time"] = convertToSec(time)
         hashSummary["calories"] = cal
-        FirebaseDatabase.getInstance().getReference("summary").child(FirebaseAuth.getInstance().uid.toString()).setValue(hashSummary).addOnCompleteListener { toast("Done") }
-
+        FirebaseHelper.postFirebaseData(FirebaseDatabase.getInstance().getReference("summary").child(FirebaseAuth.getInstance().uid.toString()),hashSummary).addOnCompleteListener { task ->
+            if (task.isSuccessful){
+                toast("Done")
+            }else{
+                toast("Doesnt work")
+            }
+            }
         Log.e("datadump", hashSummary.toString())
     }
 
