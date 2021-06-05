@@ -1,9 +1,13 @@
 package com.solusianakbangsa.gameyourfit.util
 
 import android.content.Context
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.constants.FirebaseConstants
+import com.solusianakbangsa.gameyourfit.ui.auth.User
+import java.util.*
+import kotlin.collections.HashMap
 import com.solusianakbangsa.gameyourfit.toast
 
 class FirebaseHelper {
@@ -26,6 +30,12 @@ class FirebaseHelper {
                 ref = ref.child(i)
             }
             return ref
+        }
+        fun postFirebaseData(ref : DatabaseReference, hash: HashMap<String, Any>): Task<Void> {
+            return ref.setValue(hash)
+        }
+        fun postFirebaseData(ref: DatabaseReference, user: User): Task<Void> {
+            return ref.setValue(user)
         }
     }
 
