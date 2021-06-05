@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
@@ -16,9 +17,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.R
@@ -30,6 +33,7 @@ import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper.Companion.g
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
+import java.time.LocalDateTime
 import kotlin.concurrent.fixedRateTimer
 
 class SensorActivity : AppCompatActivity(), SensorEventListener {
@@ -55,6 +59,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private var totalCalorie = 0.0
     private var startPauseTime = 0L
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alpha_one)
@@ -170,8 +175,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     animateSummary(level.getJSONObject("workoutList").get("title").toString(), exerciseMeta.totalTime, totalCalorie.toInt())
                     // send exp here
                     val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
-
                     FirebaseHelper().updateExp(this, exp)
+                    addSummary(level.getJSONObject("workoutList").get("title").toString(), exerciseMeta.totalTime, totalCalorie.toInt())
+                    Log.e("datadump", "function time")
                     sensorStandbyMessage.visibility = View.GONE
                     findViewById<TextView>(R.id.sensorVisit).visibility = View.GONE
                 }
@@ -315,6 +321,20 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             }
         }
         repBefore = rep
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addSummary(level: String, time: Long, cal: Int){
+        val hashSummary = HashMap<String, Any>()
+        val currentDateTime = LocalDateTime.now()
+        hashSummary["date"] = currentDateTime
+        hashSummary["level"] = level
+        hashSummary["time"] = convertToSec(time)
+        hashSummary["calories"] = cal
+        FirebaseDatabase.getInstance().getReference("summary").child(FirebaseAuth.getInstance().uid.toString()).setValue(hashSummary).addOnCompleteListener { toast("Done") }
+
+        Log.e("datadump", hashSummary.toString())
     }
 
     private fun countCalorie(time: Long, met: Double, weight: Int) {

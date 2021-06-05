@@ -1,6 +1,10 @@
 package com.solusianakbangsa.gameyourfit.util
 
 import android.content.Context
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -9,6 +13,7 @@ import com.solusianakbangsa.gameyourfit.ui.auth.User
 import java.util.*
 import kotlin.collections.HashMap
 import com.solusianakbangsa.gameyourfit.toast
+import java.time.LocalDateTime
 
 class FirebaseHelper {
     companion object{
@@ -18,14 +23,14 @@ class FirebaseHelper {
         fun getFirebaseDatabaseInstance(): FirebaseDatabase {
             return FirebaseDatabase.getInstance()
         }
-        fun getFirebaseDatabaseRef() : DatabaseReference {
-            return FirebaseDatabase.getInstance().reference
+        fun getFirebaseDatabaseRef(reference: String) : DatabaseReference {
+            return FirebaseDatabase.getInstance().getReference(reference)
         }
         fun getFirebaseAuthInstance() : FirebaseAuth {
             return FirebaseAuth.getInstance()
         }
-        fun buildFirebaseRef(vararg child : String): DatabaseReference {
-            var ref = getFirebaseDatabaseRef()
+        fun buildFirebaseRef(reference: String, vararg child : String): DatabaseReference {
+            var ref = getFirebaseDatabaseRef(reference)
             for(i in child){
                 ref = ref.child(i)
             }
@@ -57,6 +62,7 @@ class FirebaseHelper {
             }
         }
     }
+
 
     fun updateExp(context : Context, exp : Int){
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
