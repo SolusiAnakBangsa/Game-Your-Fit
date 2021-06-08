@@ -1,4 +1,4 @@
-package com.solusianakbangsa.gameyourfit
+package com.solusianakbangsa.gameyourfit.ui.camgame
 
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
+import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay

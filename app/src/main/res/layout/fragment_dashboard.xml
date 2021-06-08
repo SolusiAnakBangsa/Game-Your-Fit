@@ -231,28 +231,31 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                app:cardUseCompatPadding="true"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
-                app:cardCornerRadius="5dp">
+                app:cardUseCompatPadding="true">
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:id="@+id/dashboardCampaign"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:padding="10dp"
-                        android:scaleType="centerCrop"
-                        android:clickable="true"
                         android:background="@drawable/right_border"
                         android:backgroundTint="@color/gray_100"
+                        android:clickable="true"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
                         android:src="@mipmap/ic_launcher"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"/>
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/dashboardCampaignTitle"
                         android:layout_width="0dp"
@@ -260,41 +263,42 @@
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
                         android:text="Campaign"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="@color/black"
                         android:textSize="14sp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:id="@+id/dashboardCampaignDescription"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:background="@drawable/bottom_border"
+                        android:backgroundTint="@color/gray_100"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:textSize="12sp"
-                        android:background="@drawable/bottom_border"
-                        android:backgroundTint="@color/gray_100"
                         android:text="Play through a series of levels. Slowly increasing in intensity."
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@id/dashboardCampaignPlay"
-                        app:layout_constraintTop_toBottomOf="@id/dashboardCampaignTitle"
                         app:layout_constraintLeft_toRightOf="@id/dashboardCampaign"
-                        app:layout_constraintRight_toRightOf="parent"/>
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCampaignTitle" />
 
                     <TextView
                         android:id="@+id/dashboardCampaignPlay"
                         android:layout_width="wrap_content"
-                        android:paddingHorizontal="10dp"
                         android:layout_height="30dp"
                         android:background="?selectableItemBackground"
-                        android:text="PLAY"
-
                         android:clickable="true"
                         android:focusable="true"
+
                         android:gravity="center"
-                        android:textStyle="bold"
+                        android:paddingHorizontal="10dp"
+                        android:text="PLAY"
                         android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold"
                         android:tint="?attr/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
 
@@ -305,6 +309,88 @@
                         app:layout_constraintVertical_bias="1.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/dashboardCamGame"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@drawable/right_border"
+                        android:backgroundTint="@color/gray_100"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_launcher"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/dashboardCamGameTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:text="Camera Workout"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCamGame"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/dashboardCamGameDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/bottom_border"
+                        android:backgroundTint="@color/gray_100"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:text="Play with your phone's camera, beta feature."
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toTopOf="@id/dashboardCamGamePlay"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCamGame"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCamGameTitle" />
+
+                    <TextView
+                        android:id="@+id/dashboardCamGamePlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="?selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="PLAY"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold"
+                        android:tint="?attr/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintLeft_toRightOf="@id/dashboardCamGame"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCamGameDescription"
+                        app:layout_constraintVertical_bias="1.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
