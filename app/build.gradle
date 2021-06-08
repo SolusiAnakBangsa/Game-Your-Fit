@@ -82,5 +82,9 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.1'
     implementation 'id.zelory:compressor:3.0.0'
 
-
+    // Pose detection, for full-body sensor
+    // Pose detection with default models
+    implementation 'com.google.mlkit:pose-detection:17.0.1-beta3'
+    // Pose detection with accurate models
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta3'
 }
