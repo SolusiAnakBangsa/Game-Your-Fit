@@ -1,11 +1,14 @@
 package com.solusianakbangsa.gameyourfit.ui.camgame
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,7 +17,9 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
+import com.solusianakbangsa.myapplication.game.GameOverlay
 import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
+import kotlinx.android.synthetic.main.activity_cam_game.*
 import java.util.*
 
 
@@ -50,6 +55,15 @@ class CamGameActivity : AppCompatActivity() {
         } else {
             runtimePermissions
         }
+
+        // Animate instruction and fade it out after.
+        val v = findViewById<ImageView>(R.id.rotate_phone_icon)
+        v.rotation = 45f
+        v.animate().setStartDelay(2000L).rotation(135f).setDuration(2000L).withEndAction {
+            val t = findViewById<TextView>(R.id.rotate_phone_text)
+            v.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
+            t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
+        }.start()
 
     }
 

@@ -1,22 +1,19 @@
 package com.solusianakbangsa.myapplication.game
 
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PointF
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
-import androidx.core.content.ContextCompat.getSystemService
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.mlkit.vision.pose.Pose
-import java.util.*
+import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.cam.BitmapUtils.getBitmapDrawable
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -35,8 +32,14 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
     private var gameStarted : Boolean = false
     private var showRotHint : Boolean = false
 
+    private val rotatePhoneIcon : Bitmap
+
     init {
         targetPaint.color = Color.BLUE
+        rotatePhoneIcon = getBitmapDrawable(
+            context?.resources!!,
+            R.drawable.ic_baseline_screen_rotation_24
+        )
     }
 
     fun onLoop() {
@@ -85,6 +88,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         super.onDraw(canvas)
 
         canvas.drawCircle(targetCircle.x, targetCircle.y, 100f, targetPaint)
+//        canvas.drawBitmap(
+//            rotatePhoneIcon, (width / 2 - rotatePhoneIcon.width / 2).toFloat(),
+//            (height / 2 - rotatePhoneIcon.height / 2).toFloat(), targetPaint
+//        )
 
         drawPoint(canvas, leftHand, targetPaint)
         drawPoint(canvas, rightHand, targetPaint)
@@ -102,8 +109,14 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         if (width == 0) return
 
         targetCircle.set(
-                Random.nextInt((overlayWidth * spawnWidthBorder).toInt(), (overlayWidth - (overlayWidth * spawnWidthBorder)).toInt()).toFloat(),
-                Random.nextInt((overlayHeight * spawnHeightBorder).toInt(), (overlayHeight - (overlayHeight * spawnHeightBorder)).toInt()).toFloat()
+            Random.nextInt(
+                (overlayWidth * spawnWidthBorder).toInt(),
+                (overlayWidth - (overlayWidth * spawnWidthBorder)).toInt()
+            ).toFloat(),
+            Random.nextInt(
+                (overlayHeight * spawnHeightBorder).toInt(),
+                (overlayHeight - (overlayHeight * spawnHeightBorder)).toInt()
+            ).toFloat()
         )
     }
 

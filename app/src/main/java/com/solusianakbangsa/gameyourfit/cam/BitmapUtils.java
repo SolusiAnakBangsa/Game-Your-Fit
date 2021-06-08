@@ -18,12 +18,16 @@ package com.solusianakbangsa.gameyourfit.cam;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.media.Image.Plane;
 import android.net.Uri;
@@ -35,6 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -84,6 +89,17 @@ public class BitmapUtils {
     ByteBuffer nv21Buffer =
         yuv420ThreePlanesToNV21(image.getImage().getPlanes(), image.getWidth(), image.getHeight());
     return getBitmap(nv21Buffer, frameMetadata);
+  }
+
+  public static Bitmap getBitmapDrawable(Resources res, int drawableRes) {
+    Drawable drawable = ResourcesCompat.getDrawable(res, drawableRes, null);
+    Canvas canvas = new Canvas();
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    canvas.setBitmap(bitmap);
+    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+    drawable.draw(canvas);
+
+    return bitmap;
   }
 
   /** Rotates a bitmap if it is converted from a bytebuffer. */
