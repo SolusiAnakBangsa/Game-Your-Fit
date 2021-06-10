@@ -1,12 +1,12 @@
 package com.solusianakbangsa.gameyourfit.ui.camgame
 
-import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,9 +17,8 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
-import com.solusianakbangsa.myapplication.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
 import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
-import kotlinx.android.synthetic.main.activity_cam_game.*
 import java.util.*
 
 
@@ -56,13 +55,18 @@ class CamGameActivity : AppCompatActivity() {
             runtimePermissions
         }
 
+        GameOverlay.overlay = graphicOverlay!!
+
         // Animate instruction and fade it out after.
         val v = findViewById<ImageView>(R.id.rotate_phone_icon)
         v.rotation = 45f
         v.animate().setStartDelay(2000L).rotation(135f).setDuration(2000L).withEndAction {
             val t = findViewById<TextView>(R.id.rotate_phone_text)
             v.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
-            t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
+            t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).withEndAction {
+                // Start game
+                findViewById<GameOverlay>(R.id.game_overlay).instructionDone()
+            }.start()
         }.start()
 
     }
@@ -76,6 +80,22 @@ class CamGameActivity : AppCompatActivity() {
 
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        // Turn brightness to max
+        val attr = window.attributes
+        attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+        window.attributes = attr
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // Set brightness to normal
+        val attr = window.attributes
+        attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+        window.attributes = attr
+    }
+
     private fun makeCamera() {
         try {
             // Make camera source
@@ -84,17 +104,17 @@ class CamGameActivity : AppCompatActivity() {
             }
             // Set camera source frame processor
             cameraSource!!.setMachineLearningFrameProcessor(
-                    PoseDetectorProcessor(
-                            this,
-                            PoseDetectorOptions.Builder()
-                                    .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-                                    .build(),
-                            showInFrameLikelihood = false,
-                            visualizeZ = false,
-                            rescaleZForVisualization = false,
-                            runClassification = false,
-                            isStreamMode = true
-                    )
+                PoseDetectorProcessor(
+                    this,
+                    PoseDetectorOptions.Builder()
+                        .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
+                        .build(),
+                    showInFrameLikelihood = false,
+                    visualizeZ = false,
+                    rescaleZForVisualization = false,
+                    runClassification = false,
+                    isStreamMode = true
+                )
             )
             preview!!.start(cameraSource, graphicOverlay)
         } catch (e: Exception) {
@@ -145,18 +165,18 @@ class CamGameActivity : AppCompatActivity() {
             // Actual code to check the permissions
             if (allNeededPermissions.isNotEmpty()) {
                 ActivityCompat.requestPermissions(
-                        this,
-                        allNeededPermissions.toTypedArray(),
-                        PERMISSION_REQUESTS
+                    this,
+                    allNeededPermissions.toTypedArray(),
+                    PERMISSION_REQUESTS
                 )
             }
         }
 
     // Callback when there is a result from the user
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         Log.i(TAG, "Permission granted!")
         if (allPermissionsGranted()) {
@@ -170,8 +190,8 @@ class CamGameActivity : AppCompatActivity() {
         private const val PERMISSION_REQUESTS = 1
         // Check whether a certain permission has been granted.
         private fun isPermissionGranted(
-                context: Context,
-                permission: String?
+            context: Context,
+            permission: String?
         ): Boolean {
             if (ContextCompat.checkSelfPermission(context, permission!!)
                     == PackageManager.PERMISSION_GRANTED

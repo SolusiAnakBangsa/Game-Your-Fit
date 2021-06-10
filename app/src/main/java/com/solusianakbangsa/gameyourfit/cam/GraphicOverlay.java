@@ -64,6 +64,22 @@ public class GraphicOverlay extends View {
   private boolean isImageFlipped;
   private boolean needUpdateTransformation = true;
 
+  public float getScaleFactor() {
+    return scaleFactor;
+  }
+
+  public Boolean getIsImageFlipped() {
+    return isImageFlipped;
+  }
+
+  public float getPostScaleWidthOffset() {
+    return postScaleWidthOffset;
+  }
+
+  public float getPostScaleHeightOffset() {
+    return postScaleHeightOffset;
+  }
+
   /**
    * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
    * this and implement the {@link Graphic#draw(Canvas)} method to define the graphics element. Add

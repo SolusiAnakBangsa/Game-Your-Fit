@@ -27,7 +27,7 @@ import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.myapplication.VisionProcessorBase
 import com.solusianakbangsa.myapplication.game.GameController
-import com.solusianakbangsa.myapplication.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
 import java.util.ArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -95,12 +95,12 @@ class PoseDetectorProcessor(
 //        rescaleZForVisualization, poseWithClassification.classificationResult
 //      )
 //    )
-    graphicOverlay.add(
-      GameController.GameGraphic(
-              graphicOverlay,
-              results.pose
-      )
-    )
+//    graphicOverlay.add(
+//      GameController.GameGraphic(
+//              graphicOverlay,
+//              results.pose
+//      )
+//    )
   }
 
   override fun onFailure(e: Exception) {
