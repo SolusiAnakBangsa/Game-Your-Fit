@@ -18,6 +18,7 @@ import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameUtils
 import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
 import java.util.*
 
@@ -56,6 +57,7 @@ class CamGameActivity : AppCompatActivity() {
         }
 
         GameOverlay.overlay = graphicOverlay!!
+        GameUtils.overlay = graphicOverlay!!
 
         // Animate instruction and fade it out after.
         val v = findViewById<ImageView>(R.id.rotate_phone_icon)

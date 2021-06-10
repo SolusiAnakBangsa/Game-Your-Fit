@@ -12,26 +12,24 @@ import com.google.mlkit.vision.pose.PoseLandmark
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.BitmapUtils.getBitmapDrawable
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
+import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.pow
 import kotlin.random.Random
 
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
-    private val L_LEFT_HAND = arrayOf(17, 19)
-    private val L_RIGHT_HAND = arrayOf(18, 20)
-    private val L_SHOULDERS = arrayOf(11, 12)
-    private val L_BOTTOM = arrayOf(23, 24)
+    val L_LEFT_HAND = arrayOf(17, 19)
+    val L_RIGHT_HAND = arrayOf(18, 20)
+    val L_SHOULDERS = arrayOf(11, 12)
+    val L_BOTTOM = arrayOf(23, 24)
 
-    private val targetPaint = Paint()
+    private val gameObjects = ArrayList<GameObject>()
+
     private var loopTicker: ValueAnimator? = null
-
-    private val targetCircle = PointF()
-    private val spawnWidthBorder = 0.2f
-    private val spawnHeightBorder = 0.3f
-
-    private var isGenNewDot = true
 
     private var gameState = GameState.INSTR
 
@@ -40,8 +38,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     private val rotatePhoneIcon : Bitmap
 
-    private var leftHand = PointF()
-    private var rightHand = PointF()
+    internal var leftHand = PointF()
+    internal var rightHand = PointF()
 
     private var showMiddleText = false
     private var paintMiddleText = Paint()
@@ -52,7 +50,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         field = text
     }
 
-    private enum class GameState {
+    enum class GameState {
         INSTR,      // Instruction
         STANDBY,    // Standby and wait until user gets in position
         WAIT,       // User is in camera, and countdown started
@@ -60,8 +58,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
     }
 
     init {
-        targetPaint.color = Color.BLUE
-
         paintMiddleText.apply {
             color = Color.WHITE
             typeface = Typeface.DEFAULT_BOLD
@@ -82,7 +78,11 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     fun instructionDone() {
         gameState = GameState.STANDBY
-        generateNewTarget()
+    }
+
+    private fun startGame() {
+        gameObjects.add(TargetingGame(this, "target"))
+        gameState = GameState.START
     }
 
     private fun onLoop() {
@@ -106,8 +106,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
                         gameState = GameState.WAIT
                         startTaskTimer = object : TimerTask() {
                             override fun run() {
-                                gameState = GameState.START // TODO: Change with function
-                                Log.i("Bruh", "Bruh lol")
+                                startGame()
                             }
                         }
                         startTimer.schedule(startTaskTimer, 7000L)
@@ -141,20 +140,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
                     // Position the hand
                     leftHand = getPointSum(landmarks, L_LEFT_HAND)
                     rightHand = getPointSum(landmarks, L_RIGHT_HAND)
-
-                    // Generate new dot
-                    if (isGenNewDot) {
-                        generateNewTarget()
-                        isGenNewDot = false
-                    } else if (((leftHand.x-targetCircle.x).pow(2) +
-                            (leftHand.y-targetCircle.y).pow(2) < 150f.pow(2)) ||
-                            ((rightHand.x-targetCircle.x).pow(2) +
-                            (rightHand.y-targetCircle.y).pow(2) < 150f.pow(2))) {
-                        isGenNewDot = true
-                    }
                 }
             }
+        }
 
+        for (objs in gameObjects) {
+            objs.onLoop()
         }
     }
 
@@ -212,55 +203,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
                 }
             }
             GameState.START -> {
-                canvas.drawCircle(targetCircle.x, targetCircle.y, 100f, targetPaint)
 
-                drawPoint(canvas, leftHand, targetPaint)
-                drawPoint(canvas, rightHand, targetPaint)
             }
         }
-    }
 
-    private fun generateNewTarget() {
-        val overlayWidth = width
-        val overlayHeight = height
-        if (width == 0) return
-
-        targetCircle.set(
-            Random.nextInt(
-                (overlayWidth * spawnWidthBorder).toInt(),
-                (overlayWidth - (overlayWidth * spawnWidthBorder)).toInt()
-            ).toFloat(),
-            Random.nextInt(
-                (overlayHeight * spawnHeightBorder).toInt(),
-                (overlayHeight - (overlayHeight * spawnHeightBorder)).toInt()
-            ).toFloat()
-        )
-    }
-
-    private fun scale(imagePixel: Float): Float {
-        return imagePixel * GameOverlay.overlay.scaleFactor
-    }
-
-    private fun translateX(x: Float): Float {
-        return if (GameOverlay.overlay.isImageFlipped) {
-            GameOverlay.overlay.width - (scale(x) - GameOverlay.overlay.postScaleWidthOffset)
-        } else {
-            scale(x) - GameOverlay.overlay.postScaleWidthOffset
+        for (objs in gameObjects) {
+            objs.onDraw(canvas)
         }
-    }
-
-    private fun translateY(y: Float): Float {
-        return scale(y) - GameOverlay.overlay.postScaleHeightOffset
-    }
-
-    private fun getPointSum(landmarks: List<PoseLandmark>, lNum: Array<Int>) : PointF {
-        var xTotal = 0f
-        var yTotal = 0f
-        for (ld in lNum) {
-            xTotal += landmarks[ld].position.x
-            yTotal += landmarks[ld].position.y
-        }
-        return PointF(translateX(xTotal / lNum.size), translateY(yTotal / lNum.size))
     }
 
     private fun isInScreen(p: PointF) : Boolean {
@@ -269,10 +218,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     private fun isLandmarkInScreen(l : PoseLandmark) : Boolean {
         return (l.inFrameLikelihood > 0.7f && isInScreen(l.position))
-    }
-
-    private fun drawPoint(canvas: Canvas, point: PointF, paint: Paint) {
-        canvas.drawCircle(point.x, point.y, 15f, paint)
     }
 
     companion object {
