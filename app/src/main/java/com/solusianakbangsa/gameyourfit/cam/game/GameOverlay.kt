@@ -7,17 +7,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
-import com.solusianakbangsa.gameyourfit.R
-import com.solusianakbangsa.gameyourfit.cam.BitmapUtils.getBitmapDrawable
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle
+import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
 import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.pow
-import kotlin.random.Random
 
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
@@ -36,8 +35,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
     private val startTimer = Timer()
     private var startTaskTimer : TimerTask? = null
 
-    private val rotatePhoneIcon : Bitmap
-
     internal var leftHand = PointF()
     internal var rightHand = PointF()
 
@@ -49,6 +46,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         showMiddleText = (text.isNotEmpty())
         field = text
     }
+
+    private val runningBarHeight = 0.9f
+    private val runningBarPaintB = Paint()
+    private val runningBarPaint = Paint()
+    private var runningSteps = 0
+    private var runningBarLength = 0f
 
     enum class GameState {
         INSTR,      // Instruction
@@ -70,10 +73,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
             color = Color.BLACK
         }
 
-        rotatePhoneIcon = getBitmapDrawable(
-            context?.resources!!,
-            R.drawable.ic_baseline_screen_rotation_24
-        )
+        runningBarPaintB.apply {
+            color = Color.parseColor("#180d26")
+        }
+        runningBarPaint.apply {
+            color = Color.parseColor("#45b54e")
+        }
     }
 
     fun instructionDone() {
@@ -85,9 +90,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         gameState = GameState.START
     }
 
+    fun stepOne() {
+        runningSteps++
+        runningBarLength = clamp(runningBarLength + 20f, 0f, 100f)
+    }
+
     private fun onLoop() {
         // Get the landmark
-
         val landmarks = pose?.allPoseLandmarks
         if (landmarks != null && landmarks.isNotEmpty()) {
 
@@ -140,6 +149,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
                     // Position the hand
                     leftHand = getPointSum(landmarks, L_LEFT_HAND)
                     rightHand = getPointSum(landmarks, L_RIGHT_HAND)
+
+                    Log.i("Bruh", "${getAngle3d(landmarks[11], landmarks[23], landmarks[25])} " +
+                            "${getAngle3d(landmarks[12], landmarks[24], landmarks[26])}")
+                    runningBarLength = clamp(runningBarLength - 1f, 0f, 100f)
                 }
             }
         }
@@ -181,14 +194,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-//        canvas.drawBitmap(
-//            rotatePhoneIcon, (width / 2 - rotatePhoneIcon.width / 2).toFloat(),
-//            (height / 2 - rotatePhoneIcon.height / 2).toFloat(), targetPaint
-//        )
+        val sWidth = width.toFloat()
+        val sHeight = height.toFloat()
 
         when (gameState) {
             GameState.INSTR -> {
-
+                // Overlay
+                canvas.drawARGB(190, 0, 0, 0)
             }
             GameState.STANDBY -> {
 
@@ -196,14 +208,17 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
             GameState.WAIT -> {
                 // Count time remaining
                 if (showMiddleText) {
-                    val textX = width.toFloat()/2
-                    val textY = height.toFloat()/2 + paintMiddleText.textSize/3
+                    val textX = sWidth/2
+                    val textY = sHeight/2 + paintMiddleText.textSize/3
                     canvas.drawText(middleText, textX, textY, paintMiddleTextS)
                     canvas.drawText(middleText, textX, textY, paintMiddleText)
                 }
             }
             GameState.START -> {
-
+                canvas.drawRect(0f, sHeight * runningBarHeight,
+                    sWidth, sHeight, runningBarPaintB)
+                canvas.drawRect(0f, sHeight * runningBarHeight,
+                    sWidth * (runningBarLength/100f), sHeight, runningBarPaint)
             }
         }
 

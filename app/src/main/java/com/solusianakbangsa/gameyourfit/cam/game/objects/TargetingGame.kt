@@ -32,6 +32,7 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameObject(overlay, id) 
 
         // Generate new dot
         if (isGenNewDot) {
+            overlay.stepOne()
             generateNewTarget()
             isGenNewDot = false
         } else if (((leftHand.x-targetCircle.x).pow(2) +
