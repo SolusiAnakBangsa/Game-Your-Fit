@@ -42,6 +42,10 @@
     <string name="menu_home">Home</string>
     <string name="username">Username</string>
     <string name="title_activity_level_info">ScrollingActivity</string>
+    <string name="pref_key_rear_camera_preview_size" translatable="false">rcpvs</string>
+    <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
+    <string name="pref_key_front_camera_preview_size" translatable="false">fcpvs</string>
+    <string name="pref_key_front_camera_picture_size" translatable="false">fcpts</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

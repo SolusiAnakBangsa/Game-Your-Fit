@@ -40,6 +40,11 @@ android {
     }
 }
 
+repositories {
+    // Depending on AndroidX Snapshot Builds to get the latest CameraX libs.
+    maven { url 'https://androidx.dev/snapshots/builds/6787662/artifacts/repository/' }
+}
+
 dependencies {
     implementation 'com.romandanylyk:pageindicatorview:1.0.3'
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
@@ -56,6 +61,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
+
     testImplementation 'junit:junit:4.+'
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -82,5 +88,14 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.1'
     implementation 'id.zelory:compressor:3.0.0'
 
+    // Pose detection, for full-body sensor
+    // Pose detection with default models
+    implementation 'com.google.mlkit:pose-detection:17.0.1-beta3'
+    // Pose detection with accurate models
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta3'
 
+    // CameraX
+    implementation "androidx.camera:camera-camera2:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-view:1.0.0-SNAPSHOT"
 }

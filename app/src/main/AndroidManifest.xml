@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.solusianakbangsa.gameyourfit">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission-sdk-23 android:name="android.permission.INTERNET" />
     <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -39,6 +41,11 @@
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
+        <activity
+            android:name=".ui.camgame.CamGameActivity"
+            android:label="CamGame"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity

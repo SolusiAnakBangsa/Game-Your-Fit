@@ -28,6 +28,7 @@ import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
+import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import de.hdodenhof.circleimageview.CircleImageView
@@ -120,6 +121,13 @@ class DashboardFragment : Fragment() {
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
 
+        // Intent to go to camera game activity
+        val toCamGameActivity = View.OnClickListener{
+            val intent = Intent(activity, CamGameActivity::class.java)
+            activity?.startActivity(intent)
+            activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+        }
+
         executor.execute{
             levelList = LevelList.readLevelsFromFile(requireActivity())
             val randomLvl = (0 until levelList.jsonArr.length()).random()
@@ -155,6 +163,13 @@ class DashboardFragment : Fragment() {
                 Pair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
             activity?.startActivity(intent, options.toBundle())
         }
+
+        // Set on click bindings to redirect to camera workout
+        binding.dashboardCamGamePlay.setOnClickListener(toCamGameActivity)
+        binding.dashboardCamGame.setOnClickListener(toCamGameActivity)
+        binding.dashboardCamGameTitle.setOnClickListener(toCamGameActivity)
+        binding.dashboardCamGameDescription.setOnClickListener(toCamGameActivity)
+
         return binding.root
     }
 
