@@ -37,7 +37,7 @@
             android:name=".ui.level_info.LevelInfoActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
@@ -79,7 +79,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"></activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
