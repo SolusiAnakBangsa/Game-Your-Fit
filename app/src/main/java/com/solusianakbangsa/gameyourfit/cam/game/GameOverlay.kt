@@ -2,6 +2,9 @@ package com.solusianakbangsa.gameyourfit.cam.game
 
 import android.content.Context
 import android.graphics.*
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
 import androidx.core.math.MathUtils.clamp
@@ -17,12 +20,11 @@ import kotlin.collections.ArrayList
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, attrs) {
 
-    private val L_LEFT_HAND = arrayOf(17, 19)
-    private val L_RIGHT_HAND = arrayOf(18, 20)
-    private val L_SHOULDERS = arrayOf(11, 12)
-    private val L_BOTTOM = arrayOf(23, 24)
+    // TODO: Continue running prompt
+    private val gameObjects = ArrayList<GameMode>()
+    private val games = ArrayList<GameMode>()
 
-    private val gameObjects = ArrayList<GameObject>()
+    private var currentGame : GameMode? = null
 
     private lateinit var gameThread: GameThread
 
@@ -34,41 +36,48 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     internal var leftHand = PointF()
     internal var rightHand = PointF()
 
-    private var showMiddleText = false
-    private var paintMiddleText = Paint()
-    private var paintMiddleTextS = Paint()
-    private var middleText = ""
+    private var showBigCountdown = false
+    private var paintBigCountdown = Paint()
+    private var paintBigCountdownS = Paint()
+    private var bigCountdownText = ""
     set(text) {
-        showMiddleText = (text.isNotEmpty())
+        showBigCountdown = text.isNotEmpty()
         field = text
     }
 
-    private val runningBarHeight = 0.9f
     private val runningBarPaintB = Paint()
     private val runningBarPaint = Paint()
     private var runningSteps = 0
     private var runningBarLength = 0f
+
+    private var waitGameStartTime = 0L
+
+    private var titleLayout : StaticLayout
+    private val titlePaint = TextPaint()
+    private var captionLayout : StaticLayout
+    private val captionPaint = TextPaint()
 
     // FPS code
 //    var counter = 0
 //    var timeCount = 0L
 
     enum class GameState {
-        INSTR,      // Instruction
-        STANDBY,    // Standby and wait until user gets in position
-        WAIT,       // User is in camera, and countdown started
-        START       // Game is started
+        INSTR,          // Instruction
+        STANDBY,        // Standby and wait until user gets in position
+        WAIT,           // User is in camera, and countdown started
+        WAITNEWGAME,    // Waiting for a new game to be played
+        START           // Game is started
     }
 
     init {
-        paintMiddleText.apply {
+        paintBigCountdown.apply {
             color = Color.WHITE
             typeface = Typeface.DEFAULT_BOLD
             textAlign = Paint.Align.CENTER
         }
 
-        paintMiddleTextS.set(paintMiddleText)
-        paintMiddleTextS.apply {
+        paintBigCountdownS.set(paintBigCountdown)
+        paintBigCountdownS.apply {
             style = Paint.Style.STROKE
             color = Color.BLACK
         }
@@ -79,20 +88,77 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         runningBarPaint.apply {
             color = Color.parseColor("#45b54e")
         }
+
+        titlePaint.apply {
+            color = Color.parseColor("#e0e0e0")
+//            textAlign = Paint.Align.CENTER
+        }
+        captionPaint.apply {
+            color = Color.WHITE
+//            textAlign = Paint.Align.CENTER
+        }
+
+        titleLayout = StaticLayout("", titlePaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
+        captionLayout = StaticLayout("", captionPaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
+
+        // Add game modes
+        games.add(TargetingGame(this, "target"))
     }
 
     fun instructionDone() {
         gameState = GameState.STANDBY
     }
 
+    /**
+     * Generates a new random camera game mode. TODO: Do pseudorandom
+     */
+    private fun newGameMode() {
+        // Remove and add a new one.
+        gameObjects.remove(currentGame)
+        currentGame = games.random()
+
+        // Change state
+        gameState = GameState.WAITNEWGAME
+        waitGameStartTime = System.currentTimeMillis() + WAITNEWGAME
+
+        titleLayout = StaticLayout(currentGame!!.title, titlePaint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+        captionLayout = StaticLayout(currentGame!!.caption, captionPaint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+    }
+
     private fun startGame() {
-        gameObjects.add(TargetingGame(this, "target"))
-        gameState = GameState.START
+//        gameObjects.add(TargetingGame(this, "target"))
+        newGameMode()
     }
 
     fun stepOne() {
         runningSteps++
         runningBarLength = clamp(runningBarLength + 20f, 0f, 100f)
+    }
+
+    private fun doCountdown(landmarks: List<PoseLandmark>) {
+        val upper = getPointSum(landmarks, L_SHOULDERS)
+        val bottom = getPointSum(landmarks, L_BOTTOM)
+
+        // Start or cancel a timer for the countdown
+        if (isInScreen(upper) && isInScreen(bottom) &&
+            isLandmarkInScreen(landmarks[12]) &&
+            isLandmarkInScreen(landmarks[23])) {
+            // If the user is inside the screen
+
+            if (gameState == GameState.STANDBY) {
+                gameState = GameState.WAIT
+                startTaskTimer = object : TimerTask() {
+                    override fun run() {
+                        startGame()
+                    }
+                }
+                startTimer.schedule(startTaskTimer, 7000L)
+            }
+        } else if (gameState == GameState.WAIT || gameState == GameState.STANDBY) {
+            startTaskTimer?.cancel()
+            bigCountdownText = ""
+            gameState = GameState.STANDBY
+        }
     }
 
     override fun onLoop(delta: Long) {
@@ -111,29 +177,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
             // Check if the player is in frame
             if (gameState == GameState.STANDBY || gameState == GameState.WAIT) {
-                val upper = getPointSum(landmarks, L_SHOULDERS)
-                val bottom = getPointSum(landmarks, L_BOTTOM)
-
-                // Start or cancel a timer for the countdown
-                if (isInScreen(upper) && isInScreen(bottom) &&
-                    isLandmarkInScreen(landmarks[12]) &&
-                    isLandmarkInScreen(landmarks[23])) {
-                    // If the user is inside the screen
-
-                    if (gameState == GameState.STANDBY) {
-                        gameState = GameState.WAIT
-                        startTaskTimer = object : TimerTask() {
-                            override fun run() {
-                                startGame()
-                            }
-                        }
-                        startTimer.schedule(startTaskTimer, 7000L)
-                    }
-                } else if (gameState == GameState.WAIT || gameState == GameState.STANDBY) {
-                    startTaskTimer?.cancel()
-                    middleText = ""
-                    gameState = GameState.STANDBY
-                }
+                doCountdown(landmarks)
             }
 
             when (gameState) {
@@ -147,12 +191,18 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     // Count time remaining
                     val goTime = startTaskTimer!!.scheduledExecutionTime()
                     val timeLeft = ((goTime - System.currentTimeMillis()) / 1000) - 1
-                    middleText = if (timeLeft > 0) {
+                    bigCountdownText = if (timeLeft > 0) {
                         timeLeft.toString()
                     } else {
                         "Go!"
                     }
-
+                }
+                GameState.WAITNEWGAME -> {
+                    // Start game
+                    if (System.currentTimeMillis() > waitGameStartTime) {
+                        gameState = GameState.START
+                        gameObjects.add(currentGame!!)
+                    }
                 }
                 GameState.START -> {
                     // Position the hand
@@ -167,15 +217,18 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         }
 
         for (objs in gameObjects) {
-            objs.onLoop()
+            objs.onLoop(delta)
         }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         //set the center of all circles to be center of the view
-        paintMiddleText.textSize = w.toFloat()/3
-        paintMiddleTextS.textSize = w.toFloat()/3
-        paintMiddleTextS.strokeWidth = w.toFloat()/25
+        paintBigCountdown.textSize = w.toFloat()*.33f
+        paintBigCountdownS.textSize = w.toFloat()*.33f
+        paintBigCountdownS.strokeWidth = w.toFloat()*.04f
+
+        titlePaint.textSize = w.toFloat()*.1f
+        captionPaint.textSize = w.toFloat()*.05f
     }
 
     override fun onAttachedToWindow() {
@@ -207,12 +260,32 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             }
             GameState.WAIT -> {
                 // Count time remaining
-                if (showMiddleText) {
+                if (showBigCountdown) {
                     val textX = sWidth/2
-                    val textY = sHeight/2 + paintMiddleText.textSize/3
-                    canvas.drawText(middleText, textX, textY, paintMiddleTextS)
-                    canvas.drawText(middleText, textX, textY, paintMiddleText)
+                    val textY = sHeight/2 + paintBigCountdown.textSize/3
+                    canvas.drawText(bigCountdownText, textX, textY, paintBigCountdownS)
+                    canvas.drawText(bigCountdownText, textX, textY, paintBigCountdown)
                 }
+            }
+            GameState.WAITNEWGAME -> {
+                canvas.drawARGB(150, 0, 0, 0)
+                val textX = 0f
+                val textTitleY = sHeight*0.3f
+                val textCaptionY = sHeight*0.6f
+                canvas.drawText(
+                    ((waitGameStartTime - System.currentTimeMillis())/1000).toString(),
+                    128f,
+                    128f + captionPaint.textSize,
+                    titlePaint
+                )
+                canvas.save()
+                canvas.translate(textX, textTitleY)
+                titleLayout.draw(canvas)
+                canvas.restore()
+                canvas.save()
+                canvas.translate(textX, textCaptionY)
+                captionLayout.draw(canvas)
+                canvas.restore()
             }
             GameState.START -> {
                 canvas.drawRect(0f, sHeight * runningBarHeight,
@@ -236,8 +309,17 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     companion object {
+        private const val WAITNEWGAME = 10000L
+
         var pose : Pose? = null
 
         lateinit var overlay : GraphicOverlay
+
+        private val L_LEFT_HAND = arrayOf(17, 19)
+        private val L_RIGHT_HAND = arrayOf(18, 20)
+        private val L_SHOULDERS = arrayOf(11, 12)
+        private val L_BOTTOM = arrayOf(23, 24)
+
+        private const val runningBarHeight = 0.9f
     }
 }

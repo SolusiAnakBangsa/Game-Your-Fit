@@ -4,12 +4,13 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import com.solusianakbangsa.gameyourfit.cam.game.GameMode
 import com.solusianakbangsa.gameyourfit.cam.game.GameObject
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
 import kotlin.math.pow
 import kotlin.random.Random
 
-class TargetingGame(overlay: GameOverlay, id: String) : GameObject(overlay, id) {
+class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     private val targetPaint = Paint()
     private val targetCircle = PointF()
@@ -20,13 +21,19 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameObject(overlay, id) 
     private var leftHand = PointF()
     private var rightHand = PointF()
 
+    override val title: String
+    override val caption: String
+
     init {
         targetPaint.apply {
             color = Color.BLUE
         }
+        title = "Circle Seeker"
+        caption = "Circles will appear on the screen.\n" +
+                "Touch them with your hands as soon as they appear!"
     }
 
-    override fun onLoop() {
+    override fun onLoop(delta: Long) {
         leftHand = overlay.leftHand
         rightHand = overlay.rightHand
 
