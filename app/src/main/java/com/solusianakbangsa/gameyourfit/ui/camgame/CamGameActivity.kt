@@ -18,6 +18,7 @@ import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameThread
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils
 import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
 import java.util.*
@@ -88,6 +89,9 @@ class CamGameActivity : AppCompatActivity() {
         val attr = window.attributes
         attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
         window.attributes = attr
+
+        GameThread.refreshRate = (getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+            .defaultDisplay.refreshRate.toInt()
     }
 
     override fun onDetachedFromWindow() {

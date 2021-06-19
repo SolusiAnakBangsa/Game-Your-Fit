@@ -1,17 +1,13 @@
 package com.solusianakbangsa.gameyourfit.cam.game
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
-import android.view.View
-import android.view.animation.LinearInterpolator
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
-import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
 import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
@@ -19,16 +15,16 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
+class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, attrs) {
 
-    val L_LEFT_HAND = arrayOf(17, 19)
-    val L_RIGHT_HAND = arrayOf(18, 20)
-    val L_SHOULDERS = arrayOf(11, 12)
-    val L_BOTTOM = arrayOf(23, 24)
+    private val L_LEFT_HAND = arrayOf(17, 19)
+    private val L_RIGHT_HAND = arrayOf(18, 20)
+    private val L_SHOULDERS = arrayOf(11, 12)
+    private val L_BOTTOM = arrayOf(23, 24)
 
     private val gameObjects = ArrayList<GameObject>()
 
-    private var loopTicker: ValueAnimator? = null
+    private lateinit var gameThread: GameThread
 
     private var gameState = GameState.INSTR
 
@@ -52,6 +48,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
     private val runningBarPaint = Paint()
     private var runningSteps = 0
     private var runningBarLength = 0f
+
+    // FPS code
+//    var counter = 0
+//    var timeCount = 0L
 
     enum class GameState {
         INSTR,      // Instruction
@@ -95,7 +95,16 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
         runningBarLength = clamp(runningBarLength + 20f, 0f, 100f)
     }
 
-    private fun onLoop() {
+    override fun onLoop(delta: Long) {
+
+        // FPS Code
+//        if (System.nanoTime() > timeCount + 1000000000L) {
+//            Log.i("THREAD_FPS", counter.toString())
+//            timeCount = System.nanoTime()
+//            counter = 0
+//        }
+//        counter++
+
         // Get the landmark
         val landmarks = pose?.allPoseLandmarks
         if (landmarks != null && landmarks.isNotEmpty()) {
@@ -171,24 +180,15 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
-        // Register ticker
-        loopTicker = ValueAnimator.ofFloat(0f, 1f).apply {
-            addUpdateListener {
-                onLoop()
-                postInvalidateOnAnimation()
-            }
-            duration = 1000L
-            repeatMode = ValueAnimator.RESTART
-            repeatCount = ValueAnimator.INFINITE
-            interpolator = LinearInterpolator()
-            start()
-        }
+        gameThread = GameThread(this)
+        gameThread.started = true
+        gameThread.start()
     }
 
     override fun onDetachedFromWindow() {
-        loopTicker?.cancel()
         super.onDetachedFromWindow()
+
+        gameThread.started = false
     }
 
     override fun onDraw(canvas: Canvas) {
