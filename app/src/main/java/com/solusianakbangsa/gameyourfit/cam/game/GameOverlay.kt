@@ -26,7 +26,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     private var currentGame : GameMode? = null
 
-    private lateinit var gameThread: GameThread
+    private var gameThread: GameThread
 
     private var gameState = GameState.INSTR
 
@@ -57,6 +57,15 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private var captionLayout : StaticLayout
     private val captionPaint = TextPaint()
 
+    private val trailArrayL: Array<PointF>
+    private val trailArrayR: Array<PointF>
+    private var trailIndex = -1
+    private val trailPaint = Paint()
+    private val handPulsePaintR = Paint()
+    private val handPulsePaintL = Paint()
+    private var handPulseUp = true
+    private var handPulseSize = PULSE_INIT_SIZE
+
     // FPS code
 //    var counter = 0
 //    var timeCount = 0L
@@ -70,6 +79,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     init {
+        gameThread = GameThread(this)
+
         paintBigCountdown.apply {
             color = Color.WHITE
             typeface = Typeface.DEFAULT_BOLD
@@ -91,15 +102,27 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
         titlePaint.apply {
             color = Color.parseColor("#e0e0e0")
-//            textAlign = Paint.Align.CENTER
         }
         captionPaint.apply {
             color = Color.WHITE
-//            textAlign = Paint.Align.CENTER
+        }
+
+        trailPaint.apply {
+            color = Color.parseColor("#77FFFFFF")
+        }
+        handPulsePaintR.apply {
+            color = Color.parseColor("#BBbf3028")
+        }
+        handPulsePaintL.apply {
+            color = Color.parseColor("#BB2832bf")
         }
 
         titleLayout = StaticLayout("", titlePaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
         captionLayout = StaticLayout("", captionPaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
+
+        // Create array
+        trailArrayL = Array(TRAIL_LENGTH) { PointF() }
+        trailArrayR = Array(TRAIL_LENGTH) { PointF() }
 
         // Add game modes
         games.add(TargetingGame(this, "target"))
@@ -121,8 +144,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         gameState = GameState.WAITNEWGAME
         waitGameStartTime = System.currentTimeMillis() + WAITNEWGAME
 
-        titleLayout = StaticLayout(currentGame!!.title, titlePaint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
-        captionLayout = StaticLayout(currentGame!!.caption, captionPaint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+        titleLayout = StaticLayout(currentGame!!.title, titlePaint, width-LAYOUT_W_PAD, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+        captionLayout = StaticLayout(currentGame!!.caption, captionPaint, width-LAYOUT_W_PAD, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
     }
 
     private fun startGame() {
@@ -171,6 +194,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 //        }
 //        counter++
 
+        if (handPulseSize > PULSE_INIT_SIZE + PULSE_FLUCT) {
+            handPulseUp = false
+        } else if (handPulseSize < PULSE_INIT_SIZE - PULSE_FLUCT) {
+            handPulseUp = true
+        }
+        handPulseSize += 20f * (delta.toFloat() / 1000f) * (if (handPulseUp) 1f else -1f)
+
         // Get the landmark
         val landmarks = pose?.allPoseLandmarks
         if (landmarks != null && landmarks.isNotEmpty()) {
@@ -179,6 +209,16 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             if (gameState == GameState.STANDBY || gameState == GameState.WAIT) {
                 doCountdown(landmarks)
             }
+
+            // Position the hand
+            leftHand = getPointSum(landmarks, L_LEFT_HAND)
+            rightHand = getPointSum(landmarks, L_RIGHT_HAND)
+
+            // Set hand trails
+            trailIndex++
+            if (trailIndex >= TRAIL_LENGTH) trailIndex = 0
+            trailArrayL[trailIndex] = leftHand
+            trailArrayR[trailIndex] = rightHand
 
             when (gameState) {
                 GameState.INSTR -> {
@@ -205,10 +245,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     }
                 }
                 GameState.START -> {
-                    // Position the hand
-                    leftHand = getPointSum(landmarks, L_LEFT_HAND)
-                    rightHand = getPointSum(landmarks, L_RIGHT_HAND)
-
                     Log.i("Bruh", "${getAngle3d(landmarks[11], landmarks[23], landmarks[25])} " +
                             "${getAngle3d(landmarks[12], landmarks[24], landmarks[26])}")
                     runningBarLength = clamp(runningBarLength - 1f, 0f, 100f)
@@ -229,6 +265,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
         titlePaint.textSize = w.toFloat()*.1f
         captionPaint.textSize = w.toFloat()*.05f
+        trailPaint.strokeWidth = h.toFloat()*.25f
     }
 
     override fun onAttachedToWindow() {
@@ -246,6 +283,26 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+        canvas.drawCircle(leftHand.x, leftHand.y, handPulseSize, handPulsePaintL)
+        canvas.drawCircle(rightHand.x, rightHand.y, handPulseSize, handPulsePaintR)
+
+        // Draw hand trail
+        trailPaint.strokeWidth = height.toFloat()*.03f
+        for (i in trailIndex downTo 1) {
+            trailPaint.strokeWidth *= 0.8f
+            drawTrailUtil(canvas, trailArrayL, i)
+            drawTrailUtil(canvas, trailArrayR, i)
+        }
+        for (i in (TRAIL_LENGTH-1) downTo (trailIndex + 2)) {
+            trailPaint.strokeWidth *= 0.8f
+            drawTrailUtil(canvas, trailArrayL, i)
+            drawTrailUtil(canvas, trailArrayR, i)
+        }
+
+        for (objs in gameObjects) {
+            objs.onDraw(canvas)
+        }
 
         val sWidth = width.toFloat()
         val sHeight = height.toFloat()
@@ -268,10 +325,11 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 }
             }
             GameState.WAITNEWGAME -> {
+                // Draw the game title and description
                 canvas.drawARGB(150, 0, 0, 0)
-                val textX = 0f
-                val textTitleY = sHeight*0.3f
-                val textCaptionY = sHeight*0.6f
+                val textX = LAYOUT_W_PAD/2f
+                val textTitleY = sHeight*0.15f
+                val textCaptionY = sHeight*0.45f
                 canvas.drawText(
                     ((waitGameStartTime - System.currentTimeMillis())/1000).toString(),
                     128f,
@@ -287,17 +345,24 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 captionLayout.draw(canvas)
                 canvas.restore()
             }
+
             GameState.START -> {
-                canvas.drawRect(0f, sHeight * runningBarHeight,
+                canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
                     sWidth, sHeight, runningBarPaintB)
-                canvas.drawRect(0f, sHeight * runningBarHeight,
+                canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
                     sWidth * (runningBarLength/100f), sHeight, runningBarPaint)
             }
         }
+    }
 
-        for (objs in gameObjects) {
-            objs.onDraw(canvas)
-        }
+    private fun drawTrailUtil(canvas: Canvas, arr: Array<PointF>, i: Int) {
+        canvas.drawLine(
+            arr[i].x,
+            arr[i].y,
+            arr[i-1].x,
+            arr[i-1].y,
+            trailPaint
+        )
     }
 
     private fun isInScreen(p: PointF) : Boolean {
@@ -320,6 +385,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         private val L_SHOULDERS = arrayOf(11, 12)
         private val L_BOTTOM = arrayOf(23, 24)
 
-        private const val runningBarHeight = 0.9f
+        private const val RUNNING_BAR_HEIGHT = 0.9f
+
+        private const val LAYOUT_W_PAD = 128
+
+        private const val TRAIL_LENGTH = 15
+        private const val PULSE_INIT_SIZE = 50f
+        private const val PULSE_FLUCT = 15f
     }
 }

@@ -68,9 +68,6 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawCircle(targetCircle.x, targetCircle.y, 100f, targetPaint)
-
-        canvas.drawCircle(lHand.x, lHand.y, 15f, targetPaint)
-        canvas.drawCircle(rHand.x, rHand.y, 15f, targetPaint)
     }
 
     private fun generateNewTarget() {

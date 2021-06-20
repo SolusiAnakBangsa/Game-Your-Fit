@@ -15,7 +15,7 @@ class GameThread(private val gOverlay: Overlay) : Thread() {
             val startUpdate = System.nanoTime()
 
             // Game update
-            gOverlay.onLoop(frameTime * 1000)
+            gOverlay.onLoop(frameTime / 1000000)
             gOverlay.postInvalidateOnAnimation()
 
             val procTime = (System.nanoTime() - startUpdate)
