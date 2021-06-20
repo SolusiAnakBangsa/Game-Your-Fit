@@ -43,10 +43,14 @@ class GameUtils {
 
         fun getAngle(firstPoint: PoseLandmark, midPoint: PoseLandmark, lastPoint: PoseLandmark): Double {
             var result = Math.toDegrees(
-                (atan2(lastPoint.position.y - midPoint.position.y,
-                    lastPoint.position.x - midPoint.position.x)
-                        - atan2(firstPoint.position.y - midPoint.position.y,
-                    firstPoint.position.x - midPoint.position.x)).toDouble()
+                (atan2(
+                    lastPoint.position.y - midPoint.position.y,
+                    lastPoint.position.x - midPoint.position.x
+                )
+                        - atan2(
+                    firstPoint.position.y - midPoint.position.y,
+                    firstPoint.position.x - midPoint.position.x
+                )).toDouble()
             )
             result = abs(result) // Angle should never be negative
             if (result > 180) {
@@ -71,6 +75,35 @@ class GameUtils {
 
             return (acos(v1norm.x * v2norm.x + v1norm.y * v2norm.y + v1norm.z * v2norm.z)) *
                     RADDEGMULT
+        }
+
+        fun lineToLine(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float): Boolean {
+
+            // calculate the distance to intersection point
+            val uA =
+                ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1))
+            val uB =
+                ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1))
+
+            // if uA and uB are between 0-1, lines are colliding
+            return (uA >= 0f && uA <= 1f && uB >= 0f && uB <= 1f)
+        }
+
+        fun pointToRect(x1: Float, y1: Float, bx1: Float, by1: Float, bx2: Float, by2: Float): Boolean {
+            return (
+                x1 > bx1 && x1 < bx2 &&
+                y1 > by1 && y1 < by2
+                )
+        }
+
+
+        fun lineToRect(x1: Float, y1: Float, x2: Float, y2: Float, bx1: Float, by1: Float, bx2: Float, by2: Float): Boolean {
+            return (
+                lineToLine(x1, y1, x2, y2, bx1, by1, bx2, by1) ||
+                lineToLine(x1, y1, x2, y2, bx1, by1, bx1, by2) ||
+                lineToLine(x1, y1, x2, y2, bx2, by1, bx2, by2) ||
+                lineToLine(x1, y1, x2, y2, bx1, by2, bx2, by2)
+                )
         }
     }
 }
