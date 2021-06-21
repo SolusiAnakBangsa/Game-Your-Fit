@@ -123,7 +123,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         }
 
         trailPaint.apply {
-            color = Color.parseColor("#77FFFFFF")
+            color = Color.parseColor("#99FFFFFF")
         }
         handPulsePaintR.apply {
             color = Color.parseColor("#BBbf3028")
@@ -158,9 +158,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         newGameMode()
     }
 
-    fun stepOne() {
+    private fun stepOne() {
         runningSteps++
-        runningBarLength = clamp(runningBarLength + 20f, 0f, 100f)
+        runningBarLength = clamp(runningBarLength + 25f, 0f, 100f)
+        Log.i("LOG", "Step One $runningSteps")
     }
 
     private fun doCountdown(landmarks: List<PoseLandmark>) {
@@ -204,7 +205,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         } else if (handPulseSize < PULSE_INIT_SIZE - PULSE_FLUCT) {
             handPulseUp = true
         }
-        handPulseSize += 20f * (delta.toFloat() / 1000f) * (if (handPulseUp) 1f else -1f)
+        handPulseSize += 40f * (delta / 1000f) * (if (handPulseUp) 1f else -1f)
 
         // Get the landmark
         val landmarks = pose?.allPoseLandmarks
@@ -248,17 +249,23 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             }
 
             if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
-                // Calculate the angles
-                val leftAng = getAngle3d(landmarks[11], landmarks[23], landmarks[25])
-                val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
 
-                // Detect steps
-                if ((whichLegUp && leftAng < STEP_ANGLE) || (!whichLegUp && rightAng < STEP_ANGLE)) {
-                    whichLegUp = !whichLegUp
-                    stepOne()
+                // Only count the reps if the ankles is visible on screen.
+                if (isLandmarkInScreen(landmarks[25]) && isLandmarkInScreen(landmarks[26])) {
+                    // Calculate the angles
+                    val leftAng = getAngle3d(landmarks[11], landmarks[23], landmarks[25])
+                    val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
+
+                    // Detect steps
+                    if (((whichLegUp && (leftAng < STEP_ANGLE)) ||
+                        (!whichLegUp && (rightAng < STEP_ANGLE))) &&
+                        ((leftAng >= STEP_ANGLE) || (rightAng >= STEP_ANGLE))) {
+
+                        whichLegUp = !whichLegUp
+                        stepOne()
+
+                    }
                 }
-
-                runningBarLength = clamp(runningBarLength - 1f, 0f, 100f)
             }
         }
 
@@ -267,6 +274,9 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         if (trailIndex >= TRAIL_LENGTH) trailIndex = 0
         trailArrayL[trailIndex] = leftHand
         trailArrayR[trailIndex] = rightHand
+
+        // Set running bar
+        runningBarLength = clamp(runningBarLength - (20f * delta/1000f), 0f, 100f)
 
         for (objs in gameObjects) {
             objs.onLoop(delta)
@@ -304,14 +314,14 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         canvas.drawCircle(rightHand.x, rightHand.y, handPulseSize, handPulsePaintR)
 
         // Draw hand trail
-        trailPaint.strokeWidth = height.toFloat()*.03f
+        trailPaint.strokeWidth = height.toFloat()*.06f
         for (i in trailIndex downTo 1) {
-            trailPaint.strokeWidth *= 0.8f
+            trailPaint.strokeWidth *= .85f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }
         for (i in (TRAIL_LENGTH-1) downTo (trailIndex + 2)) {
-            trailPaint.strokeWidth *= 0.8f
+            trailPaint.strokeWidth *= .85f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }

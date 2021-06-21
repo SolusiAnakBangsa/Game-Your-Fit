@@ -11,7 +11,7 @@ class GameThread(private val gOverlay: Overlay) : Thread() {
         // Millis
         val updateInterval = 1000000000L / refreshRate
         var frameTime = 0L
-        while (true) {
+        while (started) {
             val startUpdate = System.nanoTime()
 
             // Game update
