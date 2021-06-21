@@ -24,10 +24,13 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.GameYourFit">
         <activity
+            android:name=".ui.streak.StreakActivity"
+            android:label="StreakActivity"
+            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
+        <activity
             android:name=".ui.onboarding.OnboardingActivity"
             android:label="@string/title_activity_onboarding"
-            android:theme="@style/Theme.GameYourFit.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
         <activity
             android:name=".ui.friends.AddFriendActivity"
             android:label="Add Friends"
@@ -37,7 +40,7 @@
             android:name=".ui.level_info.LevelInfoActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:label="Campaign"
@@ -79,7 +82,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GameYourFit.NoActionBar"/>
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
