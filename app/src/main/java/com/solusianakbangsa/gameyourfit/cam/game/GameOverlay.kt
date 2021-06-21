@@ -49,6 +49,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val runningBarPaint = Paint()
     private var runningSteps = 0
     private var runningBarLength = 0f
+    private var whichLegUp = true // Helper boolean to track which leg is up.
 
     private var waitGameStartTime = 0L
 
@@ -81,6 +82,20 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     init {
         gameThread = GameThread(this)
 
+        initPaints()
+
+        titleLayout = StaticLayout("", titlePaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
+        captionLayout = StaticLayout("", captionPaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
+
+        // Create array
+        trailArrayL = Array(TRAIL_LENGTH) { PointF() }
+        trailArrayR = Array(TRAIL_LENGTH) { PointF() }
+
+        // Add game modes
+        games.add(TargetingGame(this, "target"))
+    }
+
+    private fun initPaints() {
         paintBigCountdown.apply {
             color = Color.WHITE
             typeface = Typeface.DEFAULT_BOLD
@@ -116,16 +131,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         handPulsePaintL.apply {
             color = Color.parseColor("#BB2832bf")
         }
-
-        titleLayout = StaticLayout("", titlePaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
-        captionLayout = StaticLayout("", captionPaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
-
-        // Create array
-        trailArrayL = Array(TRAIL_LENGTH) { PointF() }
-        trailArrayR = Array(TRAIL_LENGTH) { PointF() }
-
-        // Add game modes
-        games.add(TargetingGame(this, "target"))
     }
 
     fun instructionDone() {
@@ -214,12 +219,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             leftHand = getPointSum(landmarks, L_LEFT_HAND)
             rightHand = getPointSum(landmarks, L_RIGHT_HAND)
 
-            // Set hand trails
-            trailIndex++
-            if (trailIndex >= TRAIL_LENGTH) trailIndex = 0
-            trailArrayL[trailIndex] = leftHand
-            trailArrayR[trailIndex] = rightHand
-
             when (gameState) {
                 GameState.INSTR -> {
 
@@ -234,7 +233,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     bigCountdownText = if (timeLeft > 0) {
                         timeLeft.toString()
                     } else {
-                        "Go!"
+                        "Run!"
                     }
                 }
                 GameState.WAITNEWGAME -> {
@@ -245,12 +244,29 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     }
                 }
                 GameState.START -> {
-                    Log.i("Bruh", "${getAngle3d(landmarks[11], landmarks[23], landmarks[25])} " +
-                            "${getAngle3d(landmarks[12], landmarks[24], landmarks[26])}")
-                    runningBarLength = clamp(runningBarLength - 1f, 0f, 100f)
                 }
             }
+
+            if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
+                // Calculate the angles
+                val leftAng = getAngle3d(landmarks[11], landmarks[23], landmarks[25])
+                val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
+
+                // Detect steps
+                if ((whichLegUp && leftAng < STEP_ANGLE) || (!whichLegUp && rightAng < STEP_ANGLE)) {
+                    whichLegUp = !whichLegUp
+                    stepOne()
+                }
+
+                runningBarLength = clamp(runningBarLength - 1f, 0f, 100f)
+            }
         }
+
+        // Set hand trails
+        trailIndex++
+        if (trailIndex >= TRAIL_LENGTH) trailIndex = 0
+        trailArrayL[trailIndex] = leftHand
+        trailArrayR[trailIndex] = rightHand
 
         for (objs in gameObjects) {
             objs.onLoop(delta)
@@ -347,11 +363,15 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             }
 
             GameState.START -> {
-                canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
-                    sWidth, sHeight, runningBarPaintB)
-                canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
-                    sWidth * (runningBarLength/100f), sHeight, runningBarPaint)
+
             }
+        }
+        
+        if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
+            canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
+                sWidth, sHeight, runningBarPaintB)
+            canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
+                sWidth * (runningBarLength/100f), sHeight, runningBarPaint)
         }
     }
 
@@ -392,5 +412,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         private const val TRAIL_LENGTH = 15
         private const val PULSE_INIT_SIZE = 50f
         private const val PULSE_FLUCT = 15f
+
+        private const val STEP_ANGLE = 140f
     }
 }

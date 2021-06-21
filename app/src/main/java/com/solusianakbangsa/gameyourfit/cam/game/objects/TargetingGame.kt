@@ -58,7 +58,7 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
             pointToRect(rHand.x, rHand.y, b1x, b1y, b2x, b2y) ||
             lineToRect(lHandPrev.x, lHandPrev.y, lHand.x, lHand.y, b1x, b1y, b2x, b2y) ||
             lineToRect(rHandPrev.x, rHandPrev.y, rHand.x, rHand.y, b1x, b1y, b2x, b2y)) {
-            overlay.stepOne()
+
             generateNewTarget()
         }
 
