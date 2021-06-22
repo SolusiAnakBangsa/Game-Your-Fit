@@ -6,7 +6,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
@@ -318,11 +317,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     }
                 }
                 GameState.WAITNEWGAME -> {
-                    // Start game
-                    if (System.currentTimeMillis() > waitGameStartTime) {
-                        gameState = GameState.START
-                        gameObjects.add(currentGame!!)
-                    }
                 }
                 GameState.START -> {
                 }
@@ -334,7 +328,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                         isInScreen(landmarks[23].position))
 
                 // Only count the reps if the ankles is visible on screen.
-                if (isLandmarkInScreen(landmarks[25]) && isLandmarkInScreen(landmarks[26])) {
+                if (isLandmarkInScreen(landmarks[25]) && isLandmarkInScreen(landmarks[26]) &&
+                        isLandmarkInScreen(landmarks[11]) && isLandmarkInScreen(landmarks[12])) {
                     // Calculate the angles
                     val leftAng = getAngle3d(landmarks[11], landmarks[23], landmarks[25])
                     val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
@@ -349,6 +344,14 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
                     }
                 }
+            }
+        }
+
+        if (gameState == GameState.WAITNEWGAME) {
+            // Start game
+            if (System.currentTimeMillis() > waitGameStartTime) {
+                gameState = GameState.START
+                gameObjects.add(currentGame!!)
             }
         }
 
@@ -481,7 +484,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
             // Draw warning text or move farther
             val notifText = if (shouldMoveFarther) {
-                    "Move farther!"
+                    "Get in frame!"
                 } else if (runningBarLength < 20f) {
                     "Continue running!"
                 } else {""}
