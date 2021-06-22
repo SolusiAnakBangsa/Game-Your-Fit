@@ -98,7 +98,7 @@ class HomeActivity : AppCompatActivity() {
             }
         })
 
-        var name: String = "Username"
+        var name = "Username"
 
         if (sharedPref.contains("username")) {
             name = sharedPref.getString("username", "")!!

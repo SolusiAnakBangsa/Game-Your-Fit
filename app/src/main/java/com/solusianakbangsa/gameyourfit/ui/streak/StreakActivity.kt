@@ -20,6 +20,7 @@ class StreakActivity : AppCompatActivity() {
         homeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             this.startActivity(intent)
+            this.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
     }
 }

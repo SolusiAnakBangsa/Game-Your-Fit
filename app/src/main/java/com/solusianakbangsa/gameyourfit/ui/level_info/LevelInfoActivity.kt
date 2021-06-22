@@ -31,7 +31,7 @@ class LevelInfoActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.levelInfoToolbar))
         findViewById<Toolbar>(R.id.levelInfoToolbar).setNavigationOnClickListener{
             this.onBackPressed()
-            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right);
+            this.overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_right)
         }
 
         if(intent.getStringExtra("taskList") != null){
@@ -54,8 +54,6 @@ class LevelInfoActivity : AppCompatActivity() {
 
         imageReplacer.replaceImage(handler,toolbarImage, intent.getStringExtra("thumbnail")!!)
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout: AppBarLayout, offset: Int ->
-            val colorComponent =
-                0.3f.coerceAtLeast(offset.toFloat() / -appBarLayout.totalScrollRange)
             if(toolbarLayout.height + offset < 2 * ViewCompat.getMinimumHeight(toolbarLayout)){
                 levelInfoToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             } else{
@@ -64,7 +62,6 @@ class LevelInfoActivity : AppCompatActivity() {
         })
 
         for(i in 0 until taskList.jsonArr.length()){
-//            Log.i("json", i.toString())
             createTaskInfo(taskList.getTaskTypeAt(i), taskList.getTaskFreqAt(i), i)
         }
 

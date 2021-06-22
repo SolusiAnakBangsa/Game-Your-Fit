@@ -35,7 +35,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.util.concurrent.Executors
 
 class DashboardFragment : Fragment() {
-
     private lateinit var levelList : LevelList
     private lateinit var dashboardViewModel: DashboardViewModel
     private lateinit var handler : Handler
