@@ -7,9 +7,11 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
+import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
@@ -20,7 +22,12 @@ import kotlin.collections.ArrayList
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, attrs) {
 
-    // TODO: Continue running prompt
+    // TODO: Continue running prompt when stopped
+    private var ralewaySemiBold = Typeface.DEFAULT
+    private var ralewayBold = Typeface.DEFAULT
+    private var ralewayBlackItalic = Typeface.DEFAULT
+    private var openSans = Typeface.DEFAULT
+
     private val gameObjects = ArrayList<GameMode>()
     private val games = ArrayList<GameMode>()
 
@@ -33,8 +40,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val startTimer = Timer()
     private var startTaskTimer : TimerTask? = null
 
-    internal var leftHand = PointF()
-    internal var rightHand = PointF()
+    internal var leftHand = PointF(-1000f, -1000f)
+    internal var rightHand = PointF(-1000f, -1000f)
 
     private var showBigCountdown = false
     private var paintBigCountdown = Paint()
@@ -45,11 +52,17 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         field = text
     }
 
+    private var shouldMoveFarther = false
+
     private val runningBarPaintB = Paint()
     private val runningBarPaint = Paint()
+    private val runningCounterPaint = Paint()
     private var runningSteps = 0
     private var runningBarLength = 0f
     private var whichLegUp = true // Helper boolean to track which leg is up.
+    private val runningBarFrom = floatArrayOf(0f, 0f, 0f)
+    private val runningBarTo = floatArrayOf(0f, 0f, 0f)
+    private val runningBarColor = floatArrayOf(0f, 0f, 0f)
 
     private var waitGameStartTime = 0L
 
@@ -57,6 +70,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val titlePaint = TextPaint()
     private var captionLayout : StaticLayout
     private val captionPaint = TextPaint()
+
+    private val notificationPaint = TextPaint()
 
     private val trailArrayL: Array<PointF>
     private val trailArrayR: Array<PointF>
@@ -66,6 +81,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val handPulsePaintL = Paint()
     private var handPulseUp = true
     private var handPulseSize = PULSE_INIT_SIZE
+
+    private var notifBack: Bitmap
+
+    private var smallUiTextPaint = Paint()
 
     // FPS code
 //    var counter = 0
@@ -82,12 +101,24 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     init {
         gameThread = GameThread(this)
 
+        // Fonts
+        ralewaySemiBold = ResourcesCompat.getFont(context!!, R.font.raleway_semibold)
+        ralewayBold = ResourcesCompat.getFont(context, R.font.raleway_bold)
+        ralewayBlackItalic = ResourcesCompat.getFont(context, R.font.raleway_blackitalic)
+        openSans = ResourcesCompat.getFont(context, R.font.open_sans)
+
+        // Set running bar colors
+        Color.colorToHSV(Color.parseColor("#172155"), runningBarFrom)
+        Color.colorToHSV(Color.parseColor("#3de237"), runningBarTo)
+
         initPaints()
 
         titleLayout = StaticLayout("", titlePaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
         captionLayout = StaticLayout("", captionPaint, 0, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, true)
 
-        // Create array
+        notifBack = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+
+        // Create array for trails
         trailArrayL = Array(TRAIL_LENGTH) { PointF() }
         trailArrayR = Array(TRAIL_LENGTH) { PointF() }
 
@@ -114,12 +145,30 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         runningBarPaint.apply {
             color = Color.parseColor("#45b54e")
         }
+        runningCounterPaint.apply {
+            color = Color.WHITE
+            typeface = ralewayBlackItalic
+            textAlign = Paint.Align.RIGHT
+        }
+
+        smallUiTextPaint.apply {
+            color = Color.parseColor("#44ffffff")
+            typeface = ralewaySemiBold
+            textAlign = Paint.Align.LEFT
+        }
 
         titlePaint.apply {
             color = Color.parseColor("#e0e0e0")
+            typeface = ralewaySemiBold
         }
         captionPaint.apply {
             color = Color.WHITE
+            typeface = openSans
+        }
+        notificationPaint.apply {
+            color = Color.parseColor("#f09535")
+            textAlign = Paint.Align.CENTER
+            typeface = ralewayBold
         }
 
         trailPaint.apply {
@@ -149,8 +198,40 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         gameState = GameState.WAITNEWGAME
         waitGameStartTime = System.currentTimeMillis() + WAITNEWGAME
 
-        titleLayout = StaticLayout(currentGame!!.title, titlePaint, width-LAYOUT_W_PAD, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
-        captionLayout = StaticLayout(currentGame!!.caption, captionPaint, width-LAYOUT_W_PAD, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+        titleLayout = StaticLayout(
+            currentGame!!.title,
+            titlePaint,
+            width - LAYOUT_W_PAD,
+            Layout.Alignment.ALIGN_CENTER,
+            1f,
+            0f,
+            true
+        )
+        captionLayout = StaticLayout(
+            currentGame!!.caption,
+            captionPaint,
+            width - LAYOUT_W_PAD,
+            Layout.Alignment.ALIGN_CENTER,
+            1f,
+            0f,
+            true
+        )
+    }
+
+    private fun refreshNotifBitmap() {
+        // Create notification back
+
+        val gradient = LinearGradient(width/2f, 0f, width/2f, height*.4f,
+            -0x1000000, 0x00000000, Shader.TileMode.CLAMP)
+
+        val p = Paint()
+        p.isDither = true
+        p.shader = gradient
+
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val c = Canvas(bitmap)
+        c.drawRect(0f, 0f, width.toFloat(), height.toFloat(), p)
+        notifBack = bitmap
     }
 
     private fun startGame() {
@@ -161,7 +242,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private fun stepOne() {
         runningSteps++
         runningBarLength = clamp(runningBarLength + 25f, 0f, 100f)
-        Log.i("LOG", "Step One $runningSteps")
     }
 
     private fun doCountdown(landmarks: List<PoseLandmark>) {
@@ -250,6 +330,9 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
             if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
 
+                shouldMoveFarther = !(isInScreen(landmarks[12].position) &&
+                        isInScreen(landmarks[23].position))
+
                 // Only count the reps if the ankles is visible on screen.
                 if (isLandmarkInScreen(landmarks[25]) && isLandmarkInScreen(landmarks[26])) {
                     // Calculate the angles
@@ -276,7 +359,20 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         trailArrayR[trailIndex] = rightHand
 
         // Set running bar
-        runningBarLength = clamp(runningBarLength - (20f * delta/1000f), 0f, 100f)
+        runningBarLength = clamp(
+            runningBarLength - (100f * RUNNING_DECAY_PER_S * delta / 1000f),
+            0f,
+            100f
+        )
+
+        val barProg = runningBarLength/100f
+
+        // Set running bar colors
+        runningBarColor[0] = runningBarFrom[0] + (runningBarTo[0] - runningBarFrom[0])*barProg
+        runningBarColor[1] = runningBarFrom[1] + (runningBarTo[1] - runningBarFrom[1])*barProg
+        runningBarColor[2] = runningBarFrom[2] + (runningBarTo[2] - runningBarFrom[2])*barProg
+
+        runningBarPaint.color = Color.HSVToColor(runningBarColor)
 
         for (objs in gameObjects) {
             objs.onLoop(delta)
@@ -289,9 +385,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         paintBigCountdownS.textSize = w.toFloat()*.33f
         paintBigCountdownS.strokeWidth = w.toFloat()*.04f
 
+        runningCounterPaint.textSize = h.toFloat()*.25f
         titlePaint.textSize = w.toFloat()*.1f
         captionPaint.textSize = w.toFloat()*.05f
         trailPaint.strokeWidth = h.toFloat()*.25f
+        notificationPaint.textSize = w.toFloat()*.065f
+        smallUiTextPaint.textSize = w.toFloat() * RUNNING_BAR_WIDTH - 30f
+        refreshNotifBitmap()
     }
 
     override fun onAttachedToWindow() {
@@ -316,12 +416,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         // Draw hand trail
         trailPaint.strokeWidth = height.toFloat()*.06f
         for (i in trailIndex downTo 1) {
-            trailPaint.strokeWidth *= .85f
+            trailPaint.strokeWidth *= .9f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }
         for (i in (TRAIL_LENGTH-1) downTo (trailIndex + 2)) {
-            trailPaint.strokeWidth *= .85f
+            trailPaint.strokeWidth *= .9f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }
@@ -344,8 +444,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             GameState.WAIT -> {
                 // Count time remaining
                 if (showBigCountdown) {
-                    val textX = sWidth/2
-                    val textY = sHeight/2 + paintBigCountdown.textSize/3
+                    val textX = sWidth / 2
+                    val textY = sHeight / 2 + paintBigCountdown.textSize / 3
                     canvas.drawText(bigCountdownText, textX, textY, paintBigCountdownS)
                     canvas.drawText(bigCountdownText, textX, textY, paintBigCountdown)
                 }
@@ -353,11 +453,11 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             GameState.WAITNEWGAME -> {
                 // Draw the game title and description
                 canvas.drawARGB(150, 0, 0, 0)
-                val textX = LAYOUT_W_PAD/2f
-                val textTitleY = sHeight*0.15f
-                val textCaptionY = sHeight*0.45f
+                val textX = LAYOUT_W_PAD / 2f
+                val textTitleY = sHeight * 0.15f
+                val textCaptionY = sHeight * 0.45f
                 canvas.drawText(
-                    ((waitGameStartTime - System.currentTimeMillis())/1000).toString(),
+                    ((waitGameStartTime - System.currentTimeMillis()) / 1000).toString(),
                     128f,
                     128f + captionPaint.textSize,
                     titlePaint
@@ -378,10 +478,44 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         }
         
         if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
-            canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
-                sWidth, sHeight, runningBarPaintB)
-            canvas.drawRect(0f, sHeight * RUNNING_BAR_HEIGHT,
-                sWidth * (runningBarLength/100f), sHeight, runningBarPaint)
+
+            // Draw warning text or move farther
+            val notifText = if (shouldMoveFarther) {
+                    "Move farther!"
+                } else if (runningBarLength < 20f) {
+                    "Continue running!"
+                } else {""}
+
+            if (notifText.isNotEmpty()) {
+                canvas.drawBitmap(notifBack, 0f, 0f, runningBarPaint)
+                canvas.drawText(
+                    notifText,
+                    sWidth / 2,
+                    notificationPaint.textSize + 32,
+                    notificationPaint
+                )
+            }
+
+            val runBarX = sWidth * RUNNING_BAR_WIDTH
+
+            // Draw running counter
+            canvas.drawText(runningSteps.toString(), width - 64f, runningCounterPaint.textSize - 10f, runningCounterPaint)
+
+            // Draw running bar
+            canvas.drawRect(
+                0f, 0f,
+                runBarX, sHeight, runningBarPaintB
+            )
+            canvas.drawRect(
+                0f, 0f,
+                runBarX, sHeight * (runningBarLength / 100f), runningBarPaint
+            )
+
+            // Draw running bar text
+            canvas.save()
+            canvas.rotate(90f)
+            canvas.drawText("Run Pace", 0f, -15f, smallUiTextPaint)
+            canvas.restore()
         }
     }
 
@@ -389,8 +523,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         canvas.drawLine(
             arr[i].x,
             arr[i].y,
-            arr[i-1].x,
-            arr[i-1].y,
+            arr[i - 1].x,
+            arr[i - 1].y,
             trailPaint
         )
     }
@@ -399,7 +533,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         return (p.x > 0 && p.y > 0 && p.x < width && p.y < height)
     }
 
-    private fun isLandmarkInScreen(l : PoseLandmark) : Boolean {
+    private fun isLandmarkInScreen(l: PoseLandmark) : Boolean {
         return (l.inFrameLikelihood > 0.7f && isInScreen(l.position))
     }
 
@@ -415,9 +549,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         private val L_SHOULDERS = arrayOf(11, 12)
         private val L_BOTTOM = arrayOf(23, 24)
 
-        private const val RUNNING_BAR_HEIGHT = 0.9f
+        private const val RUNNING_BAR_WIDTH = .05f
+        private const val RUNNING_DECAY_PER_S = .35f
 
-        private const val LAYOUT_W_PAD = 128
+        private const val LAYOUT_W_PAD = 192
 
         private const val TRAIL_LENGTH = 15
         private const val PULSE_INIT_SIZE = 50f

@@ -89,6 +89,6 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     companion object {
         // Size of the box, based on phone height.
-        private const val BOX_SIZE = 0.15f
+        private const val BOX_SIZE = .2f
     }
 }
