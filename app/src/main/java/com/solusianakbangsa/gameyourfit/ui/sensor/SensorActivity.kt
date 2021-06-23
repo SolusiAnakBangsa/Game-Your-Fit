@@ -327,12 +327,14 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addSummary(level: String, time: Long, cal: Int){
         val hashSummary = HashMap<String, Any>()
-        val currentDateTime = LocalDateTime.now()
-        hashSummary["date"] = currentDateTime.toString()
+        val currentDateTime = LocalDateTime.now().toString()
+        hashSummary["date"] = currentDateTime
         hashSummary["level"] = level
-        hashSummary["time"] = convertToSec(time)
+        hashSummary["time"] = time / 1000
         hashSummary["calories"] = cal
-        FirebaseHelper.postFirebaseData(FirebaseDatabase.getInstance().getReference("summary").child(FirebaseAuth.getInstance().uid.toString()),hashSummary).addOnCompleteListener { task ->
+        val uid = FirebaseHelper.getCurrentUID()
+        val ref = FirebaseHelper.buildFirebaseRef("summary", uid, currentDateTime.slice(0..18))
+        FirebaseHelper.postFirebaseData(ref,hashSummary).addOnCompleteListener { task ->
             if (task.isSuccessful){
                 toast("Done")
             }else{
