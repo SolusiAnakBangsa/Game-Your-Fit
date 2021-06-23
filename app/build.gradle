@@ -84,6 +84,9 @@ dependencies {
     // For developers using AndroidX in their applications
     implementation 'pub.devrel:easypermissions:3.0.0'
 
+    // Library for http requests
+    implementation 'com.android.volley:volley:1.2.0'
+
     // For developers using the Android Support Library
     implementation 'pub.devrel:easypermissions:2.0.1'
     implementation 'id.zelory:compressor:3.0.0'

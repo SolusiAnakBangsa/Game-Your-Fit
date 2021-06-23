@@ -62,6 +62,7 @@
         <activity
             android:name=".ui.sensor.SensorActivity"
             android:screenOrientation="portrait"
+            android:noHistory="true"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

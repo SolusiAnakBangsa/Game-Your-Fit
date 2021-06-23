@@ -20,8 +20,6 @@ class LevelList(jsonString : String){
                 val textStream = URL(url).openConnection().getInputStream()
                 return textStream.bufferedReader().use { it.readText() }
             } catch (e : IOException){
-//                I am so sorry. Too bad!
-//                -Aric
                 e.printStackTrace()
                 val nextTry =
                 if(tries == null) (0) else tries + 1

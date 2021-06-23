@@ -10,7 +10,6 @@ class SharedPreferencesHelper(context: Context) {
         fun Context.getSharedPref() : SharedPreferences{
             return PreferenceManager.getDefaultSharedPreferences(this)
         }
-
     }
 
     fun putLong(key : String, value : Long){
