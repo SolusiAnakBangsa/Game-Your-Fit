@@ -30,12 +30,14 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     private var lHand = PointF()
     private var rHand = PointF()
 
+    var points = 0
+
     override val title: String = "Circle Seeker"
     override val caption: String = "Circles will appear on the screen.\n" +
             "Touch them with your hands as soon as they appear!"
 
-    private val targets = arrayOfNulls<TargetDot>(3)
-    // TODO: Randomly spawn 2
+    private val targets = arrayOfNulls<TargetDot>(4)
+    // TODO: Become faster with time.
     private var targetTimer = 0L
 
     private class TargetDot(val position: PointF) {
@@ -103,9 +105,10 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         }
     }
 
-    init {
-
+    override fun init() {
+        points = 0
         timerNewTarget()
+        targets.fill(null)
     }
 
     override fun onFirstLoop() {
@@ -172,6 +175,7 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         if (overlayWidth == 0) return
 
         // Add to array
+        var spawnAnother = false
         for (i in targets.indices) {
             if (targets[i] != null) continue
 
@@ -184,12 +188,18 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
                 (Random.nextFloat() * ((overlayHeight - hMin) - hMin)) + hMin
             )
             targets[i] = TargetDot(point)
+
+            // Spawn another dot, if the condition is met.
+            if (!spawnAnother && Random.nextFloat() < 0.2f) {
+                spawnAnother = true
+                continue
+            }
             break
         }
     }
 
     private fun addPoint() {
-
+        points++
     }
 
     companion object {

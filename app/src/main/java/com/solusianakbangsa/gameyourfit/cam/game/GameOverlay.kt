@@ -192,6 +192,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         // Remove and add a new one.
         gameObjects.remove(currentGame)
         currentGame = games.random()
+        currentGame!!.init()
 
         // Change state
         gameState = GameState.WAITNEWGAME
