@@ -27,7 +27,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private var ralewayBlackItalic = Typeface.DEFAULT
     private var openSans = Typeface.DEFAULT
 
-    private val gameObjects = ArrayList<GameMode>()
+    private val gameObjects = ArrayList<GameObject>()
     private val games = ArrayList<GameMode>()
 
     private var currentGame : GameMode? = null
@@ -151,7 +151,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         }
 
         smallUiTextPaint.apply {
-            color = Color.parseColor("#44ffffff")
+            color = Color.parseColor("#22ffffff")
             typeface = ralewaySemiBold
             textAlign = Paint.Align.LEFT
         }
@@ -393,7 +393,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         captionPaint.textSize = w.toFloat()*.05f
         trailPaint.strokeWidth = h.toFloat()*.25f
         notificationPaint.textSize = w.toFloat()*.065f
-        smallUiTextPaint.textSize = w.toFloat() * RUNNING_BAR_WIDTH - 30f
+        smallUiTextPaint.textSize = w.toFloat() * RUNNING_BAR_WIDTH - 50f
         refreshNotifBitmap()
     }
 

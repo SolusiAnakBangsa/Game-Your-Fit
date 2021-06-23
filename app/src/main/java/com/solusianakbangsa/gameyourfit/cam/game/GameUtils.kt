@@ -105,5 +105,9 @@ class GameUtils {
                 lineToLine(x1, y1, x2, y2, bx1, by2, bx2, by2)
                 )
         }
+
+        fun invLerp(min: Float, max: Float, value: Float): Float {
+            return (value - min) / (max - min)
+        }
     }
 }
