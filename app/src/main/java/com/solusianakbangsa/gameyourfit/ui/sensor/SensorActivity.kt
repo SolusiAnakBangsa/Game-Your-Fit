@@ -28,8 +28,10 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.comm.Signal
 import com.solusianakbangsa.gameyourfit.constants.SensorConstants
 import com.solusianakbangsa.gameyourfit.json.TaskList
+import com.solusianakbangsa.gameyourfit.ui.streak.StreakActivity
 import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper.Companion.getSharedPref
+import com.solusianakbangsa.gameyourfit.util.StreakHandler
 import kotlinx.android.synthetic.main.activity_alpha_one.*
 import kotlinx.android.synthetic.main.summary_popup.*
 import org.json.JSONObject
@@ -47,6 +49,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var level : JSONObject
     private lateinit var exerciseSensor : ExerciseSensor
     private lateinit var exerciseMeta: ExerciseMeta
+    private lateinit var streakHandler : StreakHandler
 
     private var backLastPressedMill : Long = 0L
     private var weight = 0
@@ -68,6 +71,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         val dislikeButton : CardView = findViewById(R.id.summaryDislikeButton)
 
         val sharedPref = getSharedPref()
+        streakHandler = StreakHandler(this)
         weight = sharedPref.getLong("userWeight", 57L).toInt()
 
         setSupportActionBar(toolbar)
@@ -176,10 +180,20 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     // send exp here
                     val exp: Int = level.getJSONObject("workoutList").get("xp") as Int
                     FirebaseHelper().updateExp(this, exp)
+
                     addSummary(level.getJSONObject("workoutList").get("title").toString(), exerciseMeta.totalTime, totalCalorie.toInt())
                     Log.e("datadump", "function time")
                     sensorStandbyMessage.visibility = View.GONE
                     findViewById<TextView>(R.id.sensorVisit).visibility = View.GONE
+
+                    if(streakHandler.checkStreak(exerciseMeta.totalTime, this)){
+                        findViewById<ImageView>(R.id.summaryHome).setOnClickListener {
+                            val intent = Intent(this, StreakActivity::class.java).apply{
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            startActivity(intent)
+                        }
+                    }
                 }
             }
         })

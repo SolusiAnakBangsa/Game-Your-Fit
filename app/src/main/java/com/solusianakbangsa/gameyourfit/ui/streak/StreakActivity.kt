@@ -7,6 +7,8 @@ import android.webkit.WebView
 import android.widget.TextView
 import com.solusianakbangsa.gameyourfit.HomeActivity
 import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper
+import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper.Companion.getSharedPref
 
 class StreakActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,8 +16,12 @@ class StreakActivity : AppCompatActivity() {
         setContentView(R.layout.activity_streak)
         val wv : WebView = findViewById(R.id.streakFire)
         val homeButton : TextView = findViewById(R.id.next)
+        val sharedPref = SharedPreferencesHelper(this)
         wv.loadUrl("file:///android_asset/fireanim.html")
         wv.settings.javaScriptEnabled = true
+
+        findViewById<TextView>(R.id.streakNumber).text = sharedPref.sharedPref.getInt("streakAmount", 1).toString()
+
 
         homeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)

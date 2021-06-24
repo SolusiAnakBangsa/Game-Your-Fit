@@ -7,6 +7,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.solusianakbangsa.gameyourfit.constants.EndpointConstants
+import com.solusianakbangsa.gameyourfit.constants.StreakConstants
 import org.json.JSONArray
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -22,7 +23,6 @@ class StreakHandler(val context: Context) {
         serverDateJsonRequest = JsonObjectRequest(
             Request.Method.GET, EndpointConstants.SERVER_TIME_URL, null,
             {
-                Log.i("yabe","Request succeeded")
 
                 var dayDiff = 0
 
@@ -36,8 +36,7 @@ class StreakHandler(val context: Context) {
 
                 val lastStreakEpoch : Long = sharedPref.getLong("lastStreakEpoch", -1L)
                 if(lastStreakEpoch != -1L){
-                    val millDiff = abs(serverTimeEpoch - lastStreakEpoch)
-                    dayDiff = TimeUnit.DAYS.convert(millDiff, TimeUnit.MILLISECONDS).toInt()
+                    dayDiff = DateHelper.getDayDifference(serverTimeEpoch, lastStreakEpoch)
                     Log.i("diffDays", dayDiff.toString())
                 }
 
@@ -46,7 +45,10 @@ class StreakHandler(val context: Context) {
                         FirebaseHelper.resetStreak()
                     }
                     enableStreak()
+                } else{
+                    disableStreak()
                 }
+                Log.i("yabe",  sharedPref.getBoolean("eligibleForStreak", false).toString())
             },
             { error ->
                 Log.e("Error", error.toString())
@@ -65,10 +67,28 @@ class StreakHandler(val context: Context) {
         sharedPref.edit().putBoolean("eligibleForStreak", true).apply()
     }
 
+    /* Made this so enable streak has a friend. */
     fun disableStreak(){
         sharedPref.edit().putBoolean("eligibleForStreak", false).apply()
     }
 
+    /**
+     * Main function. Run this after a certain exercise to check if player gets +1 to streak or not.
+     * Give the new playtime as argument.
+     */
+    fun checkStreak(addedPlaytimeMillis : Long, context: Context) : Boolean{
+        val totalMillis = sharedPref.getLong("streakPlaytimeMillis", 0) + addedPlaytimeMillis
+        sharedPref.edit().putLong("streakPlaytimeMillis", totalMillis).apply()
+        val totalMin = DateHelper.getMinFromMillis(totalMillis)
 
-
+        FirebaseHelper.addTime(totalMillis)
+        if(sharedPref.getBoolean("eligibleForStreak", false) && totalMin >= StreakConstants.MINUTE_FOR_STREAKS){
+            FirebaseHelper.updateStreakDate(context)
+            FirebaseHelper.incrementStreak(context)
+            sharedPref.edit().putInt("streakAmount", (sharedPref.getInt("streakAmount", 0)) + 1).apply()
+            disableStreak()
+            return true
+        }
+        return false
+    }
 }

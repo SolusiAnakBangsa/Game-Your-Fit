@@ -50,6 +50,13 @@ class MainActivity : AppCompatActivity() {
                     Log.i("Error", "Could not connect to Database")
                 }
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.hasChild("userHeight")){
+                        val dashboardIntent = Intent(this@MainActivity, HomeActivity::class.java)
+                        startActivity(dashboardIntent)
+                    } else{
+                        val dashboardIntent = Intent(this@MainActivity, ProfileActivity::class.java)
+                        startActivity(dashboardIntent)
+                    }
                     val sharedPref = SharedPreferencesHelper(this@MainActivity)
                     val sh = StreakHandler(this@MainActivity)
                     if(snapshot.hasChild("lastStreakDate")) {
@@ -71,21 +78,19 @@ class MainActivity : AppCompatActivity() {
                         sh.enableStreak()
                     }
 
+                    if(snapshot.hasChild("streakPlaytimeMillis")){
+                        sharedPref.putLong("streakPlaytimeMillis", snapshot.child("streakPlaytimeMillis").value as Long)
+                    } else{
+                        FirebaseHelper.buildFirebaseRef("users", user.uid, "streakPlaytimeMillis").setValue(0)
+                        sharedPref.putLong("streakPlaytimeMillis", 0)
+                    }
+
                     if (snapshot.hasChild("streakAmount")) {
                         sharedPref.putInt("streakAmount", (snapshot.child("streakAmount").value as Long).toInt())
                     } else{
                         sharedPref.putInt("streakAmount", 0)
                     }
-
-                    if (snapshot.hasChild("userHeight")){
-                        val dashboardIntent = Intent(this@MainActivity, HomeActivity::class.java)
-                        startActivity(dashboardIntent)
-                        finish()
-                    } else{
-                        val dashboardIntent = Intent(this@MainActivity, ProfileActivity::class.java)
-                        startActivity(dashboardIntent)
-                        finish()
-                    }
+                    finish()
                 }
             })
         } else{

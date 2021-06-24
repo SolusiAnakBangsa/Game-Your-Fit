@@ -63,8 +63,8 @@ class HomeActivity : AppCompatActivity() {
 
         val userId = FirebaseAuth.getInstance().uid.toString()
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
 
+        ref = FirebaseDatabase.getInstance().getReference("users").child(userId)
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -99,7 +99,6 @@ class HomeActivity : AppCompatActivity() {
         })
 
         var name = "Username"
-
         if (sharedPref.contains("username")) {
             name = sharedPref.getString("username", "")!!
         } else {

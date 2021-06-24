@@ -76,10 +76,12 @@
         <activity
             android:name=".ui.auth.SignupActivity"
             android:screenOrientation="portrait"
+            android:noHistory="true"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".ui.auth.LoginActivity"
             android:screenOrientation="portrait"
+            android:noHistory="true"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
             android:name=".HomeActivity"
