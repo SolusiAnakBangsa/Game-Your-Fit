@@ -15,6 +15,7 @@ import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
 import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
+import com.solusianakbangsa.gameyourfit.cam.game.objects.UFOGame
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -41,6 +42,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     internal var leftHand = PointF(-1000f, -1000f)
     internal var rightHand = PointF(-1000f, -1000f)
+    internal var body = PointF(0f, 0f)
 
     private var showBigCountdown = false
     private var paintBigCountdown = Paint()
@@ -122,7 +124,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         trailArrayR = Array(TRAIL_LENGTH) { PointF() }
 
         // Add game modes
-        games.add(TargetingGame(this, "target"))
+//        games.add(TargetingGame(this, "target"))
+        games.add(UFOGame(this, "target"))
     }
 
     private fun initPaints() {
@@ -183,6 +186,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     fun instructionDone() {
         gameState = GameState.STANDBY
+//        startGame() // TODO: DEBUG PURPOSES ONLY
     }
 
     /**
@@ -299,6 +303,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             // Position the hand
             leftHand = getPointSum(landmarks, L_LEFT_HAND)
             rightHand = getPointSum(landmarks, L_RIGHT_HAND)
+            body = getPointSum(landmarks, L_BODY)
 
             when (gameState) {
                 GameState.INSTR -> {
@@ -518,7 +523,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             // Draw running bar text
             canvas.save()
             canvas.rotate(90f)
-            canvas.drawText("Run Pace", 0f, -15f, smallUiTextPaint)
+            canvas.drawText("Run Pace", 0f, -30f, smallUiTextPaint)
             canvas.restore()
         }
     }
@@ -552,6 +557,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         private val L_RIGHT_HAND = arrayOf(18, 20)
         private val L_SHOULDERS = arrayOf(11, 12)
         private val L_BOTTOM = arrayOf(23, 24)
+        private val L_BODY = arrayOf(11, 12, 23, 24)
 
         private const val RUNNING_BAR_WIDTH = .05f
         private const val RUNNING_DECAY_PER_S = .35f
