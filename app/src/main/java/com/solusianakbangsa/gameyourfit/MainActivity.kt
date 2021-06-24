@@ -20,6 +20,7 @@ import com.solusianakbangsa.gameyourfit.ui.onboarding.OnboardingActivity
 import com.solusianakbangsa.gameyourfit.util.DateHelper
 import com.solusianakbangsa.gameyourfit.util.FirebaseHelper
 import com.solusianakbangsa.gameyourfit.util.SharedPreferencesHelper
+import com.solusianakbangsa.gameyourfit.util.StreakHandler
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -34,7 +35,6 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth.currentUser
-        var lastStreakEpoch = 0
 //        Creates an async request to levels, and create a local json file to later be accessed.
         createJson()
         val logoBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.logo)
@@ -45,13 +45,13 @@ class MainActivity : AppCompatActivity() {
         /**If user is authenticated, send them to dashboard, if not, send to login activity*/
         if(user != null){
             val dbRef = FirebaseHelper.buildFirebaseRef("users", user.uid)
-
             dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onCancelled(error: DatabaseError) {
                     Log.i("Error", "Could not connect to Database")
                 }
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val sharedPref = SharedPreferencesHelper(this@MainActivity)
+                    val sh = StreakHandler(this@MainActivity)
                     if(snapshot.hasChild("lastStreakDate")) {
                         val dateRef = snapshot.child("lastStreakDate")
 
@@ -65,7 +65,10 @@ class MainActivity : AppCompatActivity() {
                         val calculatedEpoch = date?.time
                         if (calculatedEpoch != null) {
                             sharedPref.putLong("lastStreakEpoch", calculatedEpoch)
+                            sh.setStreakEligible()
                         }
+                    } else{
+                        sh.enableStreak()
                     }
 
                     if (snapshot.hasChild("streakAmount")) {

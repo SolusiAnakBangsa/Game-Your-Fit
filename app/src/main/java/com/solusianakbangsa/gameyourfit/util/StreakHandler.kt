@@ -9,28 +9,44 @@ import com.android.volley.toolbox.Volley
 import com.solusianakbangsa.gameyourfit.constants.EndpointConstants
 import org.json.JSONArray
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 import kotlin.math.floor
 
-class StreakHandler {
+class StreakHandler(val context: Context) {
     private lateinit var serverDateJsonRequest : JsonObjectRequest
 
     private lateinit var JsonDateArray : JSONArray
-
+    private val sharedPref = SharedPreferencesHelper(context).sharedPref
     fun setStreakEligible() {
         serverDateJsonRequest = JsonObjectRequest(
             Request.Method.GET, EndpointConstants.SERVER_TIME_URL, null,
             {
+                Log.i("yabe","Request succeeded")
+
+                var dayDiff = 0
+
                 JsonDateArray = it.getJSONArray("localtime")
                 val year = JsonDateArray.getInt(0).toString()
                 val month = JsonDateArray.getInt(1).toString()
                 val day = JsonDateArray.getInt(2).toString()
 
                 val date = DateHelper.getDate("$day/$month/$year")
-                date!!.time
+                val serverTimeEpoch = date!!.time
 
-//                If day difference bigger than two reset streak, eligible yes
-//                If day difference <= 0, eligible no
-//                If day difference == 1, eligible yes
+                val lastStreakEpoch : Long = sharedPref.getLong("lastStreakEpoch", -1L)
+                if(lastStreakEpoch != -1L){
+                    val millDiff = abs(serverTimeEpoch - lastStreakEpoch)
+                    dayDiff = TimeUnit.DAYS.convert(millDiff, TimeUnit.MILLISECONDS).toInt()
+                    Log.i("diffDays", dayDiff.toString())
+                }
+
+                if(dayDiff > 0){
+                    if(dayDiff > 1){
+                        FirebaseHelper.resetStreak()
+                    }
+                    enableStreak()
+                }
             },
             { error ->
                 Log.e("Error", error.toString())
@@ -40,10 +56,19 @@ class StreakHandler {
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
-    }
-
-    fun startRequest(context : Context){
         val requestQueue = Volley.newRequestQueue(context)
         requestQueue.add(serverDateJsonRequest)
     }
+
+    /* Enables streak for current play session. Used in internal streak logic and first time streak.*/
+    fun enableStreak(){
+        sharedPref.edit().putBoolean("eligibleForStreak", true).apply()
+    }
+
+    fun disableStreak(){
+        sharedPref.edit().putBoolean("eligibleForStreak", false).apply()
+    }
+
+
+
 }

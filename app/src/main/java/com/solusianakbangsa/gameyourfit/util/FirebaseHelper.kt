@@ -42,6 +42,10 @@ class FirebaseHelper {
         fun postFirebaseData(ref: DatabaseReference, user: User): Task<Void> {
             return ref.setValue(user)
         }
+
+        fun resetStreak(){
+            buildFirebaseRef("users", getCurrentUID(), "streakAmount").setValue(0)
+        }
     }
 
     fun addLevelFeedback(levelTitle : String, key : String){
@@ -62,7 +66,6 @@ class FirebaseHelper {
             }
         }
     }
-
 
     fun updateExp(context : Context, exp : Int){
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
