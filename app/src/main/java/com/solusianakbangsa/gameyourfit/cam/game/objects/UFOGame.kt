@@ -7,7 +7,6 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.BitmapUtils
 import com.solusianakbangsa.gameyourfit.cam.game.GameMode
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
-import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.pointToRect
 import kotlin.math.abs
 import kotlin.random.Random
@@ -21,13 +20,17 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     private var nextSpawn = 0L
 
+    private var zigZagStart = 0L
+    private var zigZagCounter = 0
+    private var zigZagLimit = 0
+
     private val heartPaint = Paint().apply {
         color = Color.RED
     }
 
     override val title: String = "Laser Dodger"
     override val caption: String = "The aliens are attacking!\n" +
-            "Dodge the laser attacks that comes from above."
+            "Protect your \"life\" from the laser attacks that comes from above."
 
     var hitCounter = 0
 
@@ -69,7 +72,7 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         }
 
         companion object {
-            private const val DESTROY_AFTER = 3000L
+            const val DESTROY_AFTER = 1000L
         }
     }
 
@@ -77,6 +80,10 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     override fun init() {
         lasers.clear()
         hitCounter = 0
+
+        zigZagStart = 0L
+        zigZagCounter = 0
+        zigZagLimit = 0
     }
 
     override fun onFirstLoop() {
@@ -90,10 +97,22 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         // Reset timers
         if (System.currentTimeMillis() > nextSpawn) {
             spawnLasers()
-            nextSpawn = System.currentTimeMillis() + 10000L
         }
 
-        // Clear lasers
+        // Spawn zig zag lasers
+        if (zigZagCounter < zigZagLimit && System.currentTimeMillis() > zigZagStart) {
+            // Spawn lasers
+            for (i in (zigZagCounter % 2) until LASER_AMOUNT step 2) {
+                lasers.add(Laser(
+                    PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
+                    System.currentTimeMillis() + LASER_CHARGE_TIME
+                ))
+            }
+            zigZagStart = System.currentTimeMillis() + ZIG_ZAG_INTERVAL
+            zigZagCounter++
+        }
+
+        // Do laser loops and do laser deletions
         val it = lasers.iterator()
         while (it.hasNext()) {
             val l = it.next()
@@ -103,7 +122,7 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
             if (l.isSpawned && l.yPos == 0f) {
                 val pb = overlay.body
                 val posX = l.position.x
-                if (pointToRect(pb.x, pb.y, posX, 0f, posX + overlay.width/2, overlay.height.toFloat())) {
+                if (pointToRect(pb.x, pb.y, posX, 0f, posX + overlay.width/LASER_AMOUNT, overlay.height.toFloat())) {
                     getHit()
                 }
             }
@@ -133,6 +152,7 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     private fun getHit() {
         hitCounter++
+        Log.i("Lol", hitCounter.toString())
     }
 
     private fun generateLaserBitmap(): Bitmap {
@@ -170,15 +190,28 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     }
 
     private fun spawnLasers() {
-        // Get a free space
-        val free = abs(Random.nextInt()) % LASER_AMOUNT
-        for (i in 0 until LASER_AMOUNT) {
-            if (i == free) continue
+        // Choose random laser mode
+        when (abs(Random.nextInt()) % 2) {
+            0 -> {
+                // Get a free space
+                val free = abs(Random.nextInt()) % LASER_AMOUNT
+                for (i in 0 until LASER_AMOUNT) {
+                    if (i == free) continue
 
-            lasers.add(Laser(
-                PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
-                System.currentTimeMillis() + LASER_CHARGE_TIME
-            ))
+                    lasers.add(Laser(
+                        PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
+                        System.currentTimeMillis() + LASER_CHARGE_TIME
+                    ))
+                }
+                nextSpawn = System.currentTimeMillis() + LASER_CHARGE_TIME + Laser.DESTROY_AFTER + PAUSE_BETWEEN_GAMES
+            }
+            1 -> {
+                // Zig Zag mode
+                zigZagStart = System.currentTimeMillis()
+                zigZagCounter = 0
+                zigZagLimit = 4
+                nextSpawn = System.currentTimeMillis() + (ZIG_ZAG_INTERVAL*zigZagLimit) + PAUSE_BETWEEN_GAMES
+            }
         }
     }
 
@@ -186,5 +219,7 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         // Laser amount
         private const val LASER_AMOUNT = 5
         private const val LASER_CHARGE_TIME = 3000L
+        private const val ZIG_ZAG_INTERVAL = 1500L
+        private const val PAUSE_BETWEEN_GAMES = 4000L
     }
 }

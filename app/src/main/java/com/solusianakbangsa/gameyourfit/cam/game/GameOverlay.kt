@@ -22,7 +22,6 @@ import kotlin.collections.ArrayList
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, attrs) {
 
-    // TODO: Continue running prompt when stopped
     private var ralewaySemiBold = Typeface.DEFAULT
     private var ralewayBold = Typeface.DEFAULT
     private var ralewayBlackItalic = Typeface.DEFAULT
@@ -186,7 +185,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     fun instructionDone() {
         gameState = GameState.STANDBY
-//        startGame() // TODO: DEBUG PURPOSES ONLY
+        startGame() // TODO: DEBUG PURPOSES ONLY
     }
 
     /**
