@@ -94,6 +94,11 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     private var smallUiTextPaint = Paint()
 
+    // TODO
+    private val gameLength = 120000L
+    private var gameStartTime = 0L
+    private val gameTimePaint = Paint()
+
     // FPS code
 //    var counter = 0
 //    var timeCount = 0L
@@ -103,7 +108,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         STANDBY,        // Standby and wait until user gets in position
         WAIT,           // User is in camera, and countdown started
         WAITNEWGAME,    // Waiting for a new game to be played
-        START           // Game is started
+        START,          // Game is started
+        GAMEOVER,       // The entire game is over.
     }
 
     init {
@@ -131,8 +137,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         trailArrayR = Array(TRAIL_LENGTH) { PointF() }
 
         // Add game modes
-//        games.add(TargetingGame(this, "target"))
-        games.add(UFOGame(this, "target"))
+        games.add(TargetingGame(this, "target"))
+        games.add(UFOGame(this, "ufo"))
     }
 
     private fun initPaints() {
@@ -192,6 +198,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         }
         handPulsePaintL.apply {
             color = Color.parseColor("#BB2832bf")
+        }
+        gameTimePaint.apply {
+            color = Color.WHITE
+            textAlign = Paint.Align.RIGHT
         }
     }
 
@@ -253,7 +263,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     private fun startGame() {
-//        gameObjects.add(TargetingGame(this, "target"))
+        gameStartTime = System.currentTimeMillis()
         newGameMode()
     }
 
@@ -263,14 +273,37 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         runningBarLength = clamp(runningBarLength + 25f, 0f, 100f)
     }
 
+    /**
+     * Add accumulated points and draw a text with animation if displayTime is supplied.
+     */
     fun addPoint(point: Int, displayTime: Long = 0L) {
-        // TODO
+        // Make sure points cannot go negative
         points += point
+        if (points < 0) points = 0
+
         if (displayTime > 0L) {
             pointDelta = point
             showPointDeltaTime = System.currentTimeMillis()
             showPointDuration = displayTime
             showPointPaint.color = if (point < 0) Color.RED else Color.GREEN
+        }
+    }
+
+    /**
+     * Means that the current game is over.
+     */
+    fun gameOver() {
+        // If the time is more than the game time
+        if (System.currentTimeMillis() > gameStartTime + gameLength) {
+            // Game is truly over
+            currentGame?.clean()
+            // Remove and add a new one.
+            if (currentGame != null) gameObjects.remove(currentGame!!)
+
+            bigCountdownText = "DONE!"
+            gameState = GameState.GAMEOVER
+        } else {
+            newGameMode()
         }
     }
 
@@ -348,10 +381,9 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                         "Run!"
                     }
                 }
-                GameState.WAITNEWGAME -> {
-                }
-                GameState.START -> {
-                }
+                GameState.WAITNEWGAME -> {}
+                GameState.START -> {}
+                GameState.GAMEOVER -> {}
             }
 
             if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
@@ -416,8 +448,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         //set the center of all circles to be center of the view
-        paintBigCountdown.textSize = w.toFloat()*.33f
-        paintBigCountdownS.textSize = w.toFloat()*.33f
+        paintBigCountdown.textSize = w.toFloat()*.28f
+        paintBigCountdownS.textSize = w.toFloat()*.28f
         paintBigCountdownS.strokeWidth = w.toFloat()*.04f
 
         runningCounterPaint.textSize = h.toFloat()*.1f
@@ -427,6 +459,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         trailPaint.strokeWidth = h.toFloat()*.25f
         notificationPaint.textSize = w.toFloat()*.06f
         smallUiTextPaint.textSize = w.toFloat() * RUNNING_BAR_WIDTH - 50f
+        gameTimePaint.textSize = h.toFloat()*.075f
         refreshNotifBitmap()
     }
 
@@ -439,6 +472,9 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+
+        // TODO: Clean games.
+        // TODO: Home button still errors
 
         gameThread.started = false
     }
@@ -454,12 +490,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         // Draw hand trail
         trailPaint.strokeWidth = height.toFloat()*.06f
         for (i in trailIndex downTo 1) {
-            trailPaint.strokeWidth *= .9f
+            trailPaint.strokeWidth *= .8f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }
         for (i in (TRAIL_LENGTH-1) downTo (trailIndex + 2)) {
-            trailPaint.strokeWidth *= .9f
+            trailPaint.strokeWidth *= .8f
             drawTrailUtil(canvas, trailArrayL, i)
             drawTrailUtil(canvas, trailArrayR, i)
         }
@@ -476,9 +512,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 // Overlay
                 canvas.drawARGB(190, 0, 0, 0)
             }
-            GameState.STANDBY -> {
-
-            }
+            GameState.STANDBY -> { }
             GameState.WAIT -> {
                 // Count time remaining
                 if (showBigCountdown) {
@@ -509,9 +543,14 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 captionLayout.draw(canvas)
                 canvas.restore()
             }
+            GameState.START -> { }
+            GameState.GAMEOVER -> {
+                canvas.drawARGB(140, 0, 0, 0)
 
-            GameState.START -> {
-
+                val textX = sWidth / 2
+                val textY = sHeight / 2 + paintBigCountdown.textSize / 3
+                canvas.drawText(bigCountdownText, textX, textY, paintBigCountdownS)
+                canvas.drawText(bigCountdownText, textX, textY, paintBigCountdown)
             }
         }
         
@@ -544,13 +583,22 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 runningCounterPaint
             )
 
-            // Draw point delta, if there is any
+            // Draw time since start (s)
+            val timeSinceStart = (time - gameStartTime)/1000L
+            canvas.drawText(
+                "${timeSinceStart / 60L}:${(timeSinceStart % 60L).toString().padStart(2, '0')}",
+                width - 64f,
+                gameTimePaint.textSize + runningCounterPaint.textSize + 30f,
+                gameTimePaint
+            )
+
+            // Draw game point delta, if there is any
             if (time < showPointDeltaTime + showPointDuration) {
                 val prog = (time - showPointDeltaTime)
                 canvas.drawText(
                     "${if (pointDelta < 0) "-" else "+"}${abs(pointDelta)}",
                     width + (500f * (1f - clamp(prog.toFloat() / 400f, 0f, 1f))),
-                    height.toFloat(),
+                    height.toFloat() - 30f,
                     showPointPaint
                 )
             }

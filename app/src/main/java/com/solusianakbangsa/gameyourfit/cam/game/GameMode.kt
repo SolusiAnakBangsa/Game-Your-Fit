@@ -1,9 +1,14 @@
 package com.solusianakbangsa.gameyourfit.cam.game
 
+import android.util.Log
+
 abstract class GameMode(overlay: GameOverlay, id: String) : GameObject(overlay, id) {
 
     abstract val title: String
     abstract val caption: String
+
+    var gameStart = 0L
+    var gameDuration = 30000L
 
     init {
 
@@ -12,7 +17,17 @@ abstract class GameMode(overlay: GameOverlay, id: String) : GameObject(overlay, 
     /**
      * Re-init the game.
      */
-    abstract fun init()
+    open fun init() {
+        gameStart = System.currentTimeMillis()
+    }
+
+    override fun onLoop(delta: Long) {
+        super.onLoop(delta)
+        // Calculates the game duration
+        if (System.currentTimeMillis() > gameStart + gameDuration) {
+            overlay.gameOver()
+        }
+    }
 
     /**
      * Cleans the objects

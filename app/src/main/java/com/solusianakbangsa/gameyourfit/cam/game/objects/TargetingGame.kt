@@ -67,7 +67,7 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
                     addUpdateListener { anim ->
                         // Set alpha and size
                         val value = anim.animatedValue as Float
-                        paint.alpha = (invLerp(MIN_SIZE, ULTRA_SIZE, value) * 255f).toInt()
+                        paint.alpha = 255 - (invLerp(MIN_SIZE, ULTRA_SIZE, value) * 255f).toInt()
                         size = value
                     }
                     addListener(object : AnimatorListenerAdapter() {
@@ -106,6 +106,7 @@ class TargetingGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     }
 
     override fun init() {
+        super.init()
         points = 0
         timerNewTarget()
         targets.fill(null)

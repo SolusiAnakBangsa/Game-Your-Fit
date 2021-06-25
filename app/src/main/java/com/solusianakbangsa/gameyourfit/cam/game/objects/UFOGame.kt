@@ -89,6 +89,7 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
 
     override fun init() {
+        super.init()
         lasers.clear()
         hitCounter = 0
 
@@ -199,7 +200,6 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     private fun getHit() {
         hitCounter++
         overlay.addPoint(HIT_POINT, 2500L)
-        Log.i("Lol", hitCounter.toString())
     }
 
     private fun generateLaserBitmap(): Bitmap {
@@ -272,9 +272,9 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         // Laser amount
         private const val LASER_AMOUNT = 5
         private const val LASER_CHARGE_TIME = 3000L
-        private const val ZIG_ZAG_INTERVAL = 1500L
+        private const val ZIG_ZAG_INTERVAL = 2000L
         private const val PAUSE_BETWEEN_GAMES = 4000L
-        private const val HIT_POINT = -1500
+        private const val HIT_POINT = -1000
         private const val HEART_MIN = 40f
         private const val HEART_MAX = 100f
     }
