@@ -6,6 +6,7 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
@@ -16,6 +17,7 @@ import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
 import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
 import com.solusianakbangsa.gameyourfit.cam.game.objects.UFOGame
+import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -97,6 +99,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     var gameLength = 120000L
     private var gameStartTime = 0L
     private val gameTimePaint = Paint()
+
+    private var gameEndTransition = 0L
+
+    var activity: CamGameActivity? = null
 
     // FPS code
 //    var counter = 0
@@ -301,6 +307,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
             bigCountdownText = "DONE!"
             gameState = GameState.GAMEOVER
+
+            gameEndTransition = System.currentTimeMillis() + 5000L
         } else {
             newGameMode()
         }
@@ -550,6 +558,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 val textY = sHeight / 2 + paintBigCountdown.textSize / 3
                 canvas.drawText(bigCountdownText, textX, textY, paintBigCountdownS)
                 canvas.drawText(bigCountdownText, textX, textY, paintBigCountdown)
+
+                if (time > gameEndTransition) {
+                    activity!!.gameDone(System.currentTimeMillis() - gameStartTime)
+                }
             }
         }
         

@@ -1,6 +1,7 @@
 package com.solusianakbangsa.gameyourfit.ui.camgame
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -60,6 +61,9 @@ class CamGameActivity : AppCompatActivity() {
         GameOverlay.overlay = graphicOverlay!!
         GameUtils.overlay = graphicOverlay!!
 
+        val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
+        gameOverlay.activity = this
+
         // Animate instruction and fade it out after.
         val v = findViewById<ImageView>(R.id.rotate_phone_icon)
         v.rotation = 45f
@@ -68,7 +72,6 @@ class CamGameActivity : AppCompatActivity() {
             v.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
             t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).withEndAction {
                 // Start game
-                val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
                 gameOverlay.gameLength = intent.getLongExtra("duration", 60000L)
                 gameOverlay.instructionDone()
             }.start()
@@ -102,6 +105,16 @@ class CamGameActivity : AppCompatActivity() {
         val attr = window.attributes
         attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = attr
+    }
+
+    fun gameDone(duration: Long) {
+        // TODO: After the intent, if pressed back the game will go back to the camera.
+
+        val intent = Intent(this, PostCamGame::class.java)
+        val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
+        intent.putExtra("time", duration)
+        intent.putExtra("points", gameOverlay.points)
+        startActivity(intent)
     }
 
     private fun makeCamera() {
