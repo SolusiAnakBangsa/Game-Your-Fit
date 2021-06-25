@@ -328,7 +328,7 @@ public class CameraSource {
 //    Log.i(TAG, "Exposure: " + parameters.getExposureCompensationStep());
 //    Log.i(TAG, "Exposure: " + parameters.getMaxExposureCompensation());
 //    Log.i(TAG, "Exposure: " + parameters.getMinExposureCompensation());
-//    parameters.setExposureCompensation(parameters.getMaxExposureCompensation());
+    parameters.setExposureCompensation(parameters.getMinExposureCompensation());
 //    parameters.setAutoExposureLock(true);
 //
 //    Log.i(TAG, "Exposure: " + parameters.getExposureCompensation());
@@ -507,21 +507,27 @@ public class CameraSource {
     // lower bound is as small as possible to properly expose frames in low light conditions. Note
     // that this may select a range that the desired value is outside of. For example, if the
     // desired frame rate is 30.5, the range (30, 30) is probably more desirable than (30, 40).
-    int[] selectedFpsRange = null;
+    int[] selectedFpsRange = {0, 0};
     int minUpperBoundDiff = Integer.MAX_VALUE;
     int minLowerBound = Integer.MAX_VALUE;
     List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
     Log.i(TAG, "Available FPS: " + previewFpsRangeList.size());
 
+//    for (int[] range : previewFpsRangeList) {
+//      Log.i(TAG, "FPS: " + Arrays.toString(range));
+//      int upperBoundDiff =
+//          Math.abs(desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+//      int lowerBound = range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+//      if (upperBoundDiff <= minUpperBoundDiff && lowerBound <= minLowerBound) {
+//        selectedFpsRange = range;
+//        minUpperBoundDiff = upperBoundDiff;
+//        minLowerBound = lowerBound;
+//      }
+//    }
     for (int[] range : previewFpsRangeList) {
       Log.i(TAG, "FPS: " + Arrays.toString(range));
-      int upperBoundDiff =
-          Math.abs(desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
-      int lowerBound = range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
-      if (upperBoundDiff <= minUpperBoundDiff && lowerBound <= minLowerBound) {
+      if (range[0] >= selectedFpsRange[0] && range[1] >= selectedFpsRange[1]) {
         selectedFpsRange = range;
-        minUpperBoundDiff = upperBoundDiff;
-        minLowerBound = lowerBound;
       }
     }
     return selectedFpsRange;
