@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -14,13 +13,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.solusianakbangsa.gameyourfit.FileConstants
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.ui.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
-import java.io.File
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class CampaignActivity : AppCompatActivity() {

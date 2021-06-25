@@ -68,7 +68,9 @@ class CamGameActivity : AppCompatActivity() {
             v.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
             t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).withEndAction {
                 // Start game
-                findViewById<GameOverlay>(R.id.game_overlay).instructionDone()
+                val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
+                gameOverlay.gameLength = intent.getLongExtra("duration", 60000L)
+                gameOverlay.instructionDone()
             }.start()
         }.start()
 

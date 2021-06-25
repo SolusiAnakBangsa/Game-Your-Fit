@@ -94,8 +94,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     private var smallUiTextPaint = Paint()
 
-    // TODO
-    private val gameLength = 120000L
+    var gameLength = 120000L
     private var gameStartTime = 0L
     private val gameTimePaint = Paint()
 
