@@ -103,10 +103,14 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         if (zigZagCounter < zigZagLimit && System.currentTimeMillis() > zigZagStart) {
             // Spawn lasers
             for (i in (zigZagCounter % 2) until LASER_AMOUNT step 2) {
-                lasers.add(Laser(
-                    PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
-                    System.currentTimeMillis() + LASER_CHARGE_TIME
-                ))
+                synchronized(lasers) {
+                    lasers.add(
+                        Laser(
+                            PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
+                            System.currentTimeMillis() + LASER_CHARGE_TIME
+                        )
+                    )
+                }
             }
             zigZagStart = System.currentTimeMillis() + ZIG_ZAG_INTERVAL
             zigZagCounter++
@@ -128,21 +132,32 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
             }
 
             if (l.clearThis) {
-                it.remove()
+                synchronized(lasers) {
+                    it.remove()
+                }
             }
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        for (l in lasers) {
-            if (!l.isSpawned) {
-                // Draw warning
-                canvas.drawBitmap(warningBitmap,
-                    l.position.x, overlay.height/2f - warningBitmap.height/2,
-                    null)
-            } else {
-                // Draw laser
-                canvas.drawBitmap(laserBitmap, l.position.x, -overlay.height + (overlay.height * l.yPos), null)
+        synchronized(lasers) {
+            for (l in lasers) {
+                if (!l.isSpawned) {
+                    // Draw warning
+                    canvas.drawBitmap(
+                        warningBitmap,
+                        l.position.x, overlay.height / 2f - warningBitmap.height / 2,
+                        null
+                    )
+                } else {
+                    // Draw laser
+                    canvas.drawBitmap(
+                        laserBitmap,
+                        l.position.x,
+                        -overlay.height + (overlay.height * l.yPos),
+                        null
+                    )
+                }
             }
         }
 
@@ -190,27 +205,33 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     }
 
     private fun spawnLasers() {
-        // Choose random laser mode
-        when (abs(Random.nextInt()) % 2) {
-            0 -> {
-                // Get a free space
-                val free = abs(Random.nextInt()) % LASER_AMOUNT
-                for (i in 0 until LASER_AMOUNT) {
-                    if (i == free) continue
+        synchronized(lasers) {
+            // Choose random laser mode
+            when (abs(Random.nextInt()) % 2) {
+                0 -> {
+                    // Get a free space
+                    val free = abs(Random.nextInt()) % LASER_AMOUNT
+                    for (i in 0 until LASER_AMOUNT) {
+                        if (i == free) continue
 
-                    lasers.add(Laser(
-                        PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
-                        System.currentTimeMillis() + LASER_CHARGE_TIME
-                    ))
+                        lasers.add(
+                            Laser(
+                                PointF(overlay.width * (i.toFloat() / LASER_AMOUNT), 0f),
+                                System.currentTimeMillis() + LASER_CHARGE_TIME
+                            )
+                        )
+                    }
+                    nextSpawn =
+                        System.currentTimeMillis() + LASER_CHARGE_TIME + Laser.DESTROY_AFTER + PAUSE_BETWEEN_GAMES
                 }
-                nextSpawn = System.currentTimeMillis() + LASER_CHARGE_TIME + Laser.DESTROY_AFTER + PAUSE_BETWEEN_GAMES
-            }
-            1 -> {
-                // Zig Zag mode
-                zigZagStart = System.currentTimeMillis()
-                zigZagCounter = 0
-                zigZagLimit = 4
-                nextSpawn = System.currentTimeMillis() + (ZIG_ZAG_INTERVAL*zigZagLimit) + PAUSE_BETWEEN_GAMES
+                1 -> {
+                    // Zig Zag mode
+                    zigZagStart = System.currentTimeMillis()
+                    zigZagCounter = 0
+                    zigZagLimit = 4
+                    nextSpawn =
+                        System.currentTimeMillis() + (ZIG_ZAG_INTERVAL * zigZagLimit) + PAUSE_BETWEEN_GAMES
+                }
             }
         }
     }
