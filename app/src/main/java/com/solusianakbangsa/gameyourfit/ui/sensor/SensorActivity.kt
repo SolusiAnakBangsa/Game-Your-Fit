@@ -186,7 +186,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                     sensorStandbyMessage.visibility = View.GONE
                     findViewById<TextView>(R.id.sensorVisit).visibility = View.GONE
 
-                    if(streakHandler.checkStreak(exerciseMeta.totalTime, this)){
+                    if(streakHandler.checkStreak(exerciseMeta.totalTime)){
                         findViewById<ImageView>(R.id.summaryHome).setOnClickListener {
                             val intent = Intent(this, StreakActivity::class.java).apply{
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

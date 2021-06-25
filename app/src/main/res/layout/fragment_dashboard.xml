@@ -332,7 +332,7 @@
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:padding="10dp"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_launcher"
+                        android:src="@drawable/ic_baseline_camera_alt_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -412,7 +412,7 @@
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:padding="10dp"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_launcher"
+                        android:src="@drawable/ic_menu_settings"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

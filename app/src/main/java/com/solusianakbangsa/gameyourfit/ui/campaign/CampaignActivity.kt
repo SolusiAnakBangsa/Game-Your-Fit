@@ -51,10 +51,9 @@ class CampaignActivity : AppCompatActivity() {
     fun initializeLevels(){
         for (i in 0 until levelList.jsonArr.length()){
             val levelView : View = layoutInflater.inflate(R.layout.level_card, null, false)
-            val levelButton :ImageView = levelView.findViewById(R.id.levelButton)
+            val levelButton : ImageView = levelView.findViewById(R.id.levelButton)
             val levelTitle : TextView = levelView.findViewById(R.id.levelName)
             val levelLoading : ShimmerFrameLayout = levelView.findViewById(R.id.levelShimmer)
-            var bmp : Bitmap? = null
             levelTitle.text = levelList.getTitleAtLevel(i)
             levelLoading.baseAlpha = 0.9f
             levelLoading.duration = 1000

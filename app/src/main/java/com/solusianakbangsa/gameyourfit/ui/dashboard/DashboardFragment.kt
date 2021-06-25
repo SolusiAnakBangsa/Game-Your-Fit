@@ -29,6 +29,7 @@ import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
+import com.solusianakbangsa.gameyourfit.ui.calibrate.CalibrateActivity
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
 import de.hdodenhof.circleimageview.CircleImageView
@@ -127,6 +128,12 @@ class DashboardFragment : Fragment() {
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
 
+        val toCalibrateActivity = View.OnClickListener {
+            val intent = Intent(activity, CalibrateActivity::class.java)
+            activity?.startActivity(intent)
+            activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+        }
+
         executor.execute{
             levelList = LevelList.readLevelsFromFile(requireActivity())
             val randomLvl = (0 until levelList.jsonArr.length()).random()
@@ -168,6 +175,11 @@ class DashboardFragment : Fragment() {
         binding.dashboardCamGame.setOnClickListener(toCamGameActivity)
         binding.dashboardCamGameTitle.setOnClickListener(toCamGameActivity)
         binding.dashboardCamGameDescription.setOnClickListener(toCamGameActivity)
+
+        binding.dashboardRecalibrate.setOnClickListener(toCalibrateActivity)
+        binding.dashboardRecalibrateDescription.setOnClickListener(toCalibrateActivity)
+        binding.dashboardRecalibratePlay.setOnClickListener(toCalibrateActivity)
+        binding.dashboardRecalibrateTitle.setOnClickListener(toCalibrateActivity)
 
         return binding.root
     }

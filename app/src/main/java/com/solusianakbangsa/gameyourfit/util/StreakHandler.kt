@@ -9,10 +9,6 @@ import com.android.volley.toolbox.Volley
 import com.solusianakbangsa.gameyourfit.constants.EndpointConstants
 import com.solusianakbangsa.gameyourfit.constants.StreakConstants
 import org.json.JSONArray
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
-import kotlin.math.floor
 
 class StreakHandler(val context: Context) {
     private lateinit var serverDateJsonRequest : JsonObjectRequest
@@ -76,7 +72,7 @@ class StreakHandler(val context: Context) {
      * Main function. Run this after a certain exercise to check if player gets +1 to streak or not.
      * Give the new playtime as argument.
      */
-    fun checkStreak(addedPlaytimeMillis : Long, context: Context) : Boolean{
+    fun checkStreak(addedPlaytimeMillis : Long) : Boolean{
         val totalMillis = sharedPref.getLong("streakPlaytimeMillis", 0) + addedPlaytimeMillis
         sharedPref.edit().putLong("streakPlaytimeMillis", totalMillis).apply()
         val totalMin = DateHelper.getMinFromMillis(totalMillis)
