@@ -14,6 +14,11 @@ abstract class GameMode(overlay: GameOverlay, id: String) : GameObject(overlay, 
      */
     abstract fun init()
 
+    /**
+     * Cleans the objects
+     */
+    abstract fun clean()
+
 //    TODO: Add game duration and end
 //    TODO: Insert an animation that explains the game.
 //    abstract val imageAnim: Bitmap ????

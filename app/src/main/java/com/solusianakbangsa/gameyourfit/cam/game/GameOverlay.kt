@@ -18,6 +18,7 @@ import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
 import com.solusianakbangsa.gameyourfit.cam.game.objects.UFOGame
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 
 class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, attrs) {
@@ -65,6 +66,13 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val runningBarColor = floatArrayOf(0f, 0f, 0f)
 
     private var waitGameStartTime = 0L
+
+    // Points accumulated by the user
+    var points = 0
+    private var showPointDeltaTime = 0L
+    private var showPointDuration = 0L
+    private var pointDelta = 0
+    private val showPointPaint = Paint()
 
     private var titleLayout : StaticLayout
     private val titlePaint = TextPaint()
@@ -157,6 +165,10 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             typeface = ralewaySemiBold
             textAlign = Paint.Align.LEFT
         }
+        showPointPaint.apply {
+            typeface = ralewayBold
+            textAlign = Paint.Align.RIGHT
+        }
 
         titlePaint.apply {
             color = Color.parseColor("#e0e0e0")
@@ -192,8 +204,11 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
      * Generates a new random camera game mode. TODO: Do pseudorandom
      */
     private fun newGameMode() {
+        currentGame?.clean()
+
         // Remove and add a new one.
-        gameObjects.remove(currentGame)
+        if (currentGame != null) gameObjects.remove(currentGame!!)
+
         currentGame = games.random()
         currentGame!!.init()
 
@@ -244,7 +259,19 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     private fun stepOne() {
         runningSteps++
+        addPoint(RUN_POINT)
         runningBarLength = clamp(runningBarLength + 25f, 0f, 100f)
+    }
+
+    fun addPoint(point: Int, displayTime: Long = 0L) {
+        // TODO
+        points += point
+        if (displayTime > 0L) {
+            pointDelta = point
+            showPointDeltaTime = System.currentTimeMillis()
+            showPointDuration = displayTime
+            showPointPaint.color = if (point < 0) Color.RED else Color.GREEN
+        }
     }
 
     private fun doCountdown(landmarks: List<PoseLandmark>) {
@@ -393,11 +420,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         paintBigCountdownS.textSize = w.toFloat()*.33f
         paintBigCountdownS.strokeWidth = w.toFloat()*.04f
 
-        runningCounterPaint.textSize = h.toFloat()*.25f
+        runningCounterPaint.textSize = h.toFloat()*.1f
+        showPointPaint.textSize = h.toFloat()*.175f
         titlePaint.textSize = w.toFloat()*.1f
         captionPaint.textSize = w.toFloat()*.05f
         trailPaint.strokeWidth = h.toFloat()*.25f
-        notificationPaint.textSize = w.toFloat()*.065f
+        notificationPaint.textSize = w.toFloat()*.06f
         smallUiTextPaint.textSize = w.toFloat() * RUNNING_BAR_WIDTH - 50f
         refreshNotifBitmap()
     }
@@ -417,6 +445,8 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+        val time = System.currentTimeMillis()
 
         canvas.drawCircle(leftHand.x, leftHand.y, handPulseSize, handPulsePaintL)
         canvas.drawCircle(rightHand.x, rightHand.y, handPulseSize, handPulsePaintR)
@@ -465,7 +495,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                 val textTitleY = sHeight * 0.15f
                 val textCaptionY = sHeight * 0.45f
                 canvas.drawText(
-                    ((waitGameStartTime - System.currentTimeMillis()) / 1000).toString(),
+                    ((waitGameStartTime - time) / 1000).toString(),
                     128f,
                     128f + captionPaint.textSize,
                     titlePaint
@@ -489,7 +519,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
             // Draw warning text or move farther
             val notifText = if (shouldMoveFarther) {
-                    "Get in frame!"
+                    "Get in the frame!"
                 } else if (runningBarLength < 20f) {
                     "Continue running!"
                 } else {""}
@@ -507,7 +537,23 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
             val runBarX = sWidth * RUNNING_BAR_WIDTH
 
             // Draw running counter
-            canvas.drawText(runningSteps.toString(), width - 64f, runningCounterPaint.textSize - 10f, runningCounterPaint)
+            canvas.drawText(
+                ((if (points < 0) "-" else "") + abs(points).toString().padStart(6, '0')),
+                width - 64f,
+                runningCounterPaint.textSize,
+                runningCounterPaint
+            )
+
+            // Draw point delta, if there is any
+            if (time < showPointDeltaTime + showPointDuration) {
+                val prog = (time - showPointDeltaTime)
+                canvas.drawText(
+                    "${if (pointDelta < 0) "-" else "+"}${abs(pointDelta)}",
+                    width + (500f * (1f - clamp(prog.toFloat() / 400f, 0f, 1f))),
+                    height.toFloat(),
+                    showPointPaint
+                )
+            }
 
             // Draw running bar
             canvas.drawRect(
@@ -568,5 +614,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         private const val PULSE_FLUCT = 15f
 
         private const val STEP_ANGLE = 140f
+
+        private const val RUN_POINT = 200
     }
 }

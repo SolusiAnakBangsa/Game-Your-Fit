@@ -1,12 +1,21 @@
 package com.solusianakbangsa.gameyourfit.cam.game.objects
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.graphics.*
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.LinearInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.core.math.MathUtils.clamp
 import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.BitmapUtils
 import com.solusianakbangsa.gameyourfit.cam.game.GameMode
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameUtils
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.pointToRect
 import kotlin.math.abs
 import kotlin.random.Random
@@ -24,6 +33,8 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     private var zigZagCounter = 0
     private var zigZagLimit = 0
 
+    private var heartSize = 60f
+    private var heartAnimator: ValueAnimator? = null
     private val heartPaint = Paint().apply {
         color = Color.RED
     }
@@ -81,9 +92,29 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         lasers.clear()
         hitCounter = 0
 
+        // Init the life animation
+        Handler(Looper.getMainLooper()).post {
+            heartAnimator = ValueAnimator.ofFloat(HEART_MIN, HEART_MAX).apply {
+                addUpdateListener { anim ->
+                    heartSize = anim.animatedValue as Float
+                }
+                duration = 1000L
+                repeatMode = ValueAnimator.REVERSE
+                repeatCount = ValueAnimator.INFINITE
+                interpolator = LinearInterpolator()
+            }
+        }
+
         zigZagStart = 0L
         zigZagCounter = 0
         zigZagLimit = 0
+    }
+
+    override fun clean() {
+        lasers.clear()
+        Handler(Looper.getMainLooper()).post {
+            heartAnimator?.cancel()
+        }
     }
 
     override fun onFirstLoop() {
@@ -162,11 +193,12 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         }
 
         val pHeart = overlay.body
-        canvas.drawCircle(pHeart.x, pHeart.y, 60f, heartPaint)
+        canvas.drawCircle(pHeart.x, pHeart.y, heartSize, heartPaint)
     }
 
     private fun getHit() {
         hitCounter++
+        overlay.addPoint(HIT_POINT, 2500L)
         Log.i("Lol", hitCounter.toString())
     }
 
@@ -242,5 +274,8 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         private const val LASER_CHARGE_TIME = 3000L
         private const val ZIG_ZAG_INTERVAL = 1500L
         private const val PAUSE_BETWEEN_GAMES = 4000L
+        private const val HIT_POINT = -1500
+        private const val HEART_MIN = 40f
+        private const val HEART_MAX = 100f
     }
 }
