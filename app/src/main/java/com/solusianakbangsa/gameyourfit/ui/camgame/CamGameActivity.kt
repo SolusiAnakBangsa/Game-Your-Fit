@@ -109,6 +109,7 @@ class CamGameActivity : AppCompatActivity() {
 
     fun gameDone(duration: Long) {
         // TODO: After the intent, if pressed back the game will go back to the camera.
+        // TODO: Strings
 
         val intent = Intent(this, PostCamGame::class.java)
         val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)

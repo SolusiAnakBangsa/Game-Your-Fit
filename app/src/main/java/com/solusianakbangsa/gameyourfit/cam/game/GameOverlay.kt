@@ -15,6 +15,7 @@ import com.solusianakbangsa.gameyourfit.R
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getAngle3d
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.getPointSum
+import com.solusianakbangsa.gameyourfit.cam.game.objects.BounceGame
 import com.solusianakbangsa.gameyourfit.cam.game.objects.TargetingGame
 import com.solusianakbangsa.gameyourfit.cam.game.objects.UFOGame
 import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
@@ -144,6 +145,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         // Add game modes
         games.add(TargetingGame(this, "target"))
         games.add(UFOGame(this, "ufo"))
+//        games.add(BounceGame(this, "bounce"))
     }
 
     private fun initPaints() {

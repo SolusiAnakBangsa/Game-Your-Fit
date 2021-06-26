@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/summaryLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="1.0"
+    android:alpha="0.0"
     android:animateLayoutChanges="true"
-    android:visibility="visible">
+    android:visibility="gone"
+    tools:visibility="gone">
 
     <ScrollView
         android:layout_width="match_parent"

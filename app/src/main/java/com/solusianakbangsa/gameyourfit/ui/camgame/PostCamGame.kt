@@ -25,7 +25,8 @@ class PostCamGame : AppCompatActivity() {
 //        findViewById<TextView>(R.id.summaryTimeSecond).text = "${time % 60000L}"
 
         // TODO: Do calorie
-        animateSummary("", time, 132)
+        findViewById<TextView>(R.id.summaryCaloriesTitle).text = "Points"
+        animateSummary("", time, intent.getIntExtra("points", 0))
     }
 
     private fun fadeInAnimator(view: View, duration : Long = 500L) : Animator {
@@ -55,7 +56,7 @@ class PostCamGame : AppCompatActivity() {
         val caloryTitle = fadeInAnimator(findViewById(R.id.summaryCaloriesTitle))
         val caloryContentText : TextView = findViewById(R.id.summaryCalories)
         val caloryContent = fadeInAnimator(caloryContentText)
-        caloryContentText.text = "$calories cal"
+        caloryContentText.text = "$calories pts"
         val summaryFeedback = fadeInAnimator(findViewById(R.id.summaryFeedback))
         val summaryHome = fadeInAnimator(findViewById(R.id.summaryHomeCard))
 

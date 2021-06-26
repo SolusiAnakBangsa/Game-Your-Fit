@@ -54,6 +54,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
         <activity
+            android:name=".ui.camgame.PostCamGame"
+            android:label="Post Camera Game"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GameYourFit.NoActionBar" />
+        <activity
             android:name=".SensorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GameYourFit.NoActionBar" />
