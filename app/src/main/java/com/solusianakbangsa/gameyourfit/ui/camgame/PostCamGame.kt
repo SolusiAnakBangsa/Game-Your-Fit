@@ -3,13 +3,17 @@ package com.solusianakbangsa.gameyourfit.ui.camgame
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.solusianakbangsa.gameyourfit.MainActivity
 import com.solusianakbangsa.gameyourfit.R
 import kotlinx.android.synthetic.main.summary_popup.*
+
 
 class PostCamGame : AppCompatActivity() {
 
@@ -27,9 +31,25 @@ class PostCamGame : AppCompatActivity() {
         // TODO: Do calorie
         findViewById<TextView>(R.id.summaryCaloriesTitle).text = "Points"
         animateSummary("", time, intent.getIntExtra("points", 0))
+
+        findViewById<ImageView>(R.id.summaryHome).setOnClickListener {
+            goHome()
+        }
     }
 
-    private fun fadeInAnimator(view: View, duration : Long = 500L) : Animator {
+    override fun onBackPressed() {
+        super.onBackPressed()
+        goHome()
+    }
+
+    private fun goHome() {
+        // TODO: Intent goes to the main activity, not home activity.
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
+    private fun fadeInAnimator(view: View, duration: Long = 500L) : Animator {
         val animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f).apply {
             view.alpha = 0.0f
             setDuration(duration)
@@ -37,9 +57,9 @@ class PostCamGame : AppCompatActivity() {
         return animator
     }
 
-    private fun animateSummary(title : String, time : Long, calories : Int){
+    private fun animateSummary(title: String, time: Long, calories: Int){
         val summaryLayout : FrameLayout = findViewById(R.id.summaryLayout)
-        val summaryLayoutAnim = fadeInAnimator(summaryLayout,1000L)
+        val summaryLayoutAnim = fadeInAnimator(summaryLayout, 1000L)
         val levelTitle = fadeInAnimator(findViewById(R.id.summaryTitle))
         val levelIcon = fadeInAnimator(findViewById(R.id.summaryIcon))
         summaryTitle.text = title

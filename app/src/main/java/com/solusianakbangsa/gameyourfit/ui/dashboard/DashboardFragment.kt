@@ -129,6 +129,7 @@ class DashboardFragment : Fragment() {
         val toCamGameActivity = View.OnClickListener{
 //            val intent = Intent(activity, CamGameActivity::class.java)
             val intent = Intent(activity, CamGameArcade::class.java)
+            intent.flags = intent.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
             activity?.startActivity(intent)
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }
