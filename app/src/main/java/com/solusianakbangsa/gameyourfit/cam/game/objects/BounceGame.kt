@@ -4,7 +4,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
-import androidx.core.graphics.plus
+import android.util.Log
+import androidx.core.math.MathUtils.clamp
 import com.solusianakbangsa.gameyourfit.cam.game.GameMode
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils.Companion.lineToRect
@@ -14,7 +15,7 @@ import kotlin.random.Random
 class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     override val title = "Bounce Time"
-    override val caption = "Oh no! the Shoogles are falling from the sky!\n"+
+    override val caption = "Oh no! Shoogles are falling from the sky!"+
             "By using both of your hands, bounce and keep them in the air as long as possible."
 
     private var lHand = PointF()
@@ -26,10 +27,14 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     private val trampolineColor = Paint().apply {
         color = Color.parseColor("#f2b12e")
-        lineWidth = 10
+        strokeWidth = 50f
     }
     private val ballColor = Paint().apply {
         color = Color.WHITE
+    }
+
+    private val ballColorDisabled = Paint().apply {
+        color = Color.RED
     }
 
     private var lineWidth = 0
@@ -42,22 +47,34 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         var vx = 0f
         var vy = 0f
 
+        // Whether the ball is hittable
+        var disabled = false
+
         fun loop(delta: Long) {
             // Gravity
-            vy -= (delta / 1000) * GRAVITY
+            vy += (delta.toFloat() / 1000f) * GRAVITY
+
+            // Clamp vy to have terminal velocity
+            vy = clamp(vy, -1000f, TERMINAL_VELOCITY)
 
             // Speeds
-            x -= vx
-            y -= vy
+            x += vx
+            y += vy
         }
 
-        fun bounceToHeight(height: Float) {
-            val dist = y - height
-            vy = -((2 * dist) / 100)
+        fun bounceToHeight(height: Float, deltaFrac: Float) {
+            val dist = -(y - height)
+
+            // Formula from distance based on gravity and distance
+            // Vt^2 = V0^2 + 2 * a * s
+            // - V0^2 = 2 * a * s
+            // With some magic squaring
+            vy = sqrt(2 * (GRAVITY * deltaFrac) * abs(dist)) * sign(dist)
         }
 
         companion object {
-            const val GRAVITY = 50f
+            const val GRAVITY = 15f             // (x) unit/second^2 (Needs to be timed by delta)
+            const val TERMINAL_VELOCITY = 300f  // (x) unit/2 (Needs to be timed by delta)
         }
     }
 
@@ -77,7 +94,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     }
 
     override fun clean() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onFirstLoop() {
@@ -104,11 +121,13 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         val lineHalf = min((lineWidth/2).toFloat(), dist)
 
         // Get draw points
-        lHandPoint.x = cos(angleL) * lineHalf
-        lHandPoint.y = sin(angleL) * lineHalf
+        lHandPoint.x = midPoint.x + cos(angleL) * lineHalf
+        lHandPoint.y = midPoint.y + sin(angleL) * lineHalf
 
-        rHandPoint.x = cos(angleR) * lineHalf
-        rHandPoint.y = sin(angleR) * lineHalf
+        rHandPoint.x = midPoint.x + cos(angleR) * lineHalf
+        rHandPoint.y = midPoint.y + sin(angleR) * lineHalf
+
+        val deltaFrac = delta.toFloat() / 1000f
 
         // Do ball actions
         for (b in balls) {
@@ -121,13 +140,20 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
             }
 
             // Bounce ball vertically
-            b.bounceToHeight(0f)
+            if (b.y > overlay.height) {
+                b.bounceToHeight(0f, deltaFrac)
+
+                // Inverse ball disability
+                b.disabled = !b.disabled
+            }
 
             // Bounce ball on trampoline
-            if (lineToRect(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y,
+            if (!b.disabled && lineToRect(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y,
                 b.x - 20f, b.y - 20f, b.x + 20f, b.y + 20f)) {
-                b.bounceToHeight(0f)
-                b.vx = cos(angleL) * 50f
+                b.bounceToHeight(0f, deltaFrac)
+
+                // Inverse ball
+                b.vx = sin(angleR) * 50f
 
                 overlay.addPoint(BOUNCE_POINT, 500L)
             }
@@ -135,10 +161,12 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     }
 
     override fun onDraw(canvas: Canvas) {
+        canvas.drawCircle(lHandPoint.x, lHandPoint.y, 70f, trampolineColor)
+        canvas.drawCircle(rHandPoint.x, rHandPoint.y, 70f, trampolineColor)
         canvas.drawLine(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y, trampolineColor)
 
         for (b in balls) {
-            canvas.drawCircle(b.x, b.y, 30f, ballColor)
+            canvas.drawCircle(b.x, b.y, 30f, if (b.disabled) ballColorDisabled else ballColor)
         }
     }
 

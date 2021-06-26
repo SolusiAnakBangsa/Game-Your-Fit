@@ -6,7 +6,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
@@ -63,7 +62,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private val runningCounterPaint = Paint()
     private var runningSteps = 0
     private var runningBarLength = 0f
-    private var whichLegUp = true // Helper boolean to track which leg is up.
+    private var isLegUp = true // Helper boolean to track which leg is up.
     private val runningBarFrom = floatArrayOf(0f, 0f, 0f)
     private val runningBarTo = floatArrayOf(0f, 0f, 0f)
     private val runningBarColor = floatArrayOf(0f, 0f, 0f)
@@ -145,7 +144,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         // Add game modes
         games.add(TargetingGame(this, "target"))
         games.add(UFOGame(this, "ufo"))
-//        games.add(BounceGame(this, "bounce"))
+        games.add(BounceGame(this, "bounce"))
     }
 
     private fun initPaints() {
@@ -408,13 +407,12 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
 
                     // Detect steps
-                    if (((whichLegUp && (leftAng < STEP_ANGLE)) ||
-                        (!whichLegUp && (rightAng < STEP_ANGLE))) &&
+                    if ((isLegUp && (leftAng < STEP_ANGLE || rightAng < STEP_ANGLE)) &&
                         ((leftAng >= STEP_ANGLE) || (rightAng >= STEP_ANGLE))) {
-
-                        whichLegUp = !whichLegUp
+                        isLegUp = true
                         stepOne()
-
+                    } else if (!isLegUp && (leftAng >= STEP_ANGLE && rightAng >= STEP_ANGLE)) {
+                        isLegUp = false
                     }
                 }
             }
@@ -653,7 +651,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     companion object {
-        private const val WAITNEWGAME = 10000L
+        private const val WAITNEWGAME = 1000L
 
         var pose : Pose? = null
 
