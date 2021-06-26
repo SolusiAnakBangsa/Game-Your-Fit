@@ -651,7 +651,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     companion object {
-        private const val WAITNEWGAME = 1000L
+        private const val WAITNEWGAME = 10000L
 
         var pose : Pose? = null
 

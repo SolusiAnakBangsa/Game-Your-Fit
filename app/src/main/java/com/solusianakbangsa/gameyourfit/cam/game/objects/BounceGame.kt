@@ -149,7 +149,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
             // Bounce ball on trampoline
             if (!b.disabled && lineToRect(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y,
-                b.x - 20f, b.y - 20f, b.x + 20f, b.y + 20f)) {
+                b.x - 30f, b.y - 30f, b.x + 30f, b.y + 30f)) {
                 b.bounceToHeight(0f, deltaFrac)
 
                 // Inverse ball
