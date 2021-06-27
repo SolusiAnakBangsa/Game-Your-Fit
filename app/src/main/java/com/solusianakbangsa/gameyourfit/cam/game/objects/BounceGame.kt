@@ -118,7 +118,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
         val dist = sqrt((rHand.x - lHand.x).pow(2) + (rHand.y - lHand.y).pow(2))
 
-        val lineHalf = min((lineWidth/2).toFloat(), dist)
+        val lineHalf = min((lineWidth/2).toFloat(), dist/2)
 
         // Get draw points
         lHandPoint.x = midPoint.x + cos(angleL) * lineHalf
@@ -166,7 +166,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         canvas.drawLine(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y, trampolineColor)
 
         for (b in balls) {
-            canvas.drawCircle(b.x, b.y, 50f, if (b.disabled) ballColorDisabled else ballColor)
+            canvas.drawCircle(b.x, b.y, 35f, if (b.disabled) ballColorDisabled else ballColor)
         }
     }
 

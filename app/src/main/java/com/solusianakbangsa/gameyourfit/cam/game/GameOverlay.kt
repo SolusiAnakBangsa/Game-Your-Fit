@@ -6,7 +6,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
@@ -64,6 +63,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     private var runningSteps = 0
     private var runningBarLength = 0f
     private var isLegUp = true // Helper boolean to track which leg is up.
+    private var whichLeg = false
     private val runningBarFrom = floatArrayOf(0f, 0f, 0f)
     private val runningBarTo = floatArrayOf(0f, 0f, 0f)
     private val runningBarColor = floatArrayOf(0f, 0f, 0f)
@@ -214,7 +214,6 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     fun instructionDone() {
         gameState = GameState.STANDBY
-//        startGame() // TODO: DEBUG PURPOSES ONLY
     }
 
     /**
@@ -408,13 +407,18 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
                     val rightAng = getAngle3d(landmarks[12], landmarks[24], landmarks[26])
 
                     // Detect steps
-                    if ((isLegUp && (leftAng < STEP_ANGLE || rightAng < STEP_ANGLE)) &&
+                    if (!isLegUp && (leftAng < STEP_ANGLE || rightAng < STEP_ANGLE) &&
                         ((leftAng >= STEP_ANGLE) || (rightAng >= STEP_ANGLE))) {
+
                         isLegUp = true
+                        whichLeg = leftAng < STEP_ANGLE
                         stepOne()
-                    } else if (!isLegUp && (leftAng >= STEP_ANGLE && rightAng >= STEP_ANGLE)) {
+
+//                    } else if (!isLegUp && (leftAng >= STEP_ANGLE && rightAng >= STEP_ANGLE)) {
+                    } else if (isLegUp && ((whichLeg && leftAng >= STEP_ANGLE) xor (!whichLeg && rightAng >= STEP_ANGLE))) {
                         isLegUp = false
                     }
+
                 }
             }
         }
@@ -648,7 +652,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
     }
 
     private fun isLandmarkInScreen(l: PoseLandmark) : Boolean {
-        return (l.inFrameLikelihood > 0.7f && isInScreen(l.position))
+        return (l.inFrameLikelihood > 0.8f && isInScreen(l.position))
     }
 
     companion object {
