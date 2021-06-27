@@ -64,7 +64,7 @@ class PoseDetectorProcessor(
   override
   fun detectInImage(image: InputImage): Task<PoseWithClassification> {
     // Set null
-    GameOverlay.pose = null
+//    GameOverlay.pose = null
     return detector
       .process(image)
       .continueWith(
@@ -107,6 +107,6 @@ class PoseDetectorProcessor(
   }
 
   companion object {
-    private val TAG = "PoseDetectorProcessor"
+    private const val TAG = "PoseDetectorProcessor"
   }
 }
