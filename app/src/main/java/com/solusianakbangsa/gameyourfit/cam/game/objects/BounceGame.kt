@@ -15,8 +15,8 @@ import kotlin.random.Random
 class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
     override val title = "Bounce Time"
-    override val caption = "Oh no! Shoogles are falling from the sky!"+
-            "By using both of your hands, bounce and keep them in the air as long as possible."
+    override val caption = "Oh no! The Shoogles are falling from the sky! "+
+            "By using both hands, bounce and keep them in the air."
 
     private var lHand = PointF()
     private var rHand = PointF()
@@ -149,7 +149,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
             // Bounce ball on trampoline
             if (!b.disabled && lineToRect(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y,
-                b.x - 30f, b.y - 30f, b.x + 30f, b.y + 30f)) {
+                b.x - 40f, b.y - 40f, b.x + 40f, b.y + 40f)) {
                 b.bounceToHeight(0f, deltaFrac)
 
                 // Inverse ball
@@ -166,7 +166,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         canvas.drawLine(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y, trampolineColor)
 
         for (b in balls) {
-            canvas.drawCircle(b.x, b.y, 30f, if (b.disabled) ballColorDisabled else ballColor)
+            canvas.drawCircle(b.x, b.y, 50f, if (b.disabled) ballColorDisabled else ballColor)
         }
     }
 

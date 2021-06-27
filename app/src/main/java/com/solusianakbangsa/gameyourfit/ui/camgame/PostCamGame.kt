@@ -45,7 +45,7 @@ class PostCamGame : AppCompatActivity() {
     private fun goHome() {
         // TODO: Intent goes to the main activity, not home activity.
         val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 

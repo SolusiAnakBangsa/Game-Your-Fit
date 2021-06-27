@@ -6,6 +6,7 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
 import com.google.mlkit.vision.pose.Pose
@@ -213,7 +214,7 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
 
     fun instructionDone() {
         gameState = GameState.STANDBY
-        startGame() // TODO: DEBUG PURPOSES ONLY
+//        startGame() // TODO: DEBUG PURPOSES ONLY
     }
 
     /**
