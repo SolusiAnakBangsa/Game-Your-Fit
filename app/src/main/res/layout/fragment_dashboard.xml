@@ -308,6 +308,26 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/dashboardCampaignDescription"
                         app:layout_constraintVertical_bias="1.0" />
+
+                    <TextView
+                        android:id="@+id/dashboardCampaignHowTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="?selectableItemBackground"
+                        android:clickable="true"
+
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="HOW TO"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold"
+                        android:tint="?attr/colorPrimary"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/dashboardCampaignPlay"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCampaignDescription"
+                        app:layout_constraintVertical_bias="0.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
@@ -329,8 +349,8 @@
                         android:background="@drawable/right_border"
                         android:backgroundTint="@color/gray_100"
                         android:clickable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:padding="10dp"
+                        android:foreground="@drawable/camcardio"
+                        android:padding="32dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_baseline_camera_alt_24"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -343,7 +363,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
                         android:paddingTop="10dp"
-                        android:text="Camera Workout"
+                        android:text="CardioCamera"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -360,7 +380,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:text="Play with your phone's camera, beta feature."
+                        android:text="Get fit with only your phone's camera! No other accessories needed."
                         android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@id/dashboardCamGamePlay"
                         app:layout_constraintLeft_toRightOf="@id/dashboardCamGame"
@@ -388,6 +408,26 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/dashboardCamGameDescription"
                         app:layout_constraintVertical_bias="1.0" />
+
+                    <TextView
+                        android:id="@+id/dashboardCamGameHowTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="?selectableItemBackground"
+                        android:clickable="true"
+
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:text="HOW TO"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold"
+                        android:tint="?attr/colorPrimary"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/dashboardCamGamePlay"
+                        app:layout_constraintTop_toBottomOf="@id/dashboardCamGameDescription"
+                        app:layout_constraintVertical_bias="0.0" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
@@ -409,7 +449,7 @@
                         android:background="@drawable/right_border"
                         android:backgroundTint="@color/gray_100"
                         android:clickable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:foreground="@drawable/calibration"
                         android:padding="10dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_menu_settings"
@@ -440,7 +480,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:text="Recalibrate the exercise to tailor your needs."
+                        android:text="Recalibrate exercises to tailor yourself."
                         android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@id/dashboardRecalibratePlay"
                         app:layout_constraintLeft_toRightOf="@id/dashboardRecalibrate"

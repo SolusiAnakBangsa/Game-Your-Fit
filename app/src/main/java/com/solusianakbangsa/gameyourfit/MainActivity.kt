@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             addUpdateListener {
                 value -> title.rotationX = (value.animatedValue as Float)
             }
+            startDelay = 500L
             start()
         }
 
