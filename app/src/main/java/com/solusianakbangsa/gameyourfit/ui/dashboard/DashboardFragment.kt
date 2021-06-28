@@ -29,6 +29,7 @@ import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
 import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
+import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameArcade
 import com.solusianakbangsa.gameyourfit.ui.calibrate.CalibrateActivity
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
@@ -123,7 +124,9 @@ class DashboardFragment : Fragment() {
 
         // Intent to go to camera game activity
         val toCamGameActivity = View.OnClickListener{
-            val intent = Intent(activity, CamGameActivity::class.java)
+//            val intent = Intent(activity, CamGameActivity::class.java)
+            val intent = Intent(activity, CamGameArcade::class.java)
+            intent.flags = intent.flags or Intent.FLAG_ACTIVITY_NO_HISTORY
             activity?.startActivity(intent)
             activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
         }

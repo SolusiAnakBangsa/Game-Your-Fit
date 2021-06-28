@@ -1,14 +1,18 @@
 package com.solusianakbangsa.gameyourfit.ui.camgame
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,6 +22,7 @@ import com.solusianakbangsa.gameyourfit.cam.CameraSource
 import com.solusianakbangsa.gameyourfit.cam.CameraSourcePreview
 import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
+import com.solusianakbangsa.gameyourfit.cam.game.GameThread
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils
 import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
 import java.util.*
@@ -28,6 +33,8 @@ class CamGameActivity : AppCompatActivity() {
     private var cameraSource: CameraSource? = null
     private var preview: CameraSourcePreview? = null
     private var graphicOverlay: GraphicOverlay? = null
+
+    private var doubleBackToExitPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +66,9 @@ class CamGameActivity : AppCompatActivity() {
         GameOverlay.overlay = graphicOverlay!!
         GameUtils.overlay = graphicOverlay!!
 
+        val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
+        gameOverlay.activity = this
+
         // Animate instruction and fade it out after.
         val v = findViewById<ImageView>(R.id.rotate_phone_icon)
         v.rotation = 45f
@@ -67,10 +77,26 @@ class CamGameActivity : AppCompatActivity() {
             v.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).start()
             t.animate().setStartDelay(2000L).alpha(0f).setDuration(2000L).withEndAction {
                 // Start game
-                findViewById<GameOverlay>(R.id.game_overlay).instructionDone()
+                gameOverlay.gameLength = intent.getLongExtra("duration", 60000L)
+                gameOverlay.instructionDone()
             }.start()
         }.start()
 
+    }
+
+    // Double click moment
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Click back again to exit.", Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -88,6 +114,9 @@ class CamGameActivity : AppCompatActivity() {
         val attr = window.attributes
         attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
         window.attributes = attr
+
+        GameThread.refreshRate = (getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+            .defaultDisplay.refreshRate.toInt()
     }
 
     override fun onDetachedFromWindow() {
@@ -96,6 +125,17 @@ class CamGameActivity : AppCompatActivity() {
         val attr = window.attributes
         attr.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = attr
+    }
+
+    fun gameDone(duration: Long) {
+        // TODO: After the intent, if pressed back the game will go back to the camera.
+        // TODO: Strings
+
+        val intent = Intent(this, PostCamGame::class.java)
+        val gameOverlay = findViewById<GameOverlay>(R.id.game_overlay)
+        intent.putExtra("time", duration)
+        intent.putExtra("points", gameOverlay.points)
+        startActivity(intent)
     }
 
     private fun makeCamera() {
