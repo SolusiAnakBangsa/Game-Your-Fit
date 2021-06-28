@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:animateLayoutChanges="true"
     android:id="@+id/summaryLayout"
-    android:alpha="1.0"
-    android:visibility="visible"
+    android:alpha="0.0"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
