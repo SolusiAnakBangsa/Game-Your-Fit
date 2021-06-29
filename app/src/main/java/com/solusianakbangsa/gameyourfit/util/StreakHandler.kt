@@ -80,7 +80,7 @@ class StreakHandler(val context: Context) {
         FirebaseHelper.addTime(totalMillis)
         if(sharedPref.getBoolean("eligibleForStreak", false) && totalMin >= StreakConstants.MINUTE_FOR_STREAKS){
             FirebaseHelper.updateStreakDate(context)
-            FirebaseHelper.incrementStreak(context)
+            FirebaseHelper.incrementStreak()
             sharedPref.edit().putInt("streakAmount", (sharedPref.getInt("streakAmount", 0)) + 1).apply()
             disableStreak()
             return true

@@ -71,12 +71,17 @@ class FirebaseHelper {
             requestQueue.add(serverDateJsonRequest)
         }
 
-        fun incrementStreak(context: Context){
+        fun incrementStreak(){
             val streakRef = buildFirebaseRef("users", getCurrentUID(), "streakAmount")
             buildFirebaseRef("users", getCurrentUID(), "streakPlaytimeMillis").setValue(0)
             streakRef.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    streakRef.setValue(snapshot.value as Long + 1L)
+                    if(snapshot.exists()){
+                        streakRef.setValue(snapshot.value as Long + 1L)
+                    } else{
+                        streakRef.setValue(1)
+                    }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
