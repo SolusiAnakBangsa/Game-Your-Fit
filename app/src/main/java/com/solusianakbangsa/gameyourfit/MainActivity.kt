@@ -1,5 +1,6 @@
 package com.solusianakbangsa.gameyourfit
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,7 +8,9 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.solusianakbangsa.gameyourfit.json.LevelList
@@ -29,9 +32,25 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
+    private lateinit var titleAnim: ValueAnimator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Do some animation
+        val title = findViewById<TextView>(R.id.textView)
+        title.rotationX = 90f
+        titleAnim = ValueAnimator.ofFloat(90f, 0f).apply {
+            duration = 750L
+            repeatCount = 0
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                value -> title.rotationX = (value.animatedValue as Float)
+            }
+            startDelay = 500L
+            start()
+        }
 
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth.currentUser

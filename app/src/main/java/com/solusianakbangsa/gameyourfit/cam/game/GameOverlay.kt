@@ -573,11 +573,15 @@ class GameOverlay(context: Context?, attrs: AttributeSet?) : Overlay(context, at
         if (gameState == GameState.START || gameState == GameState.WAITNEWGAME) {
 
             // Draw warning text or move farther
-            val notifText = if (shouldMoveFarther) {
+            val notifText = when {
+                shouldMoveFarther -> {
                     "Get in the frame!"
-                } else if (runningBarLength < 20f) {
+                }
+                runningBarLength < 20f -> {
                     "Continue running!"
-                } else {""}
+                }
+                else -> {""}
+            }
 
             if (notifText.isNotEmpty()) {
                 canvas.drawBitmap(notifBack, 0f, 0f, runningBarPaint)

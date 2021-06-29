@@ -1,16 +1,16 @@
 package com.solusianakbangsa.gameyourfit.ui.dashboard
 
-import android.util.Pair
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import java.io.File
 import android.os.Looper
 import android.util.Log
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,13 +27,13 @@ import com.solusianakbangsa.gameyourfit.*
 import com.solusianakbangsa.gameyourfit.constants.FileConstants
 import com.solusianakbangsa.gameyourfit.databinding.FragmentDashboardBinding
 import com.solusianakbangsa.gameyourfit.json.LevelList
-import com.solusianakbangsa.gameyourfit.util.ImageReplacer
-import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameActivity
-import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameArcade
 import com.solusianakbangsa.gameyourfit.ui.calibrate.CalibrateActivity
+import com.solusianakbangsa.gameyourfit.ui.camgame.CamGameArcade
 import com.solusianakbangsa.gameyourfit.ui.campaign.CampaignActivity
 import com.solusianakbangsa.gameyourfit.ui.level_info.LevelInfoActivity
+import com.solusianakbangsa.gameyourfit.util.ImageReplacer
 import de.hdodenhof.circleimageview.CircleImageView
+import java.io.File
 import java.util.concurrent.Executors
 
 class DashboardFragment : Fragment() {
@@ -46,9 +46,9 @@ class DashboardFragment : Fragment() {
     private lateinit var ref : DatabaseReference
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         handler = Handler(Looper.getMainLooper())
@@ -96,9 +96,23 @@ class DashboardFragment : Fragment() {
             }
         }
 
+        // Create intent to browser from the how to buttons.
+        binding.dashboardCampaignHowTo.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gameyourfit.com/workout.html"))
+            startActivity(browserIntent)
+        }
+
+        binding.dashboardCamGameHowTo.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gameyourfit.com/cardiocamera.html"))
+            startActivity(browserIntent)
+        }
+
 
 //        TODO : replace placeholder link with link from firebase
-        val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+        val profilePicture = File(
+            requireActivity().filesDir,
+            FileConstants.PROFILE_PICTURE_FILENAME
+        )
 
         if(!(profilePicture.exists())){
             ref.child("image").get().addOnSuccessListener{
@@ -113,7 +127,11 @@ class DashboardFragment : Fragment() {
                 )
             }
         } else{
-            imageReplacer.replaceImage(binding.cardProfilePicture, requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+            imageReplacer.replaceImage(
+                binding.cardProfilePicture,
+                requireActivity(),
+                FileConstants.PROFILE_PICTURE_FILENAME
+            )
         }
 
         val toCampaignActivity = View.OnClickListener{
@@ -144,14 +162,18 @@ class DashboardFragment : Fragment() {
                 val intent = Intent(activity, LevelInfoActivity::class.java)
                 intent.putExtra("level", levelList.getLevel(randomLvl).toString())
                 intent.putExtra("taskList", levelList.getTasksAtLevel(randomLvl).toString())
-                intent.putExtra("title",levelList.getTitleAtLevel(randomLvl))
-                intent.putExtra("thumbnail",levelList.getThumbnailAtLevel(randomLvl))
+                intent.putExtra("title", levelList.getTitleAtLevel(randomLvl))
+                intent.putExtra("thumbnail", levelList.getThumbnailAtLevel(randomLvl))
                 activity?.startActivity(intent)
                 activity?.overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
             }
             handler.post{
                 binding.recommendationTitle.text = levelList.getTitleAtLevel(randomLvl)
-                imageReplacer.replaceImage(handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(randomLvl), binding.recommendationFrameShimmer)
+                imageReplacer.replaceImage(
+                    handler, binding.recommendationFrame, levelList.getThumbnailAtLevel(
+                        randomLvl
+                    ), binding.recommendationFrameShimmer
+                )
             }
         }
 
@@ -168,8 +190,15 @@ class DashboardFragment : Fragment() {
             val intent = Intent(activity, ProfileActivity::class.java)
             val options = ActivityOptions.makeSceneTransitionAnimation(
                 requireActivity(),
-                Pair.create(requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture), "keepProfilePicture"),
-                Pair.create(requireActivity().findViewById<TextView>(R.id.cardUsername), "keepNameText"))
+                Pair.create(
+                    requireActivity().findViewById<CircleImageView>(R.id.cardProfilePicture),
+                    "keepProfilePicture"
+                ),
+                Pair.create(
+                    requireActivity().findViewById<TextView>(R.id.cardUsername),
+                    "keepNameText"
+                )
+            )
             activity?.startActivity(intent, options.toBundle())
         }
 
@@ -192,7 +221,10 @@ class DashboardFragment : Fragment() {
 
         val executor = Executors.newSingleThreadExecutor()
         executor.execute{
-            val profilePicture = File(requireActivity().filesDir, FileConstants.PROFILE_PICTURE_FILENAME)
+            val profilePicture = File(
+                requireActivity().filesDir,
+                FileConstants.PROFILE_PICTURE_FILENAME
+            )
             if(!(profilePicture.exists())){
                 ref.child("image").get().addOnSuccessListener{
                     Log.i("yabe", it.value.toString())
@@ -206,11 +238,21 @@ class DashboardFragment : Fragment() {
                     )
                 }
             } else{
-                val drawerImage =  requireActivity().findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById<ImageView>(R.id.drawerProfilePicture)
+                val drawerImage =  requireActivity().findViewById<NavigationView>(R.id.nav_view).getHeaderView(
+                    0
+                ).findViewById<ImageView>(R.id.drawerProfilePicture)
                 val profileImage = requireActivity().findViewById<ImageView>(R.id.cardProfilePicture)
                 requireActivity().runOnUiThread{
-                    imageReplacer.replaceImage(drawerImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
-                    imageReplacer.replaceImage(profileImage , requireActivity(), FileConstants.PROFILE_PICTURE_FILENAME)
+                    imageReplacer.replaceImage(
+                        drawerImage,
+                        requireActivity(),
+                        FileConstants.PROFILE_PICTURE_FILENAME
+                    )
+                    imageReplacer.replaceImage(
+                        profileImage,
+                        requireActivity(),
+                        FileConstants.PROFILE_PICTURE_FILENAME
+                    )
                 }
             }
 
