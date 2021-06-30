@@ -96,13 +96,17 @@ class FirebaseHelper {
             userRef.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(!snapshot.hasChild("totalPlaytime")){
-                        userRef.child("totalPlaytime").setValue(0)
+                        userRef.child("totalPlaytime").setValue(totalMillis)
+                    } else{
+                        userRef.child("totalPlaytime").setValue(snapshot.child("totalPlaytime").value as Long + totalMillis)
+
                     }
                     if(!snapshot.hasChild("streakPlaytimeMillis")){
-                        userRef.child("streakPlaytimeMillis").setValue(0)
+                        userRef.child("streakPlaytimeMillis").setValue(totalMillis)
+                    } else {
+                        userRef.child("streakPlaytimeMillis").setValue(totalMillis)
                     }
-                    userRef.child("totalPlaytime").setValue(snapshot.child("totalPlaytime").value as Long + totalMillis)
-                    userRef.child("streakPlaytimeMillis").setValue(totalMillis)
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
