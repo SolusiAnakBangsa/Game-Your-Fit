@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.solusianakbangsa.myapplication.posedetector
+package com.solusianakbangsa.gameyourfit.cam.posedetector
 
 import android.content.Context
 import android.util.Log
@@ -84,8 +84,8 @@ class PoseDetectorProcessor(
   }
 
   override fun onSuccess(
-          results: PoseWithClassification,
-          graphicOverlay: GraphicOverlay
+    results: PoseWithClassification,
+    graphicOverlay: GraphicOverlay
   ) {
     GameOverlay.pose = results.pose
 //    graphicOverlay.add(

@@ -76,6 +76,6 @@ object SensorConstants {
         SENSOR_MAP["Forward Lunge"] =
             ExerciseSensor(FORWARDLUNGE_AXIS, FORWARDLUNGE_HIGH, FORWARDLUNGE_LOW, MET_CALISTHENICS)
         SENSOR_MAP["Jumping Squat"] =
-            ExerciseSensor(JUMPSQUAT_AXIS, JUMPJACK_HIGH, JUMPSQUAT_LOW, MET_CALISTHENICS)
+            ExerciseSensor(JUMPSQUAT_AXIS, JUMPSQUAT_HIGH, JUMPSQUAT_LOW, MET_CALISTHENICS)
     }
 }

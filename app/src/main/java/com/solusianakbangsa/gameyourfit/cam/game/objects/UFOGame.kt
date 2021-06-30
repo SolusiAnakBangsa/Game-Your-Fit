@@ -271,8 +271,8 @@ class UFOGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
     companion object {
         // Laser amount
         private const val LASER_AMOUNT = 5
-        private const val LASER_CHARGE_TIME = 3000L
-        private const val ZIG_ZAG_INTERVAL = 2000L
+        private const val LASER_CHARGE_TIME = 2750L
+        private const val ZIG_ZAG_INTERVAL = 2750L
         private const val PAUSE_BETWEEN_GAMES = 4000L
         private const val HIT_POINT = -1000
         private const val HEART_MIN = 40f

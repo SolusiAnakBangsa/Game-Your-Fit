@@ -24,7 +24,7 @@ import com.solusianakbangsa.gameyourfit.cam.GraphicOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameOverlay
 import com.solusianakbangsa.gameyourfit.cam.game.GameThread
 import com.solusianakbangsa.gameyourfit.cam.game.GameUtils
-import com.solusianakbangsa.myapplication.posedetector.PoseDetectorProcessor
+import com.solusianakbangsa.gameyourfit.cam.posedetector.PoseDetectorProcessor
 import java.util.*
 
 
