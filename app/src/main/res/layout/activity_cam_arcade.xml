@@ -51,8 +51,8 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@mipmap/placeholder_profile_foreground" />
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/camcardio" />
 
             </androidx.cardview.widget.CardView>
 
