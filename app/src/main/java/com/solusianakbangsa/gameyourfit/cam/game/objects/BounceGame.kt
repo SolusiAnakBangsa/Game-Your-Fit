@@ -29,9 +29,6 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         color = Color.parseColor("#f2b12e")
         strokeWidth = 50f
     }
-    private val ballColor = Paint().apply {
-        color = Color.WHITE
-    }
 
     private val ballColorDisabled = Paint().apply {
         color = Color.RED
@@ -49,6 +46,8 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
 
         // Whether the ball is hittable
         var disabled = false
+
+        var color = Paint()
 
         fun loop(delta: Long) {
             // Gravity
@@ -72,12 +71,30 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
             vy = sqrt(2 * (GRAVITY * deltaFrac) * abs(dist)) * sign(dist)
         }
 
+        fun randomSpawnBall(overlay: GameOverlay) {
+            vy = 0f
+            y = (Random.nextFloat() * -500f) + 100f
+            x = Random.nextFloat() * overlay.width
+
+            vx = (Random.nextFloat() * 20f) - 10f
+
+            disabled = false
+
+            color.color = COLOR_LIST.random()
+        }
+
         companion object {
             const val GRAVITY = 15f             // (x) unit/second^2 (Needs to be timed by delta)
             const val TERMINAL_VELOCITY = 300f  // (x) unit/2 (Needs to be timed by delta)
+
+            val COLOR_LIST = arrayOf(
+                Color.parseColor("#cc2cde"),
+                Color.parseColor("#2cdecc"),
+                Color.parseColor("#d44d17"),
+                Color.parseColor("#89e329")
+            )
         }
     }
-
 
 
     override fun init() {
@@ -86,10 +103,7 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         lineWidth = overlay.width/3
 
         for (b in balls) {
-            b.y = (Random.nextFloat() * -500f) + 100f
-            b.x = Random.nextFloat() * overlay.width
-
-            b.vx = (Random.nextFloat() * 20f) - 10f
+            b.randomSpawnBall(overlay)
         }
     }
 
@@ -139,21 +153,22 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
                 b.vx *= -1
             }
 
-            // Bounce ball vertically
-            if (b.y > overlay.height) {
-                b.bounceToHeight(0f, deltaFrac)
-
-                // Inverse ball disability
-                b.disabled = !b.disabled
+            // Reset ball height if below, or if the ball is disabled.
+            if (b.y > overlay.height || (b.disabled && b.y < 0)) {
+                // Set ball position to the top
+                b.randomSpawnBall(overlay)
             }
 
             // Bounce ball on trampoline
             if (!b.disabled && lineToRect(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y,
                 b.x - 40f, b.y - 40f, b.x + 40f, b.y + 40f)) {
-                b.bounceToHeight(0f, deltaFrac)
+                b.bounceToHeight(-300f, deltaFrac)
 
                 // Inverse ball
                 b.vx = sin(angleR) * 50f
+
+                // Set to be disabled
+                b.disabled = true
 
                 overlay.addPoint(BOUNCE_POINT, 500L)
             }
@@ -166,10 +181,9 @@ class BounceGame(overlay: GameOverlay, id: String) : GameMode(overlay, id) {
         canvas.drawLine(lHandPoint.x, lHandPoint.y, rHandPoint.x, rHandPoint.y, trampolineColor)
 
         for (b in balls) {
-            canvas.drawCircle(b.x, b.y, 35f, if (b.disabled) ballColorDisabled else ballColor)
+            canvas.drawCircle(b.x, b.y, 35f, if (b.disabled) ballColorDisabled else b.color)
         }
     }
-
 
     companion object {
         private const val BOUNCE_POINT = 300
