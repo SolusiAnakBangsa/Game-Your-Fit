@@ -10,19 +10,22 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.solusianakbangsa.gameyourfit.HomeActivity
 import com.solusianakbangsa.gameyourfit.MainActivity
 import com.solusianakbangsa.gameyourfit.R
+import com.solusianakbangsa.gameyourfit.ui.streak.StreakActivity
+import com.solusianakbangsa.gameyourfit.util.StreakHandler
 import kotlinx.android.synthetic.main.summary_popup.*
 
 
 class PostCamGame : AppCompatActivity() {
-
+    var time = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.summary_popup)
 
-        val time = intent.getLongExtra("time", 0L)
+        time = intent.getLongExtra("time", 0L)
 
 //        findViewById<TextView>(R.id.summaryTitle).text = "Camera game"
 //        findViewById<TextView>(R.id.summaryTimeMinute).text = "${time / 60000L}"
@@ -33,19 +36,23 @@ class PostCamGame : AppCompatActivity() {
         animateSummary("", time, intent.getIntExtra("points", 0))
 
         findViewById<ImageView>(R.id.summaryHome).setOnClickListener {
-            goHome()
+            goHome(time)
         }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        goHome()
+        goHome(time)
     }
 
-    private fun goHome() {
+    private fun goHome(time : Long) {
         // TODO: Intent goes to the main activity, not home activity.
-        val intent = Intent(this, MainActivity::class.java)
+        val streakValid = StreakHandler(this).checkStreak(time)
+        var intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        if(streakValid)
+            intent = Intent(this, StreakActivity::class.java)
+
         startActivity(intent)
     }
 
