@@ -32,10 +32,13 @@ class FirebaseHelper {
             return FirebaseAuth.getInstance()
         }
         fun buildFirebaseRef(reference: String, vararg child : String): DatabaseReference {
+            Log.e("FirebaseHelper", reference)
             var ref = getFirebaseDatabaseRef(reference)
             for(i in child){
+                Log.e("FirebaseHelper", i)
                 ref = ref.child(i)
             }
+            Log.e("FirebaseHelper", ref.toString())
             return ref
         }
         fun postFirebaseData(ref : DatabaseReference, hash: HashMap<String, Any>): Task<Void> {
@@ -142,7 +145,7 @@ class FirebaseHelper {
         val updateHash = HashMap<String, Any>()
 
         val friendRef = buildFirebaseRef("Friends")
-        val userRef = buildFirebaseRef(uid)
+        val userRef = buildFirebaseRef("users", uid)
         userRef.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
